@@ -1,0 +1,41 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #fafafa;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    color: #444;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+#app {
+    height: 100%;
+}
+
+button {
+    color: blue;
+}
+button:focus {
+    color: green;
+}
+button:active {
+    color: red;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    margin: 0.5rem 0;
+    padding: 0;
+}

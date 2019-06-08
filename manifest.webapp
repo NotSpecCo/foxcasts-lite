@@ -1,0 +1,46 @@
+{
+    "name": "FoxCasts",
+
+    "description": "A fully-featured podcast app for your FirefoxOS device.",
+    "version": "0.0.1",
+    "launch_path": "/index.html",
+    "icons": {
+        "256": "/assets/icons/icon-256.png",
+        "128": "/assets/icons/icon-128.png",
+        "64": "/assets/icons/icon-64.png",
+        "48": "/assets/icons/icon-48.png",
+        "32": "/assets/icons/icon-32.png",
+        "24": "/assets/icons/icon-24.png"
+    },
+    "developer": {
+        "name": "Garrett Downs",
+        "url": "http://www.foxcasts.com"
+    },
+    "installs_allowed_from": ["https://marketplace.firefox.com"],
+    "type": "privileged",
+    "permissions": {
+        "audio-channel-content": {
+            "description": "Required to play audio in the background."
+        },
+        "systemXHR": {
+            "description": "Required to download podcasts and perform other vital functions."
+        },
+        "desktop-notification": {
+            "description": "Required to display episode information and playback controls in the notification panel."
+        },
+        "device-storage:music": {
+            "access": "readwrite",
+            "description": "Required to read and write podcasts episodes."
+        },
+        "device-storage:videos": {
+            "access": "readwrite",
+            "description": "Required to read and write podcasts episodes."
+        },
+        "device-storage:sdcard": {
+            "access": "readwrite",
+            "description": "Required to read and write podcasts episodes to external storage."
+        }
+    },
+    "default_locale": "en",
+    "cursor": true
+}

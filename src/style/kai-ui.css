@@ -1,0 +1,417 @@
+/**
+ * ===========================
+ * **************** Agenda ***
+ *
+ *  1. Basic
+ *  2. Fonts
+ *  3. Header
+ *  4. Separator
+ *  5. Software key
+ *  6. Toast
+ *  7. Lists
+ *  8. Options menu
+ *  9. Button
+ * 10. Input
+ * 11. Table
+ * ===========================
+ */
+
+/* ============== Basic ============== */
+h1,
+h2,
+h3,
+h4,
+h5,
+ul,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.statusbar-placeholder {
+    background-color: #320374;
+    height: 26px;
+}
+
+#kui-app {
+    width: 100%;
+    height: 100%;
+    font-family: 'Open Sans';
+}
+
+.content-area {
+    overflow: hidden;
+    position: relative;
+    padding: 5px;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    display: none;
+}
+
+.offset-key-labels {
+    margin-bottom: 35px;
+}
+
+/* ============== Fonts ============== */
+.kui-h1 {
+    font-size: 17px;
+    font-weight: 300;
+}
+
+.kui-h2 {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.kui-h3,
+.kui-h4,
+.kui-sec {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.kui-h5 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.kui-pri,
+.kui-text,
+.kui-btn,
+.kui-link {
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.kui-thi {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.kui-key-mid {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* ============== Header ============== */
+.kui-header {
+    height: 2.8rem;
+    line-height: 2.4rem;
+    background-color: #320374;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+    padding: 0 1rem;
+}
+
+.kui-header > h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============== Separator ============== */
+.kui-separator {
+    color: #6a6a6a;
+    height: 2.4rem;
+    background-color: #e6e6e6;
+    line-height: 2.4rem;
+    padding: 0 1rem;
+}
+
+/* ============== Software key ============== */
+.kui-software-key {
+    height: 30px;
+    background-color: #cccccc;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    color: #323232;
+    /* position: fixed;
+    bottom: 0; */
+    /* width: 100%; */
+    width: 100vw;
+}
+
+.kui-software-key.bottom {
+    position: fixed;
+    bottom: 0;
+}
+
+.kui-software-key h5 {
+    /* width: 33.3333333333%; */
+    flex: 1;
+    text-align: center;
+}
+
+.kui-software-key h5:first-child {
+    text-align: left;
+}
+
+.kui-software-key h5:last-child {
+    text-align: right;
+}
+
+.kui-software-key h5.disabled {
+    opacity: 0.5;
+}
+
+/* ============== Toast ============== */
+.kui-toast {
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    text-align: center;
+    background-color: #323232;
+}
+
+.kui-toast .kui-pri {
+    margin: 0;
+}
+
+.kui-toast-shadow {
+    height: 6px;
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+/* ============== Lists ============== */
+.kui-list {
+    list-style: none;
+}
+
+.kui-list li {
+    background-color: #fff;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.kui-list li .kui-list-img {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    background-color: #2f3235;
+    margin-right: 10px;
+}
+
+.kui-list-cont p {
+    margin: 4px 0;
+}
+
+.kui-list-cont .kui-pri {
+    color: #323232;
+}
+
+.kui-list-cont .kui-pri.no-wrap,
+.kui-list-cont .kui-sec.no-wrap {
+    white-space: nowrap;
+}
+
+.kui-list-cont .kui-sec {
+    color: #6a6a6a;
+}
+
+.kui-list li:focus,
+.kui-list li:hover {
+    background-color: #873eff;
+    outline: 0;
+}
+
+.kui-list li:focus .kui-pri,
+.kui-list li:focus .kui-sec,
+.kui-list li:hover .kui-pri,
+.kui-list li:hover .kui-sec {
+    color: #fff;
+}
+
+/* ============== Options menu ============== */
+.kui-option-menu {
+    width: 100%;
+    /* position: absolute; */
+    position: fixed;
+    overflow: hidden;
+    bottom: 0;
+    /* display: none; */
+    display: flex;
+    flex-direction: column;
+}
+
+.kui-option-menu.full-screen {
+    height: 100%;
+}
+
+.kui-option-menu .kui-option-title {
+    margin: 0;
+    color: #323232;
+    text-align: center;
+    background-color: #d8d8d8;
+    height: 28px;
+    line-height: 28px;
+}
+
+.kui-options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden; */
+    overflow: auto;
+    max-height: calc(100vh - 84px);
+    background-color: #fff;
+}
+
+.kui-option-menu.full-screen .kui-options {
+    flex: 1;
+    max-height: unset;
+}
+
+.kui-options li {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+    background-color: #fff;
+    font-size: 1.6rem;
+}
+
+.kui-options li:focus,
+.kui-options li:hover {
+    outline: 0;
+    color: #fff;
+    background-color: #873eff;
+}
+
+/* ============== Button ============== */
+button.kui-btn {
+    width: 220px;
+    height: 36px;
+    border-radius: 2px;
+    background: #ccc;
+    text-align: center;
+    color: #323232;
+    border: 0;
+    display: block;
+    margin: auto;
+}
+
+button.kui-btn:focus {
+    outline: 0;
+    color: #fff;
+    background-color: #873eff;
+}
+
+/* ============== Input ============== */
+.kui-input-holder {
+    /* height: 76px; */
+    padding: 10px;
+    background-color: #fff;
+}
+
+.kui-input-holder.with-label {
+    height: 76px;
+}
+
+.kui-input-holder.kui-focus-within {
+    background-color: #873eff;
+    outline: 0;
+}
+
+.kui-input-label {
+    color: #323232;
+    display: block;
+    padding-bottom: 10px;
+}
+
+.kui-input-holder.kui-focus-within .kui-input-label {
+    color: #fff;
+}
+
+.kui-input {
+    height: 36px;
+    width: 100%;
+    border-radius: 2px;
+    padding-left: 10px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #aaaaaa;
+}
+
+.kui-input ::-moz-placeholder,
+.kui-input :-moz-placeholder {
+    color: #323232;
+}
+
+.kui-input:focus {
+    outline: 0;
+}
+
+/* ============== Table ============== */
+.kui-table,
+.kui-table th,
+.kui-table td {
+    border: 1px solid #320374;
+    border-collapse: collapse;
+}
+
+.kui-table {
+    width: 100%;
+}
+
+.kui-table thead {
+    background-color: #320374;
+    color: #fff;
+}
+
+.kui-table tr:focus {
+    outline: 0;
+    background-color: #873eff;
+    color: #fff;
+}
+
+.kui-table td {
+    width: 50%;
+    padding: 4px 5px;
+}
+
+.kui-table td:last-child {
+    text-align: right;
+}
+
+/* KaiOS portrait devices (240x320) */
+@media only screen and (orientation: portrait) {
+    /* .content-area {
+        height: 236px;
+    }
+
+    .kui-option-menu {
+        height: 178px;
+    }
+
+    .kui-options {
+        height: 150px;
+    } */
+}
+
+/* KaiOS landscape devices (320x240) */
+@media screen and (orientation: landscape) {
+    /* .content-area {
+        height: 156px;
+    }
+
+    .kui-option-menu {
+        height: 128px;
+    }
+
+    .kui-options {
+        height: 100px;
+    } */
+}
+
+/*** The End ******/
