@@ -59,7 +59,7 @@
     "dexie": "^2.0.4",
     "dotenv": "^8.0.0",
     "history": "^4.9.0",
-    "preact": "^10.0.0-beta.1",
+    "preact": "^10.0.0-beta.2",
     "preact-async-route": "^2.2.1",
     "preact-compat": "^3.18.4",
     "preact-router": "^3.0.0",
