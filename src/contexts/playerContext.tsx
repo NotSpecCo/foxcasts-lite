@@ -6,18 +6,22 @@ import PodcastService from '../services/podcastService';
 
 const podcastService = new PodcastService();
 
-interface PlayerContextProps {
+interface PlayerStateContextProps {
     episode: Episode | undefined;
     playing: boolean;
     progress: number;
     duration: number;
+}
+
+interface PlayerActionsContextProps {
     setEpisode: (episode: Episode, resume?: boolean, play?: boolean) => void;
     setPlaying: (playing: boolean) => void;
     setProgress: (progress: number) => void;
     setDuration: (duration: number) => void;
     reset: () => void;
 }
-export const PlayerContext = createContext<PlayerContextProps>({} as any);
+export const PlayerStateContext = createContext<PlayerStateContextProps>({} as any);
+export const PlayerActionsContext = createContext<PlayerActionsContextProps>({} as any);
 
 export function PlayerProvider({ children }: any) {
     const [episode, setEpisodeInternal] = useState<Episode | undefined>(undefined);
@@ -59,21 +63,26 @@ export function PlayerProvider({ children }: any) {
     };
 
     return (
-        <PlayerContext.Provider
+        <PlayerStateContext.Provider
             value={{
                 episode,
                 playing,
                 progress,
-                duration,
-                setEpisode,
-                setPlaying,
-                setProgress,
-                setDuration,
-                reset
+                duration
             }}
         >
-            {children}
-            <AudioPlayer />
-        </PlayerContext.Provider>
+            <PlayerActionsContext.Provider
+                value={{
+                    setEpisode,
+                    setPlaying,
+                    setProgress,
+                    setDuration,
+                    reset
+                }}
+            >
+                {children}
+                <AudioPlayer />
+            </PlayerActionsContext.Provider>
+        </PlayerStateContext.Provider>
     );
 }

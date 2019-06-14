@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import ReactAudioPlayer from 'react-audio-player';
-import { usePlayer } from '../../hooks/usePlayer';
+import { usePlayerActions, usePlayerState } from '../../hooks/usePlayer';
 import { Episode } from '../../models';
 
 interface AudioPlayerProps {}
@@ -11,7 +11,8 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
     const [internalEpisode, setInternalEpisode] = useState<Episode | null>(null);
 
-    const { episode, playing, progress, duration, setProgress, setDuration } = usePlayer();
+    const { episode, playing, progress, duration } = usePlayerState();
+    const { setProgress, setDuration } = usePlayerActions();
 
     useEffect(() => {
         console.log('playerState changed', { episode, playing, progress });

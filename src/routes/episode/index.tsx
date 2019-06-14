@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import OptionMenu from '../../components/option-menu';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
-import { usePlayer } from '../../hooks/usePlayer';
+import { usePlayerActions } from '../../hooks/usePlayer';
 import { Episode } from '../../models';
 import PodcastService from '../../services/podcastService';
 import * as style from './style.css';
@@ -19,7 +19,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const { openNav } = useContext(AppContext);
-    const player = usePlayer();
+    const player = usePlayerActions();
 
     useEffect(() => {
         podcastService.getEpisodeById(parseInt(episodeId, 10)).then(result => {

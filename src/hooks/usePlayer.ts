@@ -1,10 +1,18 @@
 import { useContext } from 'preact/hooks';
-import { PlayerContext } from '../contexts/playerContext';
+import { PlayerActionsContext, PlayerStateContext } from '../contexts/playerContext';
 
-export function usePlayer() {
-    const context = useContext(PlayerContext);
+export function usePlayerState() {
+    const context = useContext(PlayerStateContext);
     if (context === undefined) {
-        throw new Error('usePlayer must be used within a PlayerProvider');
+        throw new Error('usePlayerState must be used within a PlayerProvider');
+    }
+    return context;
+}
+
+export function usePlayerActions() {
+    const context = useContext(PlayerActionsContext);
+    if (context === undefined) {
+        throw new Error('usePlayerActions must be used within a PlayerProvider');
     }
     return context;
 }
