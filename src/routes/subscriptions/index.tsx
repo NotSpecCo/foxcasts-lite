@@ -32,25 +32,27 @@ export default function Subscriptions() {
     };
 
     return (
-        <div>
+        <div class="view-container">
             <div class="kui-header">
                 <h1 class="kui-h1">Subscriptions</h1>
             </div>
-            <ul class="kui-list offset-key-labels">
-                {subs.map(sub => (
-                    <li
-                        key={sub.id}
-                        class="register-dpad"
-                        tabIndex={1}
-                        onClick={handlePodcastClick(sub)}
-                    >
-                        <img class="kui-list-img" src={sub.cover['60']} />
-                        <div class="kui-list-cont">
-                            <p class="kui-pri">{sub.title}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+            <div class="view-content">
+                <ul class="kui-list">
+                    {subs.map(sub => (
+                        <li
+                            key={sub.id}
+                            class="register-dpad"
+                            tabIndex={1}
+                            onClick={handlePodcastClick(sub)}
+                        >
+                            <img class="kui-list-img" src={sub.cover['60']} />
+                            <div class="kui-list-cont">
+                                <p class="kui-pri">{sub.title}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
             <div class="kui-software-key bottom">
                 <h5 class="kui-h5">Nav</h5>
                 <h5 class="kui-h5">SELECT</h5>

@@ -6,7 +6,6 @@ import { useNavKeys } from '../../hooks/useNavKeys';
 import { usePlayerActions } from '../../hooks/usePlayer';
 import { Episode } from '../../models';
 import PodcastService from '../../services/podcastService';
-import * as style from './style.css';
 
 const podcastService = new PodcastService();
 
@@ -61,11 +60,11 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
     }
 
     return (
-        <div>
+        <div class="view-container">
             <div class="kui-header">
                 <h1 class="kui-h1">Episode Detail</h1>
             </div>
-            <div className={style.container}>
+            <div class="view-content">
                 <h2 className="kui-h2">{episode.title}</h2>
 
                 <p className="kui-text">{episode.subTitle}</p>

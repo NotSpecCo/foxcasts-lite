@@ -61,36 +61,38 @@ export default function Search({ q: queryParam }: SearchProps) {
     };
 
     return (
-        <div>
+        <div class="view-container">
             <div class="kui-header">
                 <h1 class="kui-h1">Search</h1>
             </div>
-            <div class="kui-input-holder">
-                <input
-                    type="text"
-                    class="kui-input kui-text"
-                    placeholder="Query"
-                    value={query}
-                    ref={input => (searchBox = input)}
-                    onChange={handleQueryChange}
-                    onInput={handleQueryChange}
-                />
+            <div class="view-content">
+                <div class="kui-input-holder">
+                    <input
+                        type="text"
+                        class="kui-input kui-text"
+                        placeholder="Query"
+                        value={query}
+                        ref={input => (searchBox = input)}
+                        onChange={handleQueryChange}
+                        onInput={handleQueryChange}
+                    />
+                </div>
+                <ul class="kui-list">
+                    {results.map(podcast => (
+                        <li
+                            key={podcast.collectionId}
+                            tabIndex={1}
+                            onClick={handlePodcastClick(podcast.collectionId)}
+                        >
+                            <img class="kui-list-img" src={podcast.artworkUrl60} />
+                            <div class="kui-list-cont">
+                                <p class="kui-pri no-wrap">{podcast.collectionName}</p>
+                                <p class="kui-sec no-wrap">{podcast.artistName}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
             </div>
-            <ul class="kui-list">
-                {results.map(podcast => (
-                    <li
-                        key={podcast.collectionId}
-                        tabIndex={1}
-                        onClick={handlePodcastClick(podcast.collectionId)}
-                    >
-                        <img class="kui-list-img" src={podcast.artworkUrl60} />
-                        <div class="kui-list-cont">
-                            <p class="kui-pri no-wrap">{podcast.collectionName}</p>
-                            <p class="kui-sec no-wrap">{podcast.artistName}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
             <div class="kui-software-key bottom">
                 <h5 class="kui-h5">Nav</h5>
                 <h5 class="kui-h5">SELECT</h5>

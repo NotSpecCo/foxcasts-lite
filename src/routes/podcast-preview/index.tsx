@@ -75,20 +75,22 @@ export default function PodcastPreview({ podcastId }: PodcastPreviewProps) {
     }
 
     return (
-        <div>
+        <div class="view-container">
             <div class="kui-header">
                 <h1 class="kui-h1">{podcast.title}</h1>
             </div>
-            <ul class="kui-list offset-key-labels">
-                {episodes.map(episode => (
-                    <li key={episode.id} tabIndex={1}>
-                        <div class="kui-list-cont">
-                            <p class="kui-pri no-wrap">{episode.title}</p>
-                            <p class="kui-sec">{episode.date.toLocaleString()}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+            <div class="view-content">
+                <ul class="kui-list">
+                    {episodes.map(episode => (
+                        <li key={episode.id} tabIndex={1}>
+                            <div class="kui-list-cont">
+                                <p class="kui-pri no-wrap">{episode.title}</p>
+                                <p class="kui-sec">{episode.date.toLocaleString()}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
             <div class="kui-software-key bottom">
                 <h5 class="kui-h5">Nav</h5>
                 <h5 class="kui-h5" />

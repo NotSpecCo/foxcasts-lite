@@ -39,6 +39,14 @@ p {
     font-family: 'Open Sans';
 }
 
+.view-container {
+    overflow: hidden;
+}
+
+.view-container > .view-content {
+    margin-bottom: 35px;
+}
+
 .content-area {
     overflow: hidden;
     position: relative;
