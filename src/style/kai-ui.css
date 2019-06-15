@@ -28,11 +28,6 @@ p {
     padding: 0;
 }
 
-.statusbar-placeholder {
-    background-color: #320374;
-    height: 26px;
-}
-
 #kui-app {
     width: 100%;
     height: 100%;
@@ -112,8 +107,8 @@ p {
 .kui-header {
     height: 2.8rem;
     line-height: 2.4rem;
-    background-color: #320374;
-    color: #fff;
+    background-color: var(--accent-dark-bg-color);
+    color: var(--accent-dark-text-color);
     text-align: center;
     overflow: hidden;
     padding: 0 1rem;
@@ -127,9 +122,9 @@ p {
 
 /* ============== Separator ============== */
 .kui-separator {
-    color: #6a6a6a;
+    color: var(--separator-text-color);
     height: 2.4rem;
-    background-color: #e6e6e6;
+    background-color: var(--separator-bg-color);
     line-height: 2.4rem;
     padding: 0 1rem;
 }
@@ -137,14 +132,11 @@ p {
 /* ============== Software key ============== */
 .kui-software-key {
     height: 30px;
-    background-color: #cccccc;
+    background-color: var(--software-key-bg-color);
     display: flex;
     align-items: center;
     padding: 0 5px;
-    color: #323232;
-    /* position: fixed;
-    bottom: 0; */
-    /* width: 100%; */
+    color: var(--software-key-text-color);
     width: 100vw;
 }
 
@@ -154,7 +146,6 @@ p {
 }
 
 .kui-software-key h5 {
-    /* width: 33.3333333333%; */
     flex: 1;
     text-align: center;
 }
@@ -175,9 +166,9 @@ p {
 .kui-toast {
     height: 36px;
     line-height: 36px;
-    color: #fff;
+    color: var(--toast-text-color);
     text-align: center;
-    background-color: #323232;
+    background-color: var(--toast-bg-color);
 }
 
 .kui-toast .kui-pri {
@@ -195,7 +186,6 @@ p {
 }
 
 .kui-list li {
-    background-color: #fff;
     height: 60px;
     display: flex;
     align-items: center;
@@ -207,7 +197,7 @@ p {
     min-width: 32px;
     height: 32px;
     border-radius: 5px;
-    background-color: #2f3235;
+    background-color: var(--separator-bg-color);
     margin-right: 10px;
 }
 
@@ -216,7 +206,6 @@ p {
 }
 
 .kui-list-cont .kui-pri {
-    color: #323232;
 }
 
 .kui-list-cont .kui-pri.no-wrap,
@@ -225,12 +214,12 @@ p {
 }
 
 .kui-list-cont .kui-sec {
-    color: #6a6a6a;
+    opacity: 0.75;
 }
 
 .kui-list li:focus,
 .kui-list li:hover {
-    background-color: #873eff;
+    background-color: var(--accent-light-bg-color);
     outline: 0;
 }
 
@@ -238,17 +227,15 @@ p {
 .kui-list li:focus .kui-sec,
 .kui-list li:hover .kui-pri,
 .kui-list li:hover .kui-sec {
-    color: #fff;
+    color: var(--accent-light-text-color);
 }
 
 /* ============== Options menu ============== */
 .kui-option-menu {
     width: 100%;
-    /* position: absolute; */
     position: fixed;
     overflow: hidden;
     bottom: 0;
-    /* display: none; */
     display: flex;
     flex-direction: column;
 }
@@ -259,9 +246,9 @@ p {
 
 .kui-option-menu .kui-option-title {
     margin: 0;
-    color: #323232;
+    color: var(--menu-title-text-color);
     text-align: center;
-    background-color: #d8d8d8;
+    background-color: var(--menu-title-bg-color);
     height: 28px;
     line-height: 28px;
 }
@@ -270,10 +257,10 @@ p {
     list-style: none;
     margin: 0;
     padding: 0;
-    /* overflow: hidden; */
     overflow: auto;
     max-height: calc(100vh - 84px);
-    background-color: #fff;
+    background-color: var(--menu-bg-color);
+    color: var(--menu-text-color);
 }
 
 .kui-option-menu.full-screen .kui-options {
@@ -285,15 +272,14 @@ p {
     height: 50px;
     line-height: 50px;
     padding-left: 10px;
-    background-color: #fff;
     font-size: 1.6rem;
 }
 
 .kui-options li:focus,
 .kui-options li:hover {
     outline: 0;
-    color: #fff;
-    background-color: #873eff;
+    color: var(--accent-light-text-color);
+    background-color: var(--accent-light-bg-color);
 }
 
 /* ============== Button ============== */
@@ -301,9 +287,9 @@ button.kui-btn {
     width: 220px;
     height: 36px;
     border-radius: 2px;
-    background: #ccc;
+    background: var(--button-bg-color);
     text-align: center;
-    color: #323232;
+    color: var(--button-text-color);
     border: 0;
     display: block;
     margin: auto;
@@ -311,15 +297,13 @@ button.kui-btn {
 
 button.kui-btn:focus {
     outline: 0;
-    color: #fff;
-    background-color: #873eff;
+    color: var(--accent-light-text-color);
+    background-color: var(--accent-light-bg-color);
 }
 
 /* ============== Input ============== */
 .kui-input-holder {
-    /* height: 76px; */
     padding: 10px;
-    background-color: #fff;
 }
 
 .kui-input-holder.with-label {
@@ -327,18 +311,18 @@ button.kui-btn:focus {
 }
 
 .kui-input-holder.kui-focus-within {
-    background-color: #873eff;
+    background-color: var(--accent-light-bg-color);
     outline: 0;
 }
 
 .kui-input-label {
-    color: #323232;
+    color: var(--main-text-color);
     display: block;
     padding-bottom: 10px;
 }
 
 .kui-input-holder.kui-focus-within .kui-input-label {
-    color: #fff;
+    color: var(--accent-light-text-color);
 }
 
 .kui-input {
@@ -348,12 +332,12 @@ button.kui-btn:focus {
     padding-left: 10px;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    border: 1px solid #aaaaaa;
+    border: 1px solid var(--input-border-color);
 }
 
 .kui-input ::-moz-placeholder,
 .kui-input :-moz-placeholder {
-    color: #323232;
+    color: var(--main-text-color);
 }
 
 .kui-input:focus {
@@ -364,7 +348,7 @@ button.kui-btn:focus {
 .kui-table,
 .kui-table th,
 .kui-table td {
-    border: 1px solid #320374;
+    border: 1px solid var(--accent-dark-bg-color);
     border-collapse: collapse;
 }
 
@@ -373,14 +357,14 @@ button.kui-btn:focus {
 }
 
 .kui-table thead {
-    background-color: #320374;
-    color: #fff;
+    background-color: var(--accent-dark-bg-color);
+    color: var(--accent-dark-text-color);
 }
 
 .kui-table tr:focus {
     outline: 0;
-    background-color: #873eff;
-    color: #fff;
+    background-color: var(--accent-light-bg-color);
+    color: var(--accent-light-text-color);
 }
 
 .kui-table td {
