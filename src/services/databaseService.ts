@@ -8,7 +8,7 @@ class DatabaseService {
         this.db = new Dexie('foxcasts');
         this.db.version(1).stores({
             podcasts: '++id, authorId, podcastId',
-            episodes: '++id, authorId, podcastId, date, progress'
+            episodes: '++id, authorId, podcastId, date, progress, guid'
         });
     }
 
@@ -64,7 +64,18 @@ class DatabaseService {
                 .table('episodes')
                 .where({ podcastId })
                 // .sortBy('date')
-                .toArray();
+                .toArray()
+                .then(eps =>
+                    eps.sort((a, b) => {
+                        if (a.date > b.date) {
+                            return -1;
+                        }
+                        if (b.date > a.date) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                );
             podcast.episodes = episodes;
         }
 
@@ -119,6 +130,21 @@ class DatabaseService {
         return result;
     }
 
+    public async addEpisode(episode: Episode): Promise<void> {
+        const existingEpisode = await this.getEpisodeByGuid(episode.guid);
+        if (existingEpisode) {
+            console.log(`Episode ${episode.guid} (${episode.title}) already exists in database.`);
+            return;
+        }
+        await this.db.table('episodes').add(episode);
+    }
+
+    public async addEpisodes(episodes: Episode[]): Promise<void> {
+        for (const episode of episodes) {
+            await this.addEpisode(episode);
+        }
+    }
+
     public async updateEpisode(episodeId: number, changes: any): Promise<Episode> {
         const updatedEpisode: Episode = (await this.db
             .table('episodes')
@@ -132,6 +158,12 @@ class DatabaseService {
         }
 
         const episode: Episode = await this.db.table('episodes').get({ id: episodeId });
+
+        return episode;
+    }
+
+    public async getEpisodeByGuid(guid: string): Promise<Episode> {
+        const episode: Episode = await this.db.table('episodes').get({ guid });
 
         return episode;
     }

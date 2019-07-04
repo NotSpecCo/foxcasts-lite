@@ -9,17 +9,9 @@ class PodcastService {
     public async subscribe(podcastId: number): Promise<void> {
         try {
             const podcast = await apiService.getPodcastById(podcastId);
-            const episodes = await apiService.getEpisodes(podcast.feedUrl).then(results =>
-                results.map(
-                    episode =>
-                        ({
-                            ...episode,
-                            authorId: podcast.authorId,
-                            author: episode.author || podcast.author,
-                            podcastId: podcast.id
-                        } as Episode)
-                )
-            );
+            const episodes = await apiService
+                .getEpisodes(podcast.feedUrl)
+                .then(results => this.formatEpisodes(podcast, results));
 
             await databaseService.addPodcast(podcast, episodes);
         } catch (err) {
@@ -60,6 +52,50 @@ class PodcastService {
             console.error(`Failed to get episode ${id}`, err);
             throw err;
         }
+    }
+
+    public async checkForNewEpisodes() {
+        console.group('Checking for new episodes.');
+        const podcastIds = (await this.getSubscriptions()).map(o => o.id);
+
+        for (const podcastId of podcastIds) {
+            const podcast = await this.getPodcastById(podcastId, true);
+            const latestEpisode = podcast.episodes![0];
+
+            if (!latestEpisode) {
+                return;
+            }
+
+            const newEpisodes = await apiService
+                .getEpisodes(podcast.feedUrl, { numResults: 50, afterDate: latestEpisode.date })
+                .then(results => this.formatEpisodes(podcast, results));
+
+            console.log(
+                `${podcast.title} - ${
+                    newEpisodes.length
+                } new episodes after ${latestEpisode.date.toISOString()}`
+            );
+
+            if (newEpisodes.length === 0) {
+                continue;
+            }
+
+            await databaseService.addEpisodes(newEpisodes);
+        }
+
+        console.groupEnd();
+    }
+
+    private formatEpisodes(podcast: Podcast, episodes: Episode[]) {
+        return episodes.map(
+            episode =>
+                ({
+                    ...episode,
+                    authorId: podcast.authorId,
+                    author: episode.author || podcast.author,
+                    podcastId: podcast.id
+                } as Episode)
+        );
     }
 }
 

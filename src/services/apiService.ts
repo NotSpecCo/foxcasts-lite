@@ -23,10 +23,10 @@ const getDurationInSeconds = (duration: string) => {
     return seconds;
 };
 
-const parseXmlEpisodes = (xmlString: string, numResults = 50): Episode[] => {
+const parseXmlEpisodes = (xmlString: string): Episode[] => {
     const xml = new DOMParser().parseFromString(xmlString, 'text/xml');
 
-    const recentEpisodes = Array.from(xml.getElementsByTagName('item')).slice(0, numResults);
+    const recentEpisodes = Array.from(xml.getElementsByTagName('item'));
 
     const episodes: Episode[] = [];
 
@@ -114,6 +114,11 @@ const kaiHttpClient = {
     }
 };
 
+interface GetEpisodesOptions {
+    numResults?: number;
+    afterDate?: Date;
+}
+
 class ApiService {
     private client: HttpClient;
 
@@ -131,10 +136,20 @@ class ApiService {
             });
     }
 
-    public async getEpisodes(feedUrl: string, { numResults = 30 } = {}): Promise<Episode[]> {
+    public async getEpisodes(
+        feedUrl: string,
+        { numResults = 30, afterDate }: GetEpisodesOptions = {}
+    ): Promise<Episode[]> {
         return this.client
             .get(feedUrl, 'text/xml')
-            .then((result: any) => parseXmlEpisodes(result, numResults))
+            .then((result: any) => parseXmlEpisodes(result))
+            .then(episodes => {
+                if (!afterDate) {
+                    return episodes;
+                }
+                return episodes.filter(episode => episode.date > afterDate!);
+            })
+            .then(episodes => episodes.slice(0, numResults))
             .catch(err => {
                 console.error('Failed to get episodes', err);
                 throw new Error('Failed to get episodes for podcast.');
