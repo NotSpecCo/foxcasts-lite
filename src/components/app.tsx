@@ -7,6 +7,7 @@ import PodcastDetail from '../routes/podcast';
 import PodcastPreview from '../routes/podcast-preview';
 import Search from '../routes/search';
 import Subscriptions from '../routes/subscriptions';
+import PodcastService from '../services/podcastService';
 import NavMenu, { NavMenuOption } from './nav-menu';
 
 if ((module as any).hot) {
@@ -15,6 +16,8 @@ if ((module as any).hot) {
 }
 
 const NotFound = () => <div>Not Found!</div>;
+
+const podcastService = new PodcastService();
 
 export default class App extends Component {
     public state = {
@@ -25,6 +28,8 @@ export default class App extends Component {
         if (window.location.href.includes('index.html')) {
             route('/');
         }
+
+        podcastService.checkForNewEpisodes();
     }
 
     public openNav = () => {
