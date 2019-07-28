@@ -1,10 +1,10 @@
 import { Episode } from 'foxcasts-core/models';
-import { PodcastService } from 'foxcasts-core/services';
+import { EpisodeService } from 'foxcasts-core/services';
 import { createContext, h } from 'preact';
 import { useState } from 'preact/hooks';
 import AudioPlayer from '../components/audio-player';
 
-const podcastService = new PodcastService();
+const episodeService = new EpisodeService();
 
 interface PlayerStateContextProps {
     episode: Episode | undefined;
@@ -44,7 +44,7 @@ export function PlayerProvider({ children }: any) {
             return;
         }
         setProgressInternal(newProgress);
-        podcastService.updateEpisode(episode.id, { progress: newProgress });
+        episodeService.updateEpisode(episode.id, { progress: newProgress });
     };
 
     const setDuration = (newDuration: number) => {
@@ -52,7 +52,7 @@ export function PlayerProvider({ children }: any) {
             return;
         }
         setDurationInternal(newDuration);
-        podcastService.updateEpisode(episode.id, { duration: newDuration });
+        episodeService.updateEpisode(episode.id, { duration: newDuration });
     };
 
     const reset = () => {

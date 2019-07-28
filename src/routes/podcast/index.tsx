@@ -26,7 +26,7 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps) {
     );
 
     useEffect(() => {
-        podcastService.getPodcastById(parseInt(podcastId, 10), true).then(result => {
+        podcastService.getById(parseInt(podcastId, 10), true).then(result => {
             if (!result.episodes) {
                 result.episodes = [];
             }

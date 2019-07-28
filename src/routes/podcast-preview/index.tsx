@@ -35,12 +35,11 @@ export default function PodcastPreview({ podcastId }: PodcastPreviewProps) {
             })
             .then(feedUrl => apiService.getEpisodes(feedUrl))
             .then(result => {
-                console.log('component episodes', result);
                 setEpisodes(result);
             })
             .then(() => setLoading(false));
 
-        podcastService.getPodcastById(podcastId).then(result => setSubscribed(!!result));
+        podcastService.getById(podcastId).then(result => setSubscribed(!!result));
     }, [podcastId]);
 
     const togggleSubscribe = async () => {

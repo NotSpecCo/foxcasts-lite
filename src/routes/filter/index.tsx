@@ -1,5 +1,5 @@
 import { EpisodeExtended } from 'foxcasts-core/models';
-import { DatabaseService } from 'foxcasts-core/services';
+import { EpisodeService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
@@ -7,10 +7,10 @@ import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import * as style from './style.css';
 
-const dbService = new DatabaseService();
+const episodeService = new EpisodeService();
 
 interface FilterProps {
-    filterId: string;
+    filterId: any;
 }
 
 function Filter({ filterId }: FilterProps) {
@@ -27,7 +27,7 @@ function Filter({ filterId }: FilterProps) {
     });
 
     useEffect(() => {
-        dbService.getPlaylist(filterId).then(result => {
+        episodeService.getByFilter(filterId).then(result => {
             setEpisodes(result);
         });
     }, [filterId]);

@@ -16,7 +16,7 @@ export default function Subscriptions() {
     const { openNav } = useContext(AppContext);
 
     useEffect(() => {
-        podcastService.getSubscriptions().then(result => {
+        podcastService.getAll().then(result => {
             setSubs(result);
         });
     }, []);

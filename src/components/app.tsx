@@ -30,7 +30,7 @@ export default class App extends Component {
             route('/');
         }
 
-        podcastService.checkForNewEpisodes();
+        podcastService.checkForUpdates();
     }
 
     public openNav = () => {

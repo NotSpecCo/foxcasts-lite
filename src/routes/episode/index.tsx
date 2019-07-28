@@ -1,5 +1,5 @@
 import { Episode } from 'foxcasts-core/models';
-import { PodcastService } from 'foxcasts-core/services';
+import { EpisodeService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import OptionMenu from '../../components/option-menu';
@@ -7,7 +7,7 @@ import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { usePlayerActions } from '../../hooks/usePlayer';
 
-const podcastService = new PodcastService();
+const episodeService = new EpisodeService();
 
 interface EpisodeDetailProps {
     episodeId: string;
@@ -21,7 +21,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
     const player = usePlayerActions();
 
     useEffect(() => {
-        podcastService.getEpisodeById(parseInt(episodeId, 10)).then(result => {
+        episodeService.getById(parseInt(episodeId, 10)).then(result => {
             setEpisode(result);
         });
     }, [episodeId]);
