@@ -21,8 +21,8 @@ export default function NavMenu(props: NavMenuProps) {
         { id: 'settings', label: 'Settings', route: '/settings', shortcutKey: '3' }
     ];
     const filterOptions: NavMenuOption[] = [
-        { id: 'mostRecent', label: 'Most Recent', route: '/filter', shortcutKey: '4' },
-        { id: 'inProgress', label: 'In Progress', route: '/search', shortcutKey: '5' }
+        { id: 'mostRecent', label: 'Most Recent', route: '/filter/recent', shortcutKey: '4' },
+        { id: 'inProgress', label: 'In Progress', route: '/filter/inProgress', shortcutKey: '5' }
     ];
 
     useNavKeys(

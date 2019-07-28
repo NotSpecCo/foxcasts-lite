@@ -3,6 +3,7 @@ import { Route, route, Router } from 'preact-router';
 import AppContext from '../contexts/appContext';
 import { PlayerProvider } from '../contexts/playerContext';
 import EpisodeDetail from '../routes/episode';
+import Filter from '../routes/filter';
 import PodcastDetail from '../routes/podcast';
 import PodcastPreview from '../routes/podcast-preview';
 import Search from '../routes/search';
@@ -56,6 +57,7 @@ export default class App extends Component {
                             <Route path="/podcast/:podcastId" component={PodcastDetail} />
                             <Route path="/podcast/:podcastId/preview" component={PodcastPreview} />
                             <Route path="/episode/:episodeId" component={EpisodeDetail} />
+                            <Route path="/filter/:filterId" component={Filter} />
                             <Route default={true} component={NotFound} />
                         </Router>
                         {this.state.navOpen && (
