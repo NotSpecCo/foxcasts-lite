@@ -26,7 +26,12 @@ export default function Search({ q: queryParam }: SearchProps) {
         Enter: () => navigateSearch()
     });
 
-    useShortcutKeys(results, {}, result => handlePodcastClick(result.collectionId)());
+    useShortcutKeys(results, {}, result => {
+        if (searchBox === document.activeElement) {
+            return;
+        }
+        handlePodcastClick(result.collectionId)();
+    });
 
     useEffect(() => {
         if (queryParam) {
