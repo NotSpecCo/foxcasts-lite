@@ -93,7 +93,10 @@ class DatabaseService {
     public async getPlaylist(playlist: string): Promise<EpisodeExtended[]> {
         const podcastCovers = await this.getPodcasts().then(podcasts => {
             return podcasts.reduce((coverMap: any, podcast) => {
-                coverMap[podcast.id] = podcast.cover;
+                coverMap[podcast.id] = {
+                    title: podcast.title,
+                    cover: podcast.cover
+                };
                 return coverMap;
             }, {});
         });
@@ -106,7 +109,7 @@ class DatabaseService {
                     .table('episodes')
                     .orderBy('date')
                     .reverse()
-                    .limit(20)
+                    .limit(30)
                     .toArray();
                 break;
             case 'inProgress':
@@ -124,7 +127,8 @@ class DatabaseService {
 
         const result = episodes.map(episode => ({
             ...episode,
-            cover: podcastCovers[episode.podcastId]
+            cover: podcastCovers[episode.podcastId].cover,
+            podcastTitle: podcastCovers[episode.podcastId].title
         }));
 
         return result;
