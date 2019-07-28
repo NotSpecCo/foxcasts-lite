@@ -1,8 +1,8 @@
+import { Episode } from 'foxcasts-core/models';
+import { PodcastService } from 'foxcasts-core/services';
 import { createContext, h } from 'preact';
 import { useState } from 'preact/hooks';
 import AudioPlayer from '../components/audio-player';
-import { Episode } from '../models';
-import PodcastService from '../services/podcastService';
 
 const podcastService = new PodcastService();
 

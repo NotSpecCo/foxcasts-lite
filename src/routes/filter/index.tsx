@@ -1,10 +1,10 @@
+import { EpisodeExtended } from 'foxcasts-core/models';
+import { DatabaseService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
-import { EpisodeExtended } from '../../models';
-import DatabaseService from '../../services/databaseService';
 import * as style from './style.css';
 
 const dbService = new DatabaseService();

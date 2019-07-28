@@ -1,11 +1,11 @@
+import { Podcast } from 'foxcasts-core/models';
+import { PodcastService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { useShortcutKeys } from '../../hooks/useShortcutKeys';
-import { Podcast } from '../../models';
-import PodcastService from '../../services/podcastService';
 
 const podcastService = new PodcastService();
 

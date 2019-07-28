@@ -1,11 +1,11 @@
+import { ITunesSearchResult } from 'foxcasts-core/models';
+import { ApiService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { useShortcutKeys } from '../../hooks/useShortcutKeys';
-import { ITunesSearchResult } from '../../models';
-import ApiService from '../../services/apiService';
 
 const apiService = new ApiService();
 

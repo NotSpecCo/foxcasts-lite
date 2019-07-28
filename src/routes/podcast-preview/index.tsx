@@ -1,10 +1,9 @@
+import { Episode, Podcast } from 'foxcasts-core/models';
+import { ApiService, PodcastService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
-import { Episode, Podcast } from '../../models';
-import ApiService from '../../services/apiService';
-import PodcastService from '../../services/podcastService';
 
 const apiService = new ApiService();
 const podcastService = new PodcastService();

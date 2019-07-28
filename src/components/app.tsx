@@ -1,3 +1,4 @@
+import { PodcastService } from 'foxcasts-core/services';
 import { Component, h } from 'preact';
 import { Route, route, Router } from 'preact-router';
 import AppContext from '../contexts/appContext';
@@ -8,7 +9,6 @@ import PodcastDetail from '../routes/podcast';
 import PodcastPreview from '../routes/podcast-preview';
 import Search from '../routes/search';
 import Subscriptions from '../routes/subscriptions';
-import PodcastService from '../services/podcastService';
 import NavMenu, { NavMenuOption } from './nav-menu';
 
 if ((module as any).hot) {

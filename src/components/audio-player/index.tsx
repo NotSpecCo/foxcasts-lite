@@ -1,8 +1,8 @@
+import { Episode } from 'foxcasts-core/models';
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import ReactAudioPlayer from 'react-audio-player';
 import { usePlayerActions, usePlayerState } from '../../hooks/usePlayer';
-import { Episode } from '../../models';
 
 interface AudioPlayerProps {}
 
