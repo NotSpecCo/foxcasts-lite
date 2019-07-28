@@ -56,7 +56,6 @@
     "webpack-bundle-analyzer": "^3.3.2"
   },
   "dependencies": {
-    "dexie": "^2.0.4",
     "dotenv": "^8.0.0",
     "foxcasts-core": "^0.1.0",
     "history": "^4.9.0",
