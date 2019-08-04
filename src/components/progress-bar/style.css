@@ -1,0 +1,17 @@
+.root {
+    position: relative;
+    background-color: var(--software-key-bg-color);
+    height: 6px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--accent-light-bg-color);
+}
