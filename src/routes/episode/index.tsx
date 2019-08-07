@@ -6,6 +6,7 @@ import OptionMenu from '../../components/option-menu';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { usePlayerActions } from '../../hooks/usePlayer';
+import formatTime from '../../utils/formatTime';
 
 const episodeService = new EpisodeService();
 
@@ -32,16 +33,27 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
         Enter: () => console.log('episode enter pressed')
     });
 
-    const options = [
-        { id: 'stream', label: 'Stream' },
-        { id: 'markPlayed', label: 'Mark as Played' },
-        { id: 'markUnplayed', label: 'Mark as Unplayed' }
-    ];
+    const getMenuOptions = () => {
+        const options = [
+            { id: 'stream', label: 'Stream' }
+            // { id: 'markPlayed', label: 'Mark as Played' },
+            // { id: 'markUnplayed', label: 'Mark as Unplayed' }
+        ];
+
+        if (episode && episode.progress > 0) {
+            options.push({ id: 'resume', label: `Resume at ${formatTime(episode.progress)}` });
+        }
+
+        return options;
+    };
 
     const handleOptionSelect = (id: string) => {
         switch (id) {
             case 'stream':
                 player.setEpisode(episode!, false);
+                break;
+            case 'resume':
+                player.setEpisode(episode!, true, true);
                 break;
         }
 
@@ -77,7 +89,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
             {menuOpen && (
                 <OptionMenu
                     title="Episode Actions"
-                    options={options}
+                    options={getMenuOptions()}
                     onSelect={handleOptionSelect}
                     onCancel={handleOptionCancel}
                 />
