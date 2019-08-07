@@ -5,6 +5,7 @@ import AppContext from '../contexts/appContext';
 import { PlayerProvider } from '../contexts/playerContext';
 import EpisodeDetail from '../routes/episode';
 import Filter from '../routes/filter';
+import Player from '../routes/player';
 import PodcastDetail from '../routes/podcast';
 import PodcastPreview from '../routes/podcast-preview';
 import Search from '../routes/search';
@@ -52,18 +53,21 @@ export default class App extends Component {
                 <AppContext.Provider value={{ openNav: this.openNav }}>
                     <PlayerProvider>
                         <Router>
-                            <Route path="/" component={Subscriptions} />
-                            <Route path="/search" component={Search} />
-                            <Route path="/podcast/:podcastId" component={PodcastDetail} />
-                            <Route path="/podcast/:podcastId/preview" component={PodcastPreview} />
-                            <Route path="/episode/:episodeId" component={EpisodeDetail} />
-                            <Route path="/filter/:filterId" component={Filter} />
-                            <Route default={true} component={NotFound} />
+                            <Route path="/" component={Subscriptions as any} />
+                            <Route path="/search" component={Search as any} />
+                            <Route path="/podcast/:podcastId" component={PodcastDetail as any} />
+                            <Route
+                                path="/podcast/:podcastId/preview"
+                                component={PodcastPreview as any}
+                            />
+                            <Route path="/episode/:episodeId" component={EpisodeDetail as any} />
+                            <Route path="/filter/:filterId" component={Filter as any} />
+                            <Route path="/player" component={Player as any} />
+                            <Route default={true} component={NotFound as any} />
                         </Router>
                         {this.state.navOpen && (
                             <NavMenu onSelect={this.handleNav} onClose={this.closeNav} />
                         )}
-                        {/* <AudioPlayer /> */}
                     </PlayerProvider>
                 </AppContext.Provider>
             </div>

@@ -1,4 +1,4 @@
-import { Episode } from 'foxcasts-core/models';
+import { EpisodeExtended } from 'foxcasts-core/models';
 import { EpisodeService } from 'foxcasts-core/services';
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
@@ -14,7 +14,7 @@ interface EpisodeDetailProps {
 }
 
 export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
-    const [episode, setEpisode] = useState<Episode | null>(null);
+    const [episode, setEpisode] = useState<EpisodeExtended | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
 
     const { openNav } = useContext(AppContext);

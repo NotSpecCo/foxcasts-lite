@@ -41,6 +41,9 @@ p {
 .view-container > .view-content {
     margin-bottom: 35px;
 }
+.view-container > .view-content.padded {
+    padding: 10px;
+}
 
 .content-area {
     overflow: hidden;

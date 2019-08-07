@@ -1,0 +1,28 @@
+.content {
+    text-align: center;
+}
+
+.cover {
+    height: 100px;
+    width: 100px;
+}
+
+.times {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.buttons > img {
+    width: 20%;
+}
+
+.message {
+    margin-top: 50%;
+    text-align: center;
+}

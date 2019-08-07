@@ -1,20 +1,19 @@
-import { Episode } from 'foxcasts-core/models';
+import { EpisodeExtended } from 'foxcasts-core/models';
 import { EpisodeService } from 'foxcasts-core/services';
 import { createContext, h } from 'preact';
-import { useState } from 'preact/hooks';
-import AudioPlayer from '../components/audio-player';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 const episodeService = new EpisodeService();
 
 interface PlayerStateContextProps {
-    episode: Episode | undefined;
+    episode: EpisodeExtended | undefined;
     playing: boolean;
     progress: number;
     duration: number;
 }
 
 interface PlayerActionsContextProps {
-    setEpisode: (episode: Episode, resume?: boolean, play?: boolean) => void;
+    setEpisode: (episode: EpisodeExtended | null, resume?: boolean, play?: boolean) => void;
     setPlaying: (playing: boolean) => void;
     setProgress: (progress: number) => void;
     setDuration: (duration: number) => void;
@@ -24,27 +23,66 @@ export const PlayerStateContext = createContext<PlayerStateContextProps>({} as a
 export const PlayerActionsContext = createContext<PlayerActionsContextProps>({} as any);
 
 export function PlayerProvider({ children }: any) {
-    const [episode, setEpisodeInternal] = useState<Episode | undefined>(undefined);
+    const [episode, setEpisodeInternal] = useState<EpisodeExtended | undefined>(undefined);
     const [playing, setPlayingInternal] = useState(false);
     const [progress, setProgressInternal] = useState(0);
     const [duration, setDurationInternal] = useState(0);
 
-    const setEpisode = (newEpisode: Episode, resume = false, play = true) => {
+    const { current: audioEl } = useRef(new Audio());
+
+    useEffect(() => {
+        (audioEl as any).mozAudioChannelType = 'content';
+        audioEl.onerror = (ev: any) => {
+            console.error('audio error', ev);
+        };
+        audioEl.onloadeddata = (ev: any) => {
+            setDuration(Math.ceil(ev.currentTarget.duration));
+        };
+        audioEl.onended = (ev: any) => {
+            setEpisode(null);
+        };
+        audioEl.ontimeupdate = (ev: any) => {
+            const newProgress = parseInt(ev.currentTarget.currentTime, 10);
+            if (newProgress !== progress) {
+                setProgressInternal(newProgress);
+            }
+        };
+
+        if (episode) {
+            episodeService.updateEpisode(episode!.id, { progress });
+        }
+    }, [progress, episode]);
+
+    const setEpisode = (newEpisode: EpisodeExtended | null, resume = false, play = true) => {
+        if (!newEpisode) {
+            audioEl.src = '';
+            audioEl.currentTime = 0;
+            setEpisodeInternal(undefined);
+            return;
+        }
+
+        audioEl.src = newEpisode.fileUrl;
+        audioEl.currentTime = resume ? newEpisode.progress : 0;
+
+        if (play) {
+            audioEl.play();
+        }
+
         setEpisodeInternal(newEpisode);
         setProgressInternal(resume ? newEpisode.progress : 0);
         setPlayingInternal(play);
     };
 
     const setPlaying = (newPlaying: boolean) => {
+        newPlaying ? audioEl.play() : audioEl.pause();
         setPlayingInternal(newPlaying);
     };
 
     const setProgress = (newProgress: number) => {
-        if (!episode) {
-            return;
+        const timeDiff = Math.abs(progress - newProgress);
+        if (timeDiff > 2) {
+            audioEl.currentTime = newProgress;
         }
-        setProgressInternal(newProgress);
-        episodeService.updateEpisode(episode.id, { progress: newProgress });
     };
 
     const setDuration = (newDuration: number) => {
@@ -81,7 +119,6 @@ export function PlayerProvider({ children }: any) {
                 }}
             >
                 {children}
-                <AudioPlayer />
             </PlayerActionsContext.Provider>
         </PlayerStateContext.Provider>
     );

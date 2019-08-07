@@ -18,7 +18,8 @@ export default function NavMenu(props: NavMenuProps) {
     const navOptions: NavMenuOption[] = [
         { id: 'subscriptions', label: 'Subscriptions', route: '/', shortcutKey: '1' },
         { id: 'search', label: 'Search', route: '/search', shortcutKey: '2' },
-        { id: 'settings', label: 'Settings', route: '/settings', shortcutKey: '3' }
+        { id: 'player', label: 'Player', route: '/player', shortcutKey: '3' }
+        // { id: 'settings', label: 'Settings', route: '/settings', shortcutKey: '3' }
     ];
     const filterOptions: NavMenuOption[] = [
         { id: 'mostRecent', label: 'Most Recent', route: '/filter/recent', shortcutKey: '4' },
