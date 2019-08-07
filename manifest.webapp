@@ -1,8 +1,7 @@
 {
-    "name": "FoxCasts",
-
-    "description": "A fully-featured podcast app for your FirefoxOS device.",
-    "version": "0.0.1",
+    "name": "FoxCasts Lite",
+    "description": "A fully-featured podcast app for your KaiOS device",
+    "version": "0.1.0",
     "launch_path": "/index.html",
     "icons": {
         "256": "/assets/icons/icon-256.png",
@@ -14,9 +13,8 @@
     },
     "developer": {
         "name": "Garrett Downs",
-        "url": "http://www.foxcasts.com"
+        "url": "https://garrettdowns.com"
     },
-    "installs_allowed_from": ["https://marketplace.firefox.com"],
     "type": "privileged",
     "permissions": {
         "audio-channel-content": {
