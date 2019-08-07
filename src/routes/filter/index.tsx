@@ -5,6 +5,7 @@ import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
+import { useShortcutKeys } from '../../hooks/useShortcutKeys';
 import * as style from './style.css';
 
 const episodeService = new EpisodeService();
@@ -15,6 +16,7 @@ interface FilterProps {
 
 function Filter({ filterId }: FilterProps) {
     const [episodes, setEpisodes] = useState<EpisodeExtended[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const { openNav } = useContext(AppContext);
 
     const filterName: any = {
@@ -26,8 +28,13 @@ function Filter({ filterId }: FilterProps) {
         SoftLeft: () => openNav()
     });
 
+    useShortcutKeys(episodes || [], {}, episode => {
+        handleEpisodeClick(episode);
+    });
+
     useEffect(() => {
         episodeService.getByFilter(filterId).then(result => {
+            setLoading(false);
             setEpisodes(result);
         });
     }, [filterId]);
@@ -42,7 +49,8 @@ function Filter({ filterId }: FilterProps) {
                 <h1 className="kui-h1">{filterName[filterId]}</h1>
             </div>
             <div className="view-content">
-                {episodes.length === 0 && (
+                {loading && <div className={`kui-sec ${style.message}`}>Loading...</div>}
+                {!loading && episodes.length === 0 && (
                     <div className={`kui-sec ${style.message}`}>No episodes.</div>
                 )}
                 <ul className="kui-list">
