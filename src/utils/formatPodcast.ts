@@ -1,4 +1,4 @@
-import { ITunesPodcast, Podcast } from '../models';
+import { ITunesPodcast, Podcast } from 'foxcasts-core/models';
 
 const formatPodcast = (rawPodcast: ITunesPodcast): Podcast => {
     return {

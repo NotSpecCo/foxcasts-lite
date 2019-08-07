@@ -9,7 +9,7 @@
     "start:development": "npm run -s dev",
     "build": "preact build",
     "build:analyze": "preact build --json &&mv stats.json build/",
-    "build:kaios": "preact build && cp ./manifest.webapp ./build",
+    "build:kaios": "preact build --no-prerender && cp ./manifest.webapp ./build",
     "serve": "preact build && preact serve",
     "dev": "preact watch",
     "lint": "tslint --project .",
