@@ -8,8 +8,8 @@
     "start:production": "npm run -s serve",
     "start:development": "npm run -s dev",
     "build": "preact build",
-    "build:analyze": "preact build --json &&mv stats.json build/",
-    "build:kaios": "preact build --no-prerender && cp ./manifest.webapp ./build",
+    "build:analyze": "preact build --json",
+    "build:kaios": "preact build && cp ./manifest.webapp ./build",
     "serve": "preact build && preact serve",
     "dev": "preact watch",
     "lint": "tslint --project .",
@@ -62,8 +62,7 @@
     "preact": "^10.0.0-rc.0",
     "preact-async-route": "^2.2.1",
     "preact-compat": "^3.18.4",
-    "preact-router": "^3.0.0",
-    "react-audio-player": "^0.11.1"
+    "preact-router": "^3.0.0"
   },
   "peerDependencies": {
     "prettier": ">1.0.0",
