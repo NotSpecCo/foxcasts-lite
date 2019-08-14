@@ -36,6 +36,7 @@
     "@types/jest": "^23.3.10",
     "@types/webpack-env": "^1.13.9",
     "css-loader": "^1.0.1",
+    "cz-conventional-changelog": "^3.0.2",
     "husky": "^1.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.6.0",
@@ -99,6 +100,11 @@
       "^react-dom$": "preact-compat",
       "^create-react-class$": "preact-compat/lib/create-react-class",
       "^react-addons-css-transition-group$": "preact-css-transition-group"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
