@@ -1,6 +1,7 @@
 import { PodcastService } from 'foxcasts-core/services';
-import { Component, h } from 'preact';
+import { h } from 'preact';
 import { Route, route, Router } from 'preact-router';
+import { useEffect, useState } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
 import { PlayerProvider } from '../contexts/playerContext';
 import EpisodeDetail from '../routes/episode';
@@ -21,56 +22,50 @@ const NotFound = () => <div>Not Found!</div>;
 
 const podcastService = new PodcastService();
 
-export default class App extends Component {
-    public state = {
-        navOpen: false
-    };
+export default function App() {
+    const [navOpen, setNavOpen] = useState(false);
 
-    public componentDidMount() {
+    useEffect(() => {
         if (window.location.href.includes('index.html')) {
             route('/');
         }
 
         podcastService.checkForUpdates();
-    }
+    }, []);
 
-    public openNav = () => {
-        this.setState({ navOpen: true });
+    const openNav = () => {
+        setNavOpen(true);
     };
 
-    public closeNav = () => {
-        this.setState({ navOpen: false });
+    const closeNav = () => {
+        setNavOpen(false);
     };
 
-    public handleNav = (option: NavMenuOption) => {
+    const handleNav = (option: NavMenuOption) => {
         route(option.route);
-        this.setState({ navOpen: false });
+        setNavOpen(false);
     };
 
-    public render() {
-        return (
-            <div id="app">
-                <AppContext.Provider value={{ openNav: this.openNav }}>
-                    <PlayerProvider>
-                        <Router>
-                            <Route path="/" component={Subscriptions as any} />
-                            <Route path="/search" component={Search as any} />
-                            <Route path="/podcast/:podcastId" component={PodcastDetail as any} />
-                            <Route
-                                path="/podcast/:podcastId/preview"
-                                component={PodcastPreview as any}
-                            />
-                            <Route path="/episode/:episodeId" component={EpisodeDetail as any} />
-                            <Route path="/filter/:filterId" component={Filter as any} />
-                            <Route path="/player" component={Player as any} />
-                            <Route default={true} component={NotFound as any} />
-                        </Router>
-                        {this.state.navOpen && (
-                            <NavMenu onSelect={this.handleNav} onClose={this.closeNav} />
-                        )}
-                    </PlayerProvider>
-                </AppContext.Provider>
-            </div>
-        );
-    }
+    return (
+        <div id="app">
+            <AppContext.Provider value={{ openNav }}>
+                <PlayerProvider>
+                    <Router>
+                        <Route path="/" component={Subscriptions as any} />
+                        <Route path="/search" component={Search as any} />
+                        <Route path="/podcast/:podcastId" component={PodcastDetail as any} />
+                        <Route
+                            path="/podcast/:podcastId/preview"
+                            component={PodcastPreview as any}
+                        />
+                        <Route path="/episode/:episodeId" component={EpisodeDetail as any} />
+                        <Route path="/filter/:filterId" component={Filter as any} />
+                        <Route path="/player" component={Player as any} />
+                        <Route default={true} component={NotFound as any} />
+                    </Router>
+                    {navOpen && <NavMenu onSelect={handleNav} onClose={closeNav} />}
+                </PlayerProvider>
+            </AppContext.Provider>
+        </div>
+    );
 }
