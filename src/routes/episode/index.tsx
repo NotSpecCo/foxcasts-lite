@@ -76,7 +76,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
             <div class="kui-header">
                 <h1 class="kui-h1">Episode Detail</h1>
             </div>
-            <div class="view-content">
+            <div class="view-content padded">
                 <h2 className="kui-h2">{episode.title}</h2>
 
                 <p className="kui-text">{episode.subTitle}</p>
