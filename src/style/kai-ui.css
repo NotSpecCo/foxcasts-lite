@@ -1,3 +1,8 @@
+/*
+ * Super useful KaiOS CSS from nadim1992
+ * https://github.com/nadim1992/KaiUI
+ */
+
 /**
  * ===========================
  * **************** Agenda ***
@@ -221,7 +226,8 @@ p {
 }
 
 .kui-list li:focus,
-.kui-list li:hover {
+.kui-list li:hover,
+.kui-list li[nav-selected='true'] {
     background-color: var(--accent-light-bg-color);
     outline: 0;
 }

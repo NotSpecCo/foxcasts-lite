@@ -47,7 +47,6 @@ export default function NavMenu(props: NavMenuProps) {
 
     return (
         <div class="kui-option-menu full-screen" style={{ 'z-index': 100 }}>
-            {/* <h2 class="kui-pri kui-option-title">Foxcasts</h2> */}
             <ul class="kui-options">
                 {navOptions.map(option => (
                     <li key={option.id} onClick={handleSelect(option)} tabIndex={1}>

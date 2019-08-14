@@ -29,8 +29,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
 
     useNavKeys({
         SoftLeft: () => openNav(),
-        SoftRight: () => toggleMenu(true),
-        Enter: () => console.log('episode enter pressed')
+        SoftRight: () => toggleMenu(true)
     });
 
     const getMenuOptions = () => {

@@ -33,10 +33,10 @@ export function useShortcutKeys<T>(
     };
 
     useEffect(() => {
-        window.document.addEventListener('keydown', handleKeyPress, options.capture);
+        document.addEventListener('keydown', handleKeyPress, options.capture);
 
         return () => {
-            window.document.removeEventListener('keydown', handleKeyPress, options.capture);
+            document.removeEventListener('keydown', handleKeyPress, options.capture);
         };
     });
 }

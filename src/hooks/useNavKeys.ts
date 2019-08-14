@@ -30,6 +30,7 @@ export const useNavKeys = (actions: { [key in NavKey]?: () => void }, options: O
     ];
 
     const parseKey = (ev: KeyboardEvent) => {
+        // Simulate soft keys for testing purposes
         if (ev.shiftKey && ev.key === 'ArrowLeft') {
             return 'SoftLeft';
         }
@@ -60,10 +61,10 @@ export const useNavKeys = (actions: { [key in NavKey]?: () => void }, options: O
     };
 
     useEffect(() => {
-        window.document.addEventListener('keydown', handleKeyPress, options.capture);
+        document.addEventListener('keydown', handleKeyPress, options.capture);
 
         return () => {
-            window.document.removeEventListener('keydown', handleKeyPress, options.capture);
+            document.removeEventListener('keydown', handleKeyPress, options.capture);
         };
     });
 };

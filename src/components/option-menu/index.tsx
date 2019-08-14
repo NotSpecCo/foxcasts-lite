@@ -1,5 +1,4 @@
-import { Component, h } from 'preact';
-import { useEffect } from 'preact/hooks';
+import { h } from 'preact';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { useShortcutKeys } from '../../hooks/useShortcutKeys';
 import { Option } from '../../models';
@@ -27,7 +26,7 @@ export default function OptionMenu(props: OptionMenuProps) {
         props.onSelect(option.id)
     );
 
-    const handleSelect = (id: string) => (ev: any) => {
+    const handleSelect = (id: string) => () => {
         props.onSelect(id);
     };
 

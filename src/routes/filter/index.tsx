@@ -61,8 +61,8 @@ function Filter({ filterId }: FilterProps) {
                             onClick={() => handleEpisodeClick(episode)}
                         >
                             <div class="kui-list-cont">
-                                <p className={`kui-pri ${style.episodeTitle}`}>{episode.title}</p>
-                                <p class="kui-sec">{episode.podcastTitle}</p>
+                                <p className="kui-pri no-wrap">{episode.title}</p>
+                                <p className="kui-sec no-wrap">{episode.podcastTitle}</p>
                             </div>
                         </li>
                     ))}
