@@ -6,7 +6,9 @@ import OptionMenu from '../../components/option-menu';
 import AppContext from '../../contexts/appContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { usePlayerActions } from '../../hooks/usePlayer';
+import formatFileSize from '../../utils/formatFileSize';
 import formatTime from '../../utils/formatTime';
+import * as style from './style.css';
 
 const episodeService = new EpisodeService();
 
@@ -77,7 +79,20 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
             </div>
             <div class="view-content padded">
                 <h2 className="kui-h2">{episode.title}</h2>
-
+                <div className={`${style.details} kui-sec`}>
+                    <div className="row">
+                        <img src="/assets/icons/calendar.png" />
+                        {episode.date.toLocaleDateString()}
+                    </div>
+                    <div className="row">
+                        <img src="/assets/icons/timer.png" />
+                        {episode.duration ? formatTime(episode.duration) : 'Unknown'}
+                    </div>
+                    <div className="row">
+                        <img src="/assets/icons/sd-card.png" />
+                        {episode.fileSize ? formatFileSize(episode.fileSize) : 'Unknown'}
+                    </div>
+                </div>
                 <p className="kui-text">{episode.subTitle}</p>
             </div>
             <div class="kui-software-key bottom">
