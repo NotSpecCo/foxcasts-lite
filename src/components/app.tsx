@@ -3,6 +3,7 @@ import { h } from 'preact';
 import { Route, route, Router } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
+import { FileProvider } from '../contexts/fileContext';
 import { PlayerProvider } from '../contexts/playerContext';
 import EpisodeDetail from '../routes/episode';
 import Filter from '../routes/filter';
@@ -50,20 +51,22 @@ export default function App() {
         <div id="app">
             <AppContext.Provider value={{ openNav }}>
                 <PlayerProvider>
-                    <Router>
-                        <Route path="/" component={Subscriptions as any} />
-                        <Route path="/search" component={Search as any} />
-                        <Route path="/podcast/:podcastId" component={PodcastDetail as any} />
-                        <Route
-                            path="/podcast/:podcastId/preview"
-                            component={PodcastPreview as any}
-                        />
-                        <Route path="/episode/:episodeId" component={EpisodeDetail as any} />
-                        <Route path="/filter/:filterId" component={Filter as any} />
-                        <Route path="/player" component={Player as any} />
-                        <Route default={true} component={NotFound as any} />
-                    </Router>
-                    {navOpen && <NavMenu onSelect={handleNav} onClose={closeNav} />}
+                    <FileProvider>
+                        <Router>
+                            <Route path="/" component={Subscriptions as any} />
+                            <Route path="/search" component={Search as any} />
+                            <Route path="/podcast/:podcastId" component={PodcastDetail as any} />
+                            <Route
+                                path="/podcast/:podcastId/preview"
+                                component={PodcastPreview as any}
+                            />
+                            <Route path="/episode/:episodeId" component={EpisodeDetail as any} />
+                            <Route path="/filter/:filterId" component={Filter as any} />
+                            <Route path="/player" component={Player as any} />
+                            <Route default={true} component={NotFound as any} />
+                        </Router>
+                        {navOpen && <NavMenu onSelect={handleNav} onClose={closeNav} />}
+                    </FileProvider>
                 </PlayerProvider>
             </AppContext.Provider>
         </div>

@@ -25,6 +25,7 @@ export const PlayerActionsContext = createContext<PlayerActionsContextProps>({} 
 export function PlayerProvider({ children }: any) {
     const [episode, setEpisodeInternal] = useState<EpisodeExtended | undefined>(undefined);
     const [playing, setPlayingInternal] = useState(false);
+    const [notification, setNotification] = useState<Notification | undefined>(undefined);
     const [progress, setProgressInternal] = useState(0);
     const [duration, setDurationInternal] = useState(0);
 
@@ -35,7 +36,7 @@ export function PlayerProvider({ children }: any) {
         audioEl.onerror = (ev: any) => {
             console.error('audio error', ev);
         };
-        audioEl.onloadeddata = (ev: any) => {
+        audioEl.onloadedmetadata = (ev: any) => {
             setDuration(Math.ceil(ev.currentTarget.duration));
         };
         audioEl.onended = (ev: any) => {
@@ -58,6 +59,10 @@ export function PlayerProvider({ children }: any) {
             audioEl.src = '';
             audioEl.currentTime = 0;
             setEpisodeInternal(undefined);
+            if (notification) {
+                notification.close();
+                setNotification(undefined);
+            }
             return;
         }
 
@@ -71,6 +76,7 @@ export function PlayerProvider({ children }: any) {
         setEpisodeInternal(newEpisode);
         setProgressInternal(resume ? newEpisode.progress : 0);
         setPlayingInternal(play);
+        // updateNotification(newEpisode.podcastTitle, newEpisode.title, newEpisode.cover[100]);
     };
 
     const setPlaying = (newPlaying: boolean) => {
@@ -98,6 +104,22 @@ export function PlayerProvider({ children }: any) {
         setPlayingInternal(false);
         setProgressInternal(0);
         setDurationInternal(0);
+    };
+
+    const updateNotification = (podcastTitle: string, episodeTitle: string, icon: string) => {
+        const options = {
+            body: podcastTitle,
+            icon,
+            tag: 'playback',
+            silent: true
+        };
+        const notif = new Notification(episodeTitle, options);
+        notif.onclick = () => togglePlaying();
+        setNotification(notif);
+    };
+
+    const togglePlaying = () => {
+        setPlaying(audioEl.paused);
     };
 
     return (

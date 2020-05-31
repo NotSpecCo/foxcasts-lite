@@ -4,6 +4,7 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import OptionMenu from '../../components/option-menu';
 import AppContext from '../../contexts/appContext';
+import { FileContext } from '../../contexts/fileContext';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { usePlayerActions } from '../../hooks/usePlayer';
 import formatFileSize from '../../utils/formatFileSize';
@@ -19,15 +20,27 @@ interface EpisodeDetailProps {
 export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
     const [episode, setEpisode] = useState<EpisodeExtended | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const { download, progress, queue } = useContext(FileContext);
 
     const { openNav } = useContext(AppContext);
     const player = usePlayerActions();
 
+    const isDownloading = !!(episode && queue[0] && episode.id === queue[0].id);
+    const isInDownloadQueue = !!(
+        episode &&
+        queue[0] &&
+        episode.id !== queue[0].id &&
+        queue.some(o => o.id === episode.id)
+    );
+
     useEffect(() => {
         episodeService.getById(parseInt(episodeId, 10)).then(result => {
             setEpisode(result);
+            console.log('episode', result);
         });
     }, [episodeId]);
+
+    // useEffect;
 
     useNavKeys({
         SoftLeft: () => openNav(),
@@ -36,7 +49,8 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
 
     const getMenuOptions = () => {
         const options = [
-            { id: 'stream', label: 'Stream' }
+            { id: 'stream', label: 'Stream' },
+            { id: 'download', label: 'Download' }
             // { id: 'markPlayed', label: 'Mark as Played' },
             // { id: 'markUnplayed', label: 'Mark as Unplayed' }
         ];
@@ -55,6 +69,9 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
                 break;
             case 'resume':
                 player.setEpisode(episode!, true, true);
+                break;
+            case 'download':
+                download(episode!);
                 break;
         }
 
@@ -91,6 +108,10 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps) {
                     <div className="row">
                         <img src="/assets/icons/sd-card.png" />
                         {episode.fileSize ? formatFileSize(episode.fileSize) : 'Unknown'}
+                        {isDownloading && (
+                            <span className={style.downloadProgress}>{`(${progress}%)`}</span>
+                        )}
+                        {isInDownloadQueue && 'queued'}
                     </div>
                 </div>
                 <p className="kui-text">{episode.subTitle}</p>
