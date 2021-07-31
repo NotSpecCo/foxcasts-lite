@@ -9,7 +9,8 @@
     "start:development": "npm run -s dev",
     "build": "preact build",
     "build:analyze": "preact build --json",
-    "build:kaios": "preact build && cp ./manifest.webapp ./build",
+    "build:package": "node build.mjs",
+    "build:deploy": " node build.mjs --deploy",
     "serve": "preact build && preact serve",
     "dev": "preact watch",
     "lint": "tslint --project .",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "@types/webpack-env": "^1.13.9",
+    "archiver": "^5.3.0",
     "css-loader": "^1.0.1",
     "cz-conventional-changelog": "^3.0.2",
     "husky": "^1.2.0",
@@ -63,7 +65,7 @@
     "preact": "^10.0.0-rc.0",
     "preact-async-route": "^2.2.1",
     "preact-compat": "^3.18.4",
-    "preact-router": "^3.0.0"
+    "preact-router": "^3.2.1"
   },
   "peerDependencies": {
     "prettier": ">1.0.0",
