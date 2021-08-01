@@ -5,4 +5,3 @@ export * from './ITunesPodcast';
 export * from './ITunesSearchResult';
 export * from './Option';
 export * from './Podcast';
-export * from './Settings';

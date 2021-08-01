@@ -4,8 +4,8 @@ import { useState, useContext, useEffect } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { useShortcutKeys } from '../hooks/useShortcutKeys';
-import { Podcast } from '../models';
-import { PodcastService } from '../services/podcastService';
+import { Podcast } from '../core/models';
+import { PodcastService } from '../core/services';
 
 const podcastService = new PodcastService();
 

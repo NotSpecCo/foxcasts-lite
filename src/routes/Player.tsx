@@ -3,9 +3,9 @@ import { useContext, useState } from 'preact/hooks';
 import OptionMenu from '../components/OptionMenu';
 import ProgressBar from '../components/ProgressBar';
 import AppContext from '../contexts/appContext';
+import { formatTime } from '../core/utils';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { usePlayerState, usePlayerActions } from '../hooks/usePlayer';
-import formatTime from '../utils/formatTime';
 import style from './Player.module.css';
 
 export default function Player() {

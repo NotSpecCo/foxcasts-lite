@@ -1,12 +1,11 @@
-import { Episode } from '../models/Episode';
-import { Podcast } from '../models/Podcast';
-import formatPodcast from '../utils/formatPodcast';
+import { Episode, Podcast } from '../models';
+import { formatPodcast } from '../utils';
 
 interface HttpClient {
   get: (url: string, contentType?: string) => Promise<any>;
 }
 
-const getDurationInSeconds = (duration: string | number) => {
+function getDurationInSeconds(duration: string | number): number {
   if (typeof duration === 'number') {
     return duration;
   }
@@ -22,9 +21,9 @@ const getDurationInSeconds = (duration: string | number) => {
   seconds += parts[2] ? parseInt(parts[2], 10) * 60 * 60 : 0;
 
   return seconds;
-};
+}
 
-const parseXmlEpisodes = (xmlString: string): Episode[] => {
+function parseXmlEpisodes(xmlString: string): Episode[] {
   const xml = new DOMParser().parseFromString(xmlString, 'text/xml');
 
   const recentEpisodes = Array.from(xml.getElementsByTagName('item'));
@@ -65,7 +64,7 @@ const parseXmlEpisodes = (xmlString: string): Episode[] => {
         fileSize: parseInt(
           rawEpisode
             .getElementsByTagName('enclosure')[0]
-            .getAttribute('length')!,
+            ?.getAttribute('length') || '',
           10
         ),
         type: rawEpisode
@@ -83,7 +82,7 @@ const parseXmlEpisodes = (xmlString: string): Episode[] => {
   });
 
   return episodes;
-};
+}
 
 const defaultHttpClient: HttpClient = {
   get: (url: string, contentType = 'application/json') => {
@@ -143,12 +142,12 @@ export class ApiService {
   ): Promise<Episode[]> {
     return this.client
       .get(feedUrl, 'text/xml')
-      .then((result: any) => parseXmlEpisodes(result))
+      .then((result: string) => parseXmlEpisodes(result))
       .then((episodes) => {
         if (!afterDate) {
           return episodes;
         }
-        return episodes.filter((episode) => episode.date > afterDate!);
+        return episodes.filter((episode) => episode.date > afterDate);
       })
       .then((episodes) => episodes.slice(0, numResults))
       .catch((err) => {

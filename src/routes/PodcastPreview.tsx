@@ -2,9 +2,8 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
 import { useNavKeys } from '../hooks/useNavKeys';
-import { Podcast, Episode } from '../models';
-import { ApiService } from '../services/apiService';
-import { PodcastService } from '../services/podcastService';
+import { Podcast, Episode } from '../core/models';
+import { ApiService, PodcastService } from '../core/services';
 
 const apiService = new ApiService();
 const podcastService = new PodcastService();

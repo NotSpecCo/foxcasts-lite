@@ -1,8 +1,5 @@
 import Dexie from 'dexie';
-import { Episode } from '../models/Episode';
-import { EpisodeExtended } from '../models/EpisodeExtended';
-import { EpisodeFilterId } from '../models/EpisodeFilterId';
-import { Podcast } from '../models/Podcast';
+import { Podcast, Episode, EpisodeFilterId, EpisodeExtended } from '../models';
 
 export class DatabaseService {
   private db: Dexie;

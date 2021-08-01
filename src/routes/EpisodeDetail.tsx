@@ -4,12 +4,11 @@ import OptionMenu from '../components/OptionMenu';
 import AppContext from '../contexts/appContext';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { usePlayerActions } from '../hooks/usePlayer';
-import { EpisodeExtended } from '../models';
-import { EpisodeService } from '../services/episodeService';
-import formatFileSize from '../utils/formatFileSize';
-import formatTime from '../utils/formatTime';
+import { EpisodeExtended } from '../core/models';
 
 import style from './EpisodeDetail.module.css';
+import { EpisodeService } from '../core/services';
+import { formatFileSize, formatTime } from '../core/utils';
 
 const episodeService = new EpisodeService();
 
@@ -30,12 +29,16 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
     });
   }, [episodeId]);
 
+  const toggleMenu = (state?: boolean): void => {
+    setMenuOpen(state !== undefined ? state : !menuOpen);
+  };
+
   useNavKeys({
     SoftLeft: () => openNav(),
     SoftRight: () => toggleMenu(true),
   });
 
-  const getMenuOptions = () => {
+  function getMenuOptions(): any[] {
     const options = [
       { id: 'stream', label: 'Stream' },
       // { id: 'markPlayed', label: 'Mark as Played' },
@@ -50,7 +53,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
     }
 
     return options;
-  };
+  }
 
   const handleOptionSelect = (id: string) => {
     switch (id) {
@@ -66,10 +69,6 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
   };
   const handleOptionCancel = () => {
     toggleMenu(false);
-  };
-
-  const toggleMenu = (state?: boolean) => {
-    setMenuOpen(state !== undefined ? state : !menuOpen);
   };
 
   if (!episode) {

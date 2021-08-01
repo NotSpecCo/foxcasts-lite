@@ -1,5 +1,4 @@
-import { Episode } from '../models/Episode';
-import { Podcast } from '../models/Podcast';
+import { Podcast, Episode } from '../models';
 import { ApiService } from './apiService';
 import { DatabaseService } from './databaseService';
 

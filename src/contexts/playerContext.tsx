@@ -1,7 +1,7 @@
 import { createContext, h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { EpisodeExtended } from '../models/EpisodeExtended';
-import { EpisodeService } from '../services/episodeService';
+import { EpisodeExtended } from '../core/models';
+import { EpisodeService } from '../core/services';
 
 const episodeService = new EpisodeService();
 

@@ -4,8 +4,9 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { useShortcutKeys } from '../hooks/useShortcutKeys';
-import { ITunesSearchResult } from '../models';
-import { ApiService } from '../services/apiService';
+import { ITunesSearchResult } from '../core/models';
+import { ApiService } from '../core/services/apiService';
+import { Header } from '../ui-components';
 
 const apiService = new ApiService();
 
@@ -67,6 +68,7 @@ export default function Search({ q: queryParam }: SearchProps) {
 
   return (
     <div class="view-container">
+      {/* <Header text="Hello" /> */}
       <div class="kui-header">
         <h1 class="kui-h1">Search</h1>
       </div>

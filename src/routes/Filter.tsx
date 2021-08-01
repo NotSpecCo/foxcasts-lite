@@ -1,11 +1,11 @@
-import { FunctionalComponent, h } from 'preact';
+import { h } from 'preact';
 import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { useShortcutKeys } from '../hooks/useShortcutKeys';
-import { EpisodeExtended, EpisodeFilterId } from '../models';
-import { EpisodeService } from '../services/episodeService';
+import { EpisodeExtended, EpisodeFilterId } from '../core/models';
+import { EpisodeService } from '../core/services';
 import style from './Filter.module.css';
 
 const episodeService = new EpisodeService();
@@ -14,7 +14,7 @@ interface FilterProps {
   filterId: EpisodeFilterId;
 }
 
-export default function Filter({ filterId }: FilterProps) {
+export default function Filter({ filterId }: FilterProps): any {
   const [episodes, setEpisodes] = useState<EpisodeExtended[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { openNav } = useContext(AppContext);
@@ -28,6 +28,10 @@ export default function Filter({ filterId }: FilterProps) {
     SoftLeft: () => openNav(),
   });
 
+  const handleEpisodeClick = (episode: EpisodeExtended) => {
+    route(`/episode/${episode.id}`);
+  };
+
   useShortcutKeys(episodes || [], {}, (episode) => {
     handleEpisodeClick(episode);
   });
@@ -38,10 +42,6 @@ export default function Filter({ filterId }: FilterProps) {
       setEpisodes(result);
     });
   }, [filterId]);
-
-  const handleEpisodeClick = (episode: EpisodeExtended) => {
-    route(`/episode/${episode.id}`);
-  };
 
   return (
     <div className="view-container">

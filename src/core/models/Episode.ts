@@ -1,4 +1,4 @@
-export interface Episode {
+export type Episode = {
   id: number;
   duration: number;
   progress: number;
@@ -13,4 +13,4 @@ export interface Episode {
   fileUrl: string;
   authorId: string;
   podcastId: number;
-}
+};

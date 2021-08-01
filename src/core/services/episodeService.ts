@@ -1,5 +1,4 @@
-import { EpisodeExtended } from '../models/EpisodeExtended';
-import { EpisodeFilterId } from '../models/EpisodeFilterId';
+import { EpisodeExtended, EpisodeFilterId } from '../models';
 import { DatabaseService } from './databaseService';
 
 export class EpisodeService {

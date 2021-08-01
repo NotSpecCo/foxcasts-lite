@@ -3,6 +3,7 @@ import { route, Route, Router } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import AppContext from '../contexts/appContext';
 import { PlayerProvider } from '../contexts/playerContext';
+import { PodcastService } from '../core/services';
 import EpisodeDetail from '../routes/EpisodeDetail';
 import Filter from '../routes/Filter';
 import Player from '../routes/Player';
@@ -10,7 +11,6 @@ import PodcastDetail from '../routes/PodcastDetail';
 import PodcastPreview from '../routes/PodcastPreview';
 import Search from '../routes/Search';
 import Subscriptions from '../routes/Subscriptions';
-import { PodcastService } from '../services/podcastService';
 import NavMenu, { NavMenuOption } from './NavMenu';
 
 const NotFound = () => <div>Not Found!</div>;

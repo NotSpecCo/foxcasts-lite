@@ -1,4 +1,4 @@
-export interface ITunesPodcast {
+export type ITunesPodcast = {
   collectionId: number;
   artistId: string;
   collectionName: string;
@@ -10,4 +10,4 @@ export interface ITunesPodcast {
   summary: string;
   description: string;
   feedUrl: string;
-}
+};

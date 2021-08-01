@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { useShortcutKeys } from '../hooks/useShortcutKeys';
-import { Option } from '../models/Option';
+import { Option } from '../core/models/Option';
 import style from './OptionMenu.module.css';
 
 interface OptionMenuProps {
