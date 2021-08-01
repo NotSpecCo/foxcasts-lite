@@ -1,0 +1,13 @@
+.details {
+    margin: 10px 0;
+}
+
+.details > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.details > div > img {
+    margin-right: 5px;
+}

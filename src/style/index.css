@@ -1,0 +1,55 @@
+@import url('./kai-ui.css');
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: var(--main-bg-color);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--main-text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  --main-bg-color: #fff;
+  --main-text-color: #323232;
+  --accent-dark-bg-color: #320374;
+  --accent-dark-text-color: #fff;
+  --accent-light-bg-color: #873eff;
+  --accent-light-text-color: #fff;
+  --menu-title-bg-color: #d8d8d8;
+  --menu-title-text-color: #323232;
+  --menu-bg-color: #fff;
+  --menu-text-color: #323232;
+  --separator-bg-color: #e6e6e6;
+  --separator-text-color: #6a6a6a;
+  --toast-bg-color: #323232;
+  --toast-text-color: #fff;
+  --button-bg-color: #ccc;
+  --button-text-color: #323232;
+  --software-key-bg-color: #ccc;
+  --software-key-text-color: #323232;
+  --input-border-color: #aaa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0.5rem 0;
+  padding: 0;
+}
