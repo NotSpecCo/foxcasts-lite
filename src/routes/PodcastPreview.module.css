@@ -1,0 +1,22 @@
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.logo {
+  width: 80%;
+  margin-bottom: 10px;
+}
+
+.title {
+  color: var(--primary-text-color);
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.author {
+  color: var(--secondary-text-color);
+}

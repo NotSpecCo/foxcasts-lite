@@ -1,12 +1,13 @@
 import { h } from 'preact';
 import { route } from 'preact-router';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import AppContext from '../contexts/appContext';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useNavKeys } from '../hooks/useNavKeys';
-import { useShortcutKeys } from '../hooks/useShortcutKeys';
 import { ITunesSearchResult } from '../core/models';
 import { ApiService } from '../core/services/apiService';
-import { Header } from '../ui-components';
+import { ListItem, View } from '../ui-components';
+import { NavItem, wrapItems } from '../utils/navigation';
+import { useDpad } from '../hooks/useDpad';
+import styles from './Search.module.css';
 
 const apiService = new ApiService();
 
@@ -14,97 +15,103 @@ interface SearchProps {
   q?: string;
 }
 
-export default function Search({ q: queryParam }: SearchProps) {
+export default function Search({ q: queryParam }: SearchProps): any {
   const [query, setQuery] = useState<string | undefined>(undefined);
-  const [results, setResults] = useState<ITunesSearchResult[]>([]);
-  let searchBox: any;
-
-  const { openNav } = useContext(AppContext);
-
-  useNavKeys({
-    SoftLeft: () => openNav(),
-    SoftRight: () => navigateSearch(),
-    Enter: () => navigateSearch(),
-  });
-
-  useShortcutKeys(results, {}, (result) => {
-    if (searchBox === document.activeElement) {
-      return;
-    }
-    handlePodcastClick(result.collectionId)();
-  });
+  const [items, setItems] = useState<NavItem<ITunesSearchResult>[]>([]);
+  const searchbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (queryParam) {
-      setQuery(queryParam);
-      search(queryParam);
-    }
+    searchbox.current?.focus();
+    setItems([]);
+    if (!queryParam) return;
+
+    setQuery(queryParam);
+    searchbox.current?.blur();
+
+    apiService
+      .search(queryParam)
+      .then((result) => setItems(wrapItems(result)))
+      .catch((err) => console.error(err));
   }, [queryParam]);
 
-  const navigateSearch = () => {
-    if (!query) {
-      return;
-    }
-    route(`/search?q=${query}`);
-  };
+  function viewPodcast(id: number): void {
+    route(`/podcast/${id}/preview`);
+  }
 
-  const search = (override?: string) => {
-    searchBox.blur();
-    apiService
-      .search(override || query!)
-      .then((result) => setResults(result))
-      .catch((err) => console.error(err));
-  };
+  function setQueryParam(): void {
+    route(query ? `/search?q=${query}` : '/search');
+  }
 
-  const handleQueryChange = (ev: any) => {
+  useDpad({
+    items,
+    onEnter: (item) => viewPodcast(item.data.collectionId),
+    onChange: (items) => setItems(items),
+    options: { stopPropagation: true },
+  });
+
+  useNavKeys(
+    {
+      Enter: () => setQueryParam(),
+      ArrowUp: () => {
+        const noneSelected = !items.some((a) => a.isSelected);
+        if (noneSelected) {
+          searchbox.current?.focus();
+        }
+      },
+      ArrowDown: () => {
+        const noneSelected = !items.some((a) => a.isSelected);
+        if (!noneSelected) return;
+        searchbox.current?.blur();
+      },
+    },
+    { allowInInputs: true }
+  );
+
+  function handleQueryChange(ev: any): void {
     if (ev.target.value !== query) {
       setQuery(ev.target.value);
     }
-  };
+  }
 
-  const handlePodcastClick = (id: number) => () => {
-    route(`/podcast/${id}/preview`);
-  };
+  function getCenterText(): string {
+    if (document.activeElement === searchbox.current) {
+      return 'Search';
+    }
+
+    if (items.some((a) => a.isSelected)) {
+      return 'Select';
+    }
+
+    return '';
+  }
 
   return (
-    <div class="view-container">
-      {/* <Header text="Hello" /> */}
-      <div class="kui-header">
-        <h1 class="kui-h1">Search</h1>
-      </div>
-      <div class="view-content">
-        <div class="kui-input-holder">
-          <input
-            type="text"
-            class="kui-input kui-text"
-            placeholder="Query"
-            value={query}
-            ref={(input) => (searchBox = input)}
-            onChange={handleQueryChange}
-            onInput={handleQueryChange}
-          />
-        </div>
-        <ul class="kui-list">
-          {results.map((podcast) => (
-            <li
-              key={podcast.collectionId}
-              tabIndex={1}
-              onClick={handlePodcastClick(podcast.collectionId)}
-            >
-              <img class="kui-list-img" src={podcast.artworkUrl60} />
-              <div class="kui-list-cont">
-                <p class="kui-pri no-wrap">{podcast.collectionName}</p>
-                <p class="kui-sec no-wrap">{podcast.artistName}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="kui-software-key bottom">
-        <h5 class="kui-h5">Nav</h5>
-        <h5 class="kui-h5">SELECT</h5>
-        <h5 class="kui-h5">Search</h5>
-      </div>
-    </div>
+    <View
+      headerText="Search"
+      centerMenuText={getCenterText()}
+      showHeader={false}
+    >
+      <input
+        id="search"
+        type="text"
+        className={styles.searchBox}
+        placeholder="Search..."
+        value={query}
+        ref={searchbox}
+        onChange={handleQueryChange}
+        onInput={handleQueryChange}
+      />
+      {items.map((item) => (
+        <ListItem
+          key={item.data.collectionId}
+          ref={item.ref}
+          isSelected={item.isSelected}
+          imageUrl={item.data.artworkUrl60}
+          primaryText={item.data.collectionName}
+          secondaryText={item.data.artistName}
+          onClick={(): void => viewPodcast(item.data.collectionId)}
+        />
+      ))}
+    </View>
   );
 }

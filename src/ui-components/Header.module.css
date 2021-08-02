@@ -1,0 +1,10 @@
+.root {
+  height: 28px;
+  background-color: var(--header-bg-color);
+  color: var(--header-text-color);
+  text-align: center;
+  /* overflow: hidden; */
+  text-overflow: ellipsis;
+  padding: 0 10px;
+  font-size: 17px;
+}

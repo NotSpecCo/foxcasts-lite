@@ -1,29 +1,20 @@
 import { h } from 'preact';
 import { route } from 'preact-router';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import AppContext from '../contexts/appContext';
-import { useNavKeys } from '../hooks/useNavKeys';
-import { useShortcutKeys } from '../hooks/useShortcutKeys';
+import { useEffect, useState } from 'preact/hooks';
 import { Podcast, Episode } from '../core/models';
-import style from './PodcastDetail.module.css';
 import { PodcastService } from '../core/services';
+import { ListItem, View } from '../ui-components';
+import { NavItem, wrapItems } from '../utils/navigation';
+import { useDpad } from '../hooks/useDpad';
 
 const podcastService = new PodcastService();
 
 interface PodcastDetailProps {
   podcastId: string;
 }
-export default function PodcastDetail({ podcastId }: PodcastDetailProps) {
-  const [podcast, setPodcast] = useState<Podcast | null>(null);
-  const { openNav } = useContext(AppContext);
-
-  useNavKeys({
-    SoftLeft: () => openNav(),
-  });
-
-  useShortcutKeys(podcast ? podcast!.episodes! : [], {}, (episode) =>
-    handleEpisodeClick(episode)()
-  );
+export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
+  const [podcast, setPodcast] = useState<Podcast | undefined>();
+  const [items, setItems] = useState<NavItem<Episode>[]>([]);
 
   useEffect(() => {
     podcastService.getById(parseInt(podcastId, 10), true).then((result) => {
@@ -31,45 +22,48 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps) {
         result.episodes = [];
       }
       setPodcast(result);
+      setItems(wrapItems(result.episodes));
     });
   }, [podcastId]);
 
-  const handleEpisodeClick = (episode: Episode) => () => {
+  function viewEpisode(episode: Episode): void {
     route(`/episode/${episode.id}`);
-  };
+  }
 
-  if (!podcast) {
-    return null;
+  useDpad({
+    items,
+    onEnter: (item) => viewEpisode(item.data),
+    onChange: (items) => setItems(items),
+    options: { stopPropagation: true },
+  });
+
+  async function handleAction(action: string): Promise<void> {
+    if (action === 'unsubscribe' && podcast) {
+      await podcastService
+        .unsubscribe(podcast.id)
+        .then(() => route('/podcasts', true))
+        .catch((err) => console.error('Failed to unsubscribe', err));
+    }
   }
 
   return (
-    <div class="view-container">
-      <div class="kui-header">
-        <h1 class="kui-h1">{podcast.title}</h1>
-      </div>
-      <div class="view-content">
-        <ul class="kui-list">
-          {podcast.episodes!.map((episode: Episode) => (
-            <li
-              key={episode.id}
-              tabIndex={1}
-              onClick={handleEpisodeClick(episode)}
-            >
-              <div class="kui-list-cont">
-                <p className={`kui-pri ${style.episodeTitle}`}>
-                  {episode.title}
-                </p>
-                <p class="kui-sec">{episode.date.toLocaleString()}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="kui-software-key bottom">
-        <h5 class="kui-h5">Nav</h5>
-        <h5 class="kui-h5">SELECT</h5>
-        <h5 class="kui-h5" />
-      </div>
-    </div>
+    <View
+      showHeader={true}
+      headerText={podcast?.title || ''}
+      rightMenuText="Actions"
+      actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
+      onAction={handleAction}
+    >
+      {items.map((item) => (
+        <ListItem
+          key={item.data.id}
+          ref={item.ref}
+          isSelected={item.isSelected}
+          primaryText={item.data.title}
+          secondaryText={item.data.date.toLocaleDateString()}
+          onClick={(): void => viewEpisode(item.data)}
+        />
+      ))}
+    </View>
   );
 }

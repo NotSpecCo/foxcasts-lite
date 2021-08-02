@@ -31,7 +31,8 @@ export class EpisodeService {
   }
 
   public async getByFilter(
-    filterId: EpisodeFilterId
+    filterId: EpisodeFilterId,
+    limit = 30
   ): Promise<EpisodeExtended[]> {
     const podcastDetail = await this.dbService
       .getPodcasts()
@@ -45,7 +46,7 @@ export class EpisodeService {
         }, {});
       });
 
-    const episodes = await this.dbService.getEpisodesByFilter(filterId);
+    const episodes = await this.dbService.getEpisodesByFilter(filterId, limit);
 
     return episodes.map((episode) => ({
       ...episode,

@@ -1,19 +1,4 @@
 .message {
-    margin-top: 50%;
-    text-align: center;
-}
-
-.denseRow {
-    height: unset !important;
-}
-
-.denseRow img {
-    height: 20px !important;
-    width: 20px !important;
-    min-width: 20px !important;
-}
-
-.denseRow span {
-    color: var(--accent-light-bg-color);
-    font-weight: bold;
+  margin-top: 50%;
+  text-align: center;
 }

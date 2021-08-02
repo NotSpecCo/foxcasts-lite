@@ -1,0 +1,31 @@
+.root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.content {
+  background-color: var(--menu-bg-color);
+  color: var(--menu-text-color);
+  border-top: 2px solid var(--app-accent-color);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.option {
+  padding: 3px 5px;
+  font-size: 17px;
+}
+.option.selected {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+.option.disabled {
+  opacity: 0.5;
+}

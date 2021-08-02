@@ -1,12 +1,12 @@
-import { h } from 'preact';
+import { h, createRef } from 'preact';
 import { route } from 'preact-router';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import AppContext from '../contexts/appContext';
-import { useNavKeys } from '../hooks/useNavKeys';
-import { useShortcutKeys } from '../hooks/useShortcutKeys';
+import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended, EpisodeFilterId } from '../core/models';
 import { EpisodeService } from '../core/services';
-import style from './Filter.module.css';
+import styles from './Filter.module.css';
+import { ListItem, View } from '../ui-components';
+import { NavItem } from '../utils/navigation';
+import { useDpad } from '../hooks/useDpad';
 
 const episodeService = new EpisodeService();
 
@@ -15,66 +15,55 @@ interface FilterProps {
 }
 
 export default function Filter({ filterId }: FilterProps): any {
-  const [episodes, setEpisodes] = useState<EpisodeExtended[]>([]);
+  const [items, setItems] = useState<NavItem<EpisodeExtended>[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { openNav } = useContext(AppContext);
 
   const filterName: any = {
     recent: 'Most Recent',
     inProgress: 'In Progress',
   };
 
-  useNavKeys({
-    SoftLeft: () => openNav(),
-  });
-
-  const handleEpisodeClick = (episode: EpisodeExtended) => {
-    route(`/episode/${episode.id}`);
-  };
-
-  useShortcutKeys(episodes || [], {}, (episode) => {
-    handleEpisodeClick(episode);
-  });
-
   useEffect(() => {
-    episodeService.getByFilter(filterId).then((result) => {
+    episodeService.getByFilter(filterId).then((episodes) => {
+      setItems(
+        episodes.map((episode) => ({
+          shortcutKey: '',
+          isSelected: false,
+          ref: createRef(),
+          data: episode,
+        }))
+      );
       setLoading(false);
-      setEpisodes(result);
     });
   }, [filterId]);
 
+  function viewEpisode(episode: EpisodeExtended): void {
+    route(`/episode/${episode.id}`);
+  }
+
+  useDpad({
+    items,
+    onEnter: (item) => viewEpisode(item.data),
+    onChange: (items) => setItems(items),
+    options: { stopPropagation: true },
+  });
+
   return (
-    <div className="view-container">
-      <div className="kui-header">
-        <h1 className="kui-h1">{filterName[filterId]}</h1>
-      </div>
-      <div className="view-content">
-        {loading && (
-          <div className={`kui-sec ${style.message}`}>Loading...</div>
-        )}
-        {!loading && episodes.length === 0 && (
-          <div className={`kui-sec ${style.message}`}>No episodes.</div>
-        )}
-        <ul className="kui-list">
-          {episodes.map((episode, i) => (
-            <li
-              key={episode.id}
-              tabIndex={1}
-              onClick={() => handleEpisodeClick(episode)}
-            >
-              <div class="kui-list-cont">
-                <p className="kui-pri no-wrap">{episode.title}</p>
-                <p className="kui-sec no-wrap">{episode.podcastTitle}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="kui-software-key bottom">
-        <h5 class="kui-h5">Nav</h5>
-        <h5 class="kui-h5">SELECT</h5>
-        <h5 class="kui-h5" />
-      </div>
-    </div>
+    <View showHeader={false} headerText={filterName[filterId]}>
+      {loading && <div className={`kui-sec ${styles.message}`}>Loading...</div>}
+      {!loading && items.length === 0 && (
+        <div className={`kui-sec ${styles.message}`}>No episodes.</div>
+      )}
+      {items.map((item) => (
+        <ListItem
+          key={item.data.id}
+          ref={item.ref}
+          isSelected={item.isSelected}
+          imageUrl={item.data.cover[60]}
+          primaryText={item.data.title}
+          onClick={(): void => viewEpisode(item.data)}
+        />
+      ))}
+    </View>
   );
 }

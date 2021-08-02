@@ -1,42 +1,42 @@
 import { useEffect } from 'preact/hooks';
 
 interface Options {
-    capture?: boolean;
-    stopPropagation?: boolean;
+  capture?: boolean;
+  stopPropagation?: boolean;
 }
 
 type TestHook<T> = any;
 
 export function useShortcutKeys<T>(
-    items: T[],
-    options: Options = {},
-    callback: (selectedItem: T) => void
+  items: T[],
+  options: Options = {},
+  callback: (selectedItem: T) => void
 ) {
-    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-    const handleKeyPress = (ev: KeyboardEvent) => {
-        if (!keys.includes(ev.key)) {
-            return;
-        }
+  const handleKeyPress = (ev: KeyboardEvent) => {
+    if (!keys.includes(ev.key)) {
+      return;
+    }
 
-        if (options.stopPropagation) {
-            ev.stopPropagation();
-            ev.preventDefault();
-        }
+    if (options.stopPropagation) {
+      ev.stopPropagation();
+      ev.preventDefault();
+    }
 
-        const selectedItem = items[parseInt(ev.key, 10) - 1];
-        if (!selectedItem) {
-            return;
-        }
+    const selectedItem = items[parseInt(ev.key, 10) - 1];
+    if (!selectedItem) {
+      return;
+    }
 
-        callback(selectedItem);
+    callback(selectedItem);
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress, options.capture);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress, options.capture);
     };
-
-    useEffect(() => {
-        document.addEventListener('keydown', handleKeyPress, options.capture);
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress, options.capture);
-        };
-    });
+  });
 }

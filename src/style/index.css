@@ -1,5 +1,3 @@
-@import url('./kai-ui.css');
-
 html,
 body {
   height: 100%;
@@ -9,31 +7,38 @@ body {
   background: var(--main-bg-color);
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
-  font-size: 10px;
-  color: var(--main-text-color);
+  font-size: 14px;
+  color: var(--primary-text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  --main-bg-color: #fff;
-  --main-text-color: #323232;
-  --accent-dark-bg-color: #320374;
-  --accent-dark-text-color: #fff;
-  --accent-light-bg-color: #873eff;
-  --accent-light-text-color: #fff;
-  --menu-title-bg-color: #d8d8d8;
-  --menu-title-text-color: #323232;
-  --menu-bg-color: #fff;
-  --menu-text-color: #323232;
-  --separator-bg-color: #e6e6e6;
-  --separator-text-color: #6a6a6a;
-  --toast-bg-color: #323232;
-  --toast-text-color: #fff;
-  --button-bg-color: #ccc;
-  --button-text-color: #323232;
-  --software-key-bg-color: #ccc;
-  --software-key-text-color: #323232;
+  --app-bg-color: #fff;
+  --app-accent-color: #873eff;
+  --app-accent-dark-color: #320374;
+
+  --primary-text-color: rgba(0, 0, 0, 0.88);
+  --secondary-text-color: rgba(0, 0, 0, 0.5);
+  --accent-text-color: var(--app-accent-color);
+  --light-text-color: rgba(255, 255, 255, 0.88);
+  --accent-dark-text-color: rgba(255, 255, 255, 0.88);
+  --accent-light-text-color: rgba(255, 255, 255, 0.88);
+
+  --divider-color: rgba(0, 0, 0, 0.15);
+
+  --highlight-bg-color: var(--app-accent-color);
+  --highlight-text-color: var(--accent-light-text-color);
+
+  --header-bg-color: var(--app-accent-dark-color);
+  --header-text-color: rgba(255, 255, 255, 0.88);
+
+  --menu-bg-color: var(--app-bg-color);
+  --menu-text-color: var(--primary-text-color);
+
+  --menubar-bg-color: #000;
+  --menubar-text-color: #fff;
+
   --input-border-color: #aaa;
 }
 

@@ -139,7 +139,8 @@ export class DatabaseService {
   }
 
   public async getEpisodesByFilter(
-    filterId: EpisodeFilterId
+    filterId: EpisodeFilterId,
+    limit = 30
   ): Promise<EpisodeExtended[]> {
     const podcastCovers = await this.getPodcasts().then((podcasts) => {
       return podcasts.reduce((coverMap: any, podcast) => {
@@ -159,7 +160,7 @@ export class DatabaseService {
           .table('episodes')
           .orderBy('date')
           .reverse()
-          .limit(30)
+          .limit(limit)
           .toArray();
         break;
       case 'inProgress':
