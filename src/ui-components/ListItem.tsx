@@ -10,6 +10,7 @@ type Props = ComponentBaseProps & {
   imageUrl?: string;
   primaryText?: string;
   secondaryText?: string;
+  accentText?: string;
   onClick?: () => void;
 };
 
@@ -31,6 +32,7 @@ export const ListItem = forwardRef(
         <div className={styles.text}>
           <div className={styles.primary}>{props.primaryText}</div>
           <div className={styles.secondary}>{props.secondaryText}</div>
+          <div className={styles.accent}>{props.accentText}</div>
         </div>
       </div>
     );

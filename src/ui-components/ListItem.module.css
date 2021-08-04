@@ -9,7 +9,14 @@
 }
 
 .shortcut {
-  color: red;
+  color: var(--accent-text-color);
+  font-size: 17px;
+  font-weight: 300;
+  margin-right: 3px;
+  margin-left: -3px;
+}
+.root.selected .shortcut {
+  color: var(--highlight-text-color);
 }
 
 .root > img {
@@ -37,6 +44,11 @@
 
 .secondary {
   color: var(--secondary-text-color);
+  font-size: 0.9rem;
+}
+
+.accent {
+  color: var(--accent-text-color);
 }
 
 .root.selected .primary {
@@ -44,5 +56,9 @@
 }
 
 .root.selected .secondary {
+  color: var(--highlight-text-color);
+}
+
+.root.selected .accent {
   color: var(--highlight-text-color);
 }
