@@ -1,12 +1,10 @@
 .root {
   display: flex;
   align-items: center;
-  /* height: 30px; */
   width: 100vw;
   padding: 2px 5px;
   background-color: var(--menubar-bg-color);
   color: var(--menubar-text-color);
-  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
 }
