@@ -1,139 +1,115 @@
-import { createContext, h } from 'preact';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { createContext, h, VNode } from 'preact';
+import { useContext, useState } from 'preact/hooks';
 import { EpisodeExtended } from '../core/models';
 import { EpisodeService } from '../core/services';
+import { ComponentBaseProps } from '../models';
 
-const episodeService = new EpisodeService();
-
-interface PlayerStateContextProps {
-  episode: EpisodeExtended | undefined;
+export type PlaybackStatus = {
   playing: boolean;
-  progress: number;
+  currentTime: number;
   duration: number;
-}
+};
 
-interface PlayerActionsContextProps {
-  setEpisode: (
-    episode: EpisodeExtended | null,
-    resume?: boolean,
-    play?: boolean
-  ) => void;
-  setPlaying: (playing: boolean) => void;
-  setProgress: (progress: number) => void;
-  setDuration: (duration: number) => void;
-  reset: () => void;
-}
-export const PlayerStateContext = createContext<PlayerStateContextProps>(
-  {} as any
-);
-export const PlayerActionsContext = createContext<PlayerActionsContextProps>(
-  {} as any
-);
+type PlayerContextValue = {
+  episode?: EpisodeExtended;
+  load: (episodeId: number, resume?: boolean) => void;
+  play: () => void;
+  pause: () => void;
+  stop: () => void;
+  jump: (seconds: number) => void;
+  getStatus: () => PlaybackStatus;
+  audioRef: HTMLAudioElement;
+  playing: boolean;
+};
 
-export function PlayerProvider({ children }: any) {
-  const [episode, setEpisodeInternal] = useState<EpisodeExtended | undefined>(
-    undefined
-  );
-  const [playing, setPlayingInternal] = useState(false);
-  const [progress, setProgressInternal] = useState(0);
-  const [duration, setDurationInternal] = useState(0);
+const defaulValue: PlayerContextValue = {
+  load: () => console.log('load'),
+  play: () => console.log('play'),
+  pause: () => console.log('pause'),
+  stop: () => console.log('stop'),
+  jump: () => console.log('jump'),
+  getStatus: () => ({
+    playing: false,
+    currentTime: 0,
+    duration: 0,
+  }),
+  audioRef: new Audio(),
+  playing: false,
+};
+export const PlayerContext = createContext<PlayerContextValue>(defaulValue);
 
-  const { current: audioEl } = useRef(new Audio());
+export function PlayerProvider(props: ComponentBaseProps): VNode {
+  const [episode, setEpisode] = useState<EpisodeExtended>();
+  const [playing, setPlaying] = useState(false);
+  const [audioRef] = useState<HTMLAudioElement>(new Audio());
 
-  useEffect(() => {
-    (audioEl as any).mozAudioChannelType = 'content';
-    audioEl.onerror = (ev: any) => {
-      console.error('audio error', ev);
+  async function load(episodeId: number, resume = false): Promise<void> {
+    const episodeService = new EpisodeService();
+    const data = await episodeService.getById(episodeId);
+
+    if (!data) return;
+
+    setEpisode(data);
+
+    audioRef.src = data.fileUrl;
+    audioRef.currentTime = 0;
+    audioRef.play();
+    setPlaying(true);
+  }
+
+  function play(): void {
+    audioRef.play();
+    setPlaying(true);
+  }
+
+  function pause(): void {
+    audioRef.pause();
+    setPlaying(false);
+  }
+
+  function stop(): void {
+    setEpisode(undefined);
+    audioRef.src = '';
+    audioRef.currentTime = 0;
+    setPlaying(false);
+  }
+
+  function jump(seconds: number): void {
+    const newTime = audioRef.currentTime + seconds;
+    audioRef.currentTime = newTime;
+  }
+
+  function getStatus(): PlaybackStatus {
+    return {
+      playing: !audioRef.paused,
+      currentTime: Math.ceil(audioRef.currentTime),
+      duration: Math.ceil(audioRef.duration),
     };
-    audioEl.onloadeddata = (ev: any) => {
-      setDuration(Math.ceil(ev.currentTarget.duration));
-    };
-    audioEl.onended = (ev: any) => {
-      setEpisode(null);
-    };
-    audioEl.ontimeupdate = (ev: any) => {
-      const newProgress = parseInt(ev.currentTarget.currentTime, 10);
-      if (newProgress !== progress) {
-        setProgressInternal(newProgress);
-      }
-    };
-
-    if (episode) {
-      episodeService.updateEpisode(episode!.id, { progress });
-    }
-  }, [progress, episode]);
-
-  const setEpisode = (
-    newEpisode: EpisodeExtended | null,
-    resume = false,
-    play = true
-  ) => {
-    if (!newEpisode) {
-      audioEl.src = '';
-      audioEl.currentTime = 0;
-      setEpisodeInternal(undefined);
-      return;
-    }
-
-    audioEl.src = newEpisode.fileUrl;
-    audioEl.currentTime = resume ? newEpisode.progress : 0;
-
-    if (play) {
-      audioEl.play();
-    }
-
-    setEpisodeInternal(newEpisode);
-    setProgressInternal(resume ? newEpisode.progress : 0);
-    setPlayingInternal(play);
-  };
-
-  const setPlaying = (newPlaying: boolean) => {
-    newPlaying ? audioEl.play() : audioEl.pause();
-    setPlayingInternal(newPlaying);
-  };
-
-  const setProgress = (newProgress: number) => {
-    const timeDiff = Math.abs(progress - newProgress);
-    if (timeDiff > 2) {
-      audioEl.currentTime = newProgress;
-    }
-  };
-
-  const setDuration = (newDuration: number) => {
-    if (!episode) {
-      return;
-    }
-    setDurationInternal(newDuration);
-    episodeService.updateEpisode(episode.id, { duration: newDuration });
-  };
-
-  const reset = () => {
-    setEpisodeInternal(undefined);
-    setPlayingInternal(false);
-    setProgressInternal(0);
-    setDurationInternal(0);
-  };
+  }
 
   return (
-    <PlayerStateContext.Provider
+    <PlayerContext.Provider
       value={{
         episode,
+        load,
+        play,
+        pause,
+        stop,
+        jump,
+        getStatus,
+        audioRef,
         playing,
-        progress,
-        duration,
       }}
     >
-      <PlayerActionsContext.Provider
-        value={{
-          setEpisode,
-          setPlaying,
-          setProgress,
-          setDuration,
-          reset,
-        }}
-      >
-        {children}
-      </PlayerActionsContext.Provider>
-    </PlayerStateContext.Provider>
+      {props.children}
+    </PlayerContext.Provider>
   );
+}
+
+export function usePlayer(): PlayerContextValue {
+  const context = useContext(PlayerContext);
+  if (context === undefined) {
+    throw new Error('usePlayer must be used within a PlayerProvider');
+  }
+  return context;
 }

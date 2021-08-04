@@ -10,6 +10,7 @@ import PodcastPreview from '../routes/PodcastPreview';
 import Search from '../routes/Search';
 import Podcasts from '../routes/Podcasts';
 import { useNavKeys } from '../hooks/useNavKeys';
+import { PodcastService } from '../core/services';
 
 const App: FunctionalComponent = () => {
   useEffect(() => {
@@ -17,7 +18,7 @@ const App: FunctionalComponent = () => {
       route('/podcasts');
     }
 
-    // const podcastService = new PodcastService();
+    const podcastService = new PodcastService();
     // podcastService.checkForUpdates();
   }, []);
 

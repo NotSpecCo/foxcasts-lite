@@ -51,7 +51,12 @@ export default function Search({ q: queryParam }: SearchProps): any {
 
   useNavKeys(
     {
-      Enter: () => setQueryParam(),
+      Enter: (ev: KeyboardEvent) => {
+        if ((ev.target as HTMLElement).tagName === 'INPUT') {
+          setQueryParam();
+          ev.stopImmediatePropagation();
+        }
+      },
       ArrowUp: () => {
         const noneSelected = !items.some((a) => a.isSelected);
         if (noneSelected) {

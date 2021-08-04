@@ -22,8 +22,8 @@ body {
   --secondary-text-color: rgba(0, 0, 0, 0.5);
   --accent-text-color: var(--app-accent-color);
   --light-text-color: rgba(255, 255, 255, 0.88);
-  --accent-dark-text-color: rgba(255, 255, 255, 0.88);
   --accent-light-text-color: rgba(255, 255, 255, 0.88);
+  --accent-dark-text-color: rgba(255, 255, 255, 0.88);
 
   --divider-color: rgba(0, 0, 0, 0.15);
 

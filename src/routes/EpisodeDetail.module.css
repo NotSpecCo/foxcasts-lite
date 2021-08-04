@@ -1,13 +1,23 @@
 .details {
-    margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
 }
 
-.details > div {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
+.logo {
+  height: 120px;
+  width: 120px;
+  margin-bottom: 10px;
 }
 
-.details > div > img {
-    margin-right: 5px;
+.title {
+  color: var(--primary-text-color);
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.author {
+  color: var(--secondary-text-color);
 }

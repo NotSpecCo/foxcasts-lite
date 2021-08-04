@@ -1,14 +1,11 @@
 import { h } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import OptionMenu from '../components/OptionMenu';
-import AppContext from '../contexts/appContext';
-import { useNavKeys } from '../hooks/useNavKeys';
-import { usePlayerActions } from '../hooks/usePlayer';
+import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended } from '../core/models';
-
-import style from './EpisodeDetail.module.css';
 import { EpisodeService } from '../core/services';
-import { formatFileSize, formatTime } from '../core/utils';
+import { formatTime } from '../core/utils';
+import { MenuOption, View } from '../ui-components';
+import styles from './EpisodeDetail.module.css';
+import { usePlayer } from '../contexts/playerContext';
 
 const episodeService = new EpisodeService();
 
@@ -17,11 +14,9 @@ interface EpisodeDetailProps {
 }
 
 export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
-  const [episode, setEpisode] = useState<EpisodeExtended | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [episode, setEpisode] = useState<EpisodeExtended>();
 
-  const { openNav } = useContext(AppContext);
-  const player = usePlayerActions();
+  const player = usePlayer();
 
   useEffect(() => {
     episodeService.getById(parseInt(episodeId, 10)).then((result) => {
@@ -29,16 +24,7 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
     });
   }, [episodeId]);
 
-  const toggleMenu = (state?: boolean): void => {
-    setMenuOpen(state !== undefined ? state : !menuOpen);
-  };
-
-  useNavKeys({
-    SoftLeft: () => openNav(),
-    SoftRight: () => toggleMenu(true),
-  });
-
-  function getMenuOptions(): any[] {
+  function getActionList(): MenuOption[] {
     const options = [
       { id: 'stream', label: 'Stream' },
       // { id: 'markPlayed', label: 'Mark as Played' },
@@ -55,62 +41,36 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
     return options;
   }
 
-  const handleOptionSelect = (id: string) => {
-    switch (id) {
+  function handleAction(action: string): void {
+    if (!episode) return;
+
+    switch (action) {
       case 'stream':
-        player.setEpisode(episode!, false);
+        player.load(episode.id, false);
         break;
       case 'resume':
-        player.setEpisode(episode!, true, true);
+        player.load(episode.id, true);
         break;
     }
-
-    toggleMenu(false);
-  };
-  const handleOptionCancel = () => {
-    toggleMenu(false);
-  };
-
-  if (!episode) {
-    return null;
   }
 
   return (
-    <div class="view-container">
-      <div class="kui-header">
-        <h1 class="kui-h1">Episode Detail</h1>
+    <View
+      showHeader={false}
+      rightMenuText="Actions"
+      actions={getActionList()}
+      onAction={handleAction}
+    >
+      <div className={styles.details}>
+        {episode && (
+          <img
+            src={episode.cover[600] || episode.cover[100]}
+            className={styles.logo}
+          />
+        )}
+        <div className={styles.title}>{episode?.title}</div>
+        <div className={styles.author}>{episode?.author}</div>
       </div>
-      <div class="view-content padded">
-        <h2 className="kui-h2">{episode.title}</h2>
-        <div className={`${style.details} kui-sec`}>
-          <div className="row">
-            <img src="/assets/icons/calendar.png" />
-            {episode.date.toLocaleDateString()}
-          </div>
-          <div className="row">
-            <img src="/assets/icons/timer.png" />
-            {episode.duration ? formatTime(episode.duration) : 'Unknown'}
-          </div>
-          <div className="row">
-            <img src="/assets/icons/sd-card.png" />
-            {episode.fileSize ? formatFileSize(episode.fileSize) : 'Unknown'}
-          </div>
-        </div>
-        <p className="kui-text">{episode.subTitle}</p>
-      </div>
-      <div class="kui-software-key bottom">
-        <h5 class="kui-h5">Nav</h5>
-        <h5 class="kui-h5" />
-        <h5 class="kui-h5">Actions</h5>
-      </div>
-      {menuOpen && (
-        <OptionMenu
-          title="Episode Actions"
-          options={getMenuOptions()}
-          onSelect={handleOptionSelect}
-          onCancel={handleOptionCancel}
-        />
-      )}
-    </div>
+    </View>
   );
 }

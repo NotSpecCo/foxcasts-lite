@@ -1,28 +1,19 @@
 .content {
-    text-align: center;
+  padding: 10px;
+  text-align: center;
 }
 
-.cover {
-    height: 100px;
-    width: 100px;
+.logo {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.times {
-    display: flex;
-    justify-content: space-between;
+.title {
+  color: var(--primary-text-color);
+  font-size: 17px;
+  font-weight: bold;
 }
 
-.buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.buttons > img {
-    width: 20%;
-}
-
-.message {
-    margin-top: 50%;
-    text-align: center;
+.author {
+  color: var(--secondary-text-color);
 }

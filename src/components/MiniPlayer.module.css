@@ -1,0 +1,8 @@
+.root {
+  padding: 10px;
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+}

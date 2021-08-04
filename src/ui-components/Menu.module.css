@@ -21,6 +21,8 @@
 .option {
   padding: 3px 5px;
   font-size: 17px;
+  display: flex;
+  align-items: center;
 }
 .option.selected {
   background-color: var(--highlight-bg-color);
@@ -28,4 +30,14 @@
 }
 .option.disabled {
   opacity: 0.5;
+}
+
+.shortcut {
+  font-size: 17px;
+  font-weight: 300;
+  margin-right: 5px;
+  color: var(--app-accent-color);
+}
+.option.selected > .shortcut {
+  color: var(--accent-light-text-color);
 }
