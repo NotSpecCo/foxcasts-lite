@@ -21,6 +21,14 @@ export function cursorSelect<T>(items: NavItem<T>[]): NavItem<T> | undefined {
   return item;
 }
 
+export function cursorSelectByKey<T>(
+  items: NavItem<T>[],
+  shortcutKey: string
+): NavItem<T> | undefined {
+  const item = items.find((a) => a.shortcutKey === shortcutKey);
+  return item;
+}
+
 export function moveCursor<T>(
   items: NavItem<T>[],
   direction: 'next' | 'prev'

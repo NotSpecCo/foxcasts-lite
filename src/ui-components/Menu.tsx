@@ -24,7 +24,7 @@ export function Menu({ closeSide = 'left', ...props }: Props): any {
   const [items, setItems] = useState<NavItem<MenuOption>[]>([]);
 
   useEffect(() => {
-    setItems(wrapItems(props.options));
+    setItems(wrapItems(props.options, true));
   }, [props.options]);
 
   useDpad({
@@ -58,6 +58,9 @@ export function Menu({ closeSide = 'left', ...props }: Props): any {
               ifClass(!!item.data.disabled, styles.disabled)
             )}
           >
+            {item.shortcutKey ? (
+              <div className={styles.shortcut}>{item.shortcutKey}</div>
+            ) : null}
             {item.data.label}
           </div>
         ))}

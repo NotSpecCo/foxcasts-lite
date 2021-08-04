@@ -1,5 +1,10 @@
 import { useEffect } from 'preact/hooks';
-import { cursorSelect, moveCursor, NavItem } from '../utils/navigation';
+import {
+  cursorSelect,
+  cursorSelectByKey,
+  moveCursor,
+  NavItem,
+} from '../utils/navigation';
 
 interface Options {
   capture?: boolean;
@@ -14,12 +19,12 @@ type Props<T> = {
 };
 
 export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
-  const keys = ['ArrowUp', 'ArrowDown', 'Enter'];
-  // const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'];
+  const shortcutKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const dpadKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
 
   function handleKeyPress(ev: KeyboardEvent): void {
     if (
-      !keys.includes(ev.key) ||
+      ![...dpadKeys, ...shortcutKeys].includes(ev.key) ||
       ev.shiftKey ||
       (ev.target as HTMLElement).tagName === 'INPUT'
     ) {
@@ -39,6 +44,14 @@ export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
       return;
     }
 
+    if (shortcutKeys.includes(ev.key)) {
+      const selected = cursorSelectByKey(props.items, ev.key);
+      if (selected) {
+        props.onEnter(selected);
+      }
+      return;
+    }
+
     const direction = ev.key === 'ArrowUp' ? 'prev' : 'next';
     const newItems = moveCursor(props.items, direction);
 
@@ -48,7 +61,7 @@ export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress, options.capture);
 
-    return () => {
+    return (): void => {
       document.removeEventListener('keydown', handleKeyPress, options.capture);
     };
   });
