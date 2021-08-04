@@ -1,7 +1,7 @@
 .root {
   display: flex;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   padding: 1px 5px;
   background-color: var(--menubar-bg-color);
   color: var(--menubar-text-color);

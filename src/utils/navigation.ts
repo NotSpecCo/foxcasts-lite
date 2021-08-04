@@ -41,7 +41,16 @@ export function moveCursor<T>(
 
   return items.map((item, index) => {
     if (index === newIndex && item.ref) {
-      item.ref.current.scrollIntoView(false);
+      item.ref.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+
+      // Workaround for KaiOS being based on an old browser
+      // TODO: Use scroll-margin on ListItem when available
+      const rect = item.ref.current.getBoundingClientRect();
+      const diff = rect.top + rect.height + 19 - window.innerHeight;
+      if (diff > 0) {
+        window.scroll({ top: window.scrollY + diff });
+      }
+
       // This doesn't work on KaiOS
       // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
