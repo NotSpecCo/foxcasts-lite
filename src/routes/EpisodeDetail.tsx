@@ -1,8 +1,8 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended } from '../core/models';
 import { EpisodeService } from '../core/services';
-import { formatTime } from '../core/utils';
+import { formatFileSize, formatTime } from '../core/utils';
 import { MenuOption, View } from '../ui-components';
 import styles from './EpisodeDetail.module.css';
 import { usePlayer } from '../contexts/playerContext';
@@ -13,7 +13,9 @@ interface EpisodeDetailProps {
   episodeId: string;
 }
 
-export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
+export default function EpisodeDetail({
+  episodeId,
+}: EpisodeDetailProps): VNode {
   const [episode, setEpisode] = useState<EpisodeExtended>();
 
   const player = usePlayer();
@@ -62,14 +64,21 @@ export default function EpisodeDetail({ episodeId }: EpisodeDetailProps): any {
       onAction={handleAction}
     >
       <div className={styles.details}>
-        {episode && (
-          <img
-            src={episode.cover[600] || episode.cover[100]}
-            className={styles.logo}
-          />
-        )}
         <div className={styles.title}>{episode?.title}</div>
-        <div className={styles.author}>{episode?.author}</div>
+        <div className={styles.date}>{episode?.date.toLocaleDateString()}</div>
+        <div>
+          Duration:{' '}
+          <span className={styles.accent}>
+            {episode?.duration ? formatTime(episode?.duration) : 'Unknown'}
+          </span>
+        </div>
+        <div>
+          File Size:{' '}
+          <span className={styles.accent}>
+            {episode?.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'}
+          </span>
+        </div>
+        <p>{episode?.subTitle}</p>
       </div>
     </View>
   );

@@ -18,6 +18,15 @@
   font-weight: bold;
 }
 
+.date {
+  color: var(--accent-text-color);
+  margin: 5px;
+}
+
 .author {
   color: var(--secondary-text-color);
+}
+
+.accent {
+  color: var(--accent-text-color);
 }
