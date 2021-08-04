@@ -51,6 +51,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
 
     setEpisode(data);
 
+    (audioRef as any).mozAudioChannelType = 'content';
     audioRef.src = data.fileUrl;
     audioRef.currentTime = 0;
     audioRef.play();
