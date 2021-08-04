@@ -1,11 +1,11 @@
-import { h, createRef } from 'preact';
+import { h, createRef, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended, EpisodeFilterId } from '../core/models';
 import { EpisodeService } from '../core/services';
 import styles from './Filter.module.css';
 import { ListItem, View } from '../ui-components';
-import { NavItem } from '../utils/navigation';
+import { NavItem, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 
 const episodeService = new EpisodeService();
@@ -14,25 +14,13 @@ interface FilterProps {
   filterId: EpisodeFilterId;
 }
 
-export default function Filter({ filterId }: FilterProps): any {
+export default function Filter({ filterId }: FilterProps): VNode {
   const [items, setItems] = useState<NavItem<EpisodeExtended>[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const filterName: any = {
-    recent: 'Most Recent',
-    inProgress: 'In Progress',
-  };
-
   useEffect(() => {
     episodeService.getByFilter(filterId).then((episodes) => {
-      setItems(
-        episodes.map((episode) => ({
-          shortcutKey: '',
-          isSelected: false,
-          ref: createRef(),
-          data: episode,
-        }))
-      );
+      setItems(wrapItems(episodes, true));
       setLoading(false);
     });
   }, [filterId]);
@@ -48,6 +36,11 @@ export default function Filter({ filterId }: FilterProps): any {
     options: { stopPropagation: true },
   });
 
+  const filterName: { [key: string]: string } = {
+    recent: 'Most Recent',
+    inProgress: 'In Progress',
+  };
+
   return (
     <View showHeader={false} headerText={filterName[filterId]}>
       {loading && <div className={`kui-sec ${styles.message}`}>Loading...</div>}
@@ -61,6 +54,8 @@ export default function Filter({ filterId }: FilterProps): any {
           isSelected={item.isSelected}
           imageUrl={item.data.cover[60]}
           primaryText={item.data.title}
+          secondaryText={item.data.date.toLocaleDateString()}
+          shortcutKey={item.shortcutKey}
           onClick={(): void => viewEpisode(item.data)}
         />
       ))}

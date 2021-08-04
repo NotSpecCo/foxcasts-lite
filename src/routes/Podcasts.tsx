@@ -14,7 +14,7 @@ export default function Podcasts(): any {
 
   useEffect(() => {
     podcastService.getAll().then((result) => {
-      setItems(wrapItems(result));
+      setItems(wrapItems(result, true));
     });
   }, []);
 
@@ -34,9 +34,11 @@ export default function Podcasts(): any {
   async function seedData() {
     try {
       await Promise.all([
-        podcastService.subscribe(430333725),
-        podcastService.subscribe(1253186678),
-        podcastService.subscribe(359703665),
+        podcastService.subscribe(1237401284), // JavaScript Jabber
+        podcastService.subscribe(493890455), // Shop Talk
+        podcastService.subscribe(1253186678), // Syntax
+        podcastService.subscribe(1341969432), // React Podcast
+        podcastService.subscribe(430333725), // Vergecast
       ]);
       console.log('seed success');
     } catch (err) {
@@ -44,8 +46,18 @@ export default function Podcasts(): any {
     }
   }
 
+  async function handleAction(action: string): Promise<void> {
+    if (action === 'seed') {
+      await seedData();
+    }
+  }
+
   return (
-    <View headerText="Podcasts">
+    <View
+      headerText="Podcasts"
+      actions={[{ id: 'seed', label: 'Seed podcasts' }]}
+      onAction={handleAction}
+    >
       {items.map((item) => (
         <ListItem
           key={item.data.id}
@@ -53,6 +65,7 @@ export default function Podcasts(): any {
           isSelected={item.isSelected}
           imageUrl={item.data.cover[60]}
           primaryText={item.data.title}
+          shortcutKey={item.shortcutKey}
           onClick={(): void => handlePodcastClick(item.data)}
         />
       ))}

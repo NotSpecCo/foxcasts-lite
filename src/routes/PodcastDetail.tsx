@@ -22,7 +22,7 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
         result.episodes = [];
       }
       setPodcast(result);
-      setItems(wrapItems(result.episodes));
+      setItems(wrapItems(result.episodes, true));
     });
   }, [podcastId]);
 
@@ -61,6 +61,7 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
           isSelected={item.isSelected}
           primaryText={item.data.title}
           secondaryText={item.data.date.toLocaleDateString()}
+          shortcutKey={item.shortcutKey}
           onClick={(): void => viewEpisode(item.data)}
         />
       ))}
