@@ -51,10 +51,13 @@ export function View({
 
   return (
     <div className={styles.root}>
-      {showHeader && props.headerText && <Header text={props.headerText} />}
+      {showHeader && props.headerText && (
+        <Header text={props.headerText} className={styles.header} />
+      )}
       <div className={styles.content}>{props.children}</div>
       {showMenubar && (
         <MenuBar
+          className={styles.menubar}
           leftText={leftMenuText}
           centerText={centerMenuText}
           rightText={actions.length > 0 ? rightMenuText || 'Actions' : ''}

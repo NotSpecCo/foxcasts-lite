@@ -1,5 +1,6 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { ComponentBaseProps } from '../models';
+import { joinClasses } from '../utils/classes';
 import styles from './MenuBar.module.css';
 
 type Props = ComponentBaseProps & {
@@ -8,9 +9,9 @@ type Props = ComponentBaseProps & {
   rightText?: string;
 };
 
-export function MenuBar(props: Props): any {
+export function MenuBar(props: Props): VNode {
   return (
-    <div className={styles.root}>
+    <div className={joinClasses(styles.root, props.className)}>
       <div className={styles.left}>{props.leftText}</div>
       <div className={styles.center}>{props.centerText}</div>
       <div className={styles.right}>{props.rightText}</div>
