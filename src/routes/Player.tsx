@@ -45,12 +45,7 @@ export default function Player(): VNode {
   }
 
   return (
-    <View
-      rightMenuText="Actions"
-      showHeader={false}
-      actions={getActionList()}
-      onAction={handleAction}
-    >
+    <View showHeader={false} actions={getActionList()} onAction={handleAction}>
       <div className={styles.content}>
         <MiniPlayer />
         {player.episode && (

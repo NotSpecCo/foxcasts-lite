@@ -48,9 +48,7 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
 
   return (
     <View
-      showHeader={true}
-      headerText={podcast?.title || ''}
-      rightMenuText="Actions"
+      headerText={podcast?.title}
       actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
       onAction={handleAction}
     >

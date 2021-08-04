@@ -58,8 +58,7 @@ export default function EpisodeDetail({
 
   return (
     <View
-      showHeader={false}
-      rightMenuText="Actions"
+      headerText={episode?.podcastTitle}
       actions={getActionList()}
       onAction={handleAction}
     >

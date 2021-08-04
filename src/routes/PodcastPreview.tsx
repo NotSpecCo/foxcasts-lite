@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Podcast, Episode } from '../core/models';
 import { ApiService, PodcastService } from '../core/services';
@@ -13,7 +13,7 @@ interface PodcastPreviewProps {
 }
 export default function PodcastPreview({
   podcastId,
-}: PodcastPreviewProps): any {
+}: PodcastPreviewProps): VNode {
   const [podcast, setPodcast] = useState<Podcast | null>(null);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [subscribed, setSubscribed] = useState(false);
@@ -64,10 +64,8 @@ export default function PodcastPreview({
 
   return (
     <View
-      headerText={podcast?.title || ''}
       showHeader={false}
       centerMenuText=""
-      rightMenuText="Actions"
       actions={[
         {
           id: subscribed ? 'unsubscribe' : 'subscribe',

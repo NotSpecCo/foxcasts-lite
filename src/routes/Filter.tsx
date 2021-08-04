@@ -42,7 +42,7 @@ export default function Filter({ filterId }: FilterProps): VNode {
   };
 
   return (
-    <View showHeader={false} headerText={filterName[filterId]}>
+    <View headerText={filterName[filterId]}>
       {loading && <div className={`kui-sec ${styles.message}`}>Loading...</div>}
       {!loading && items.length === 0 && (
         <div className={`kui-sec ${styles.message}`}>No episodes.</div>

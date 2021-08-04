@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { useState } from 'preact/hooks';
 import { AppMenu } from '../components/AppMenu';
 import { useNavKeys } from '../hooks/useNavKeys';
@@ -25,8 +25,9 @@ export function View({
   rightMenuText,
   showHeader = true,
   showMenubar = true,
+  actions = [],
   ...props
-}: Props): any {
+}: Props): VNode {
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [actionsMenuOpen, setActionsMenuOpen] = useState(false);
 
@@ -50,19 +51,19 @@ export function View({
 
   return (
     <div className={styles.root}>
-      {showHeader && <Header text={props.headerText} />}
+      {showHeader && props.headerText && <Header text={props.headerText} />}
       <div className={styles.content}>{props.children}</div>
       {showMenubar && (
         <MenuBar
           leftText={leftMenuText}
           centerText={centerMenuText}
-          rightText={rightMenuText}
+          rightText={actions.length > 0 ? rightMenuText || 'Actions' : ''}
         />
       )}
       {appMenuOpen && <AppMenu onClose={(): void => setAppMenuOpen(false)} />}
-      {actionsMenuOpen && props.actions && (
+      {actionsMenuOpen && actions && (
         <Menu
-          options={props.actions}
+          options={actions}
           closeSide="right"
           onSelect={(id): void => props.onAction?.(id)}
           onClose={(): void => setActionsMenuOpen(false)}

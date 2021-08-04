@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { useNavKeys } from '../hooks/useNavKeys';
@@ -15,7 +15,7 @@ interface SearchProps {
   q?: string;
 }
 
-export default function Search({ q: queryParam }: SearchProps): any {
+export default function Search({ q: queryParam }: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
   const [items, setItems] = useState<NavItem<ITunesSearchResult>[]>([]);
   const searchbox = useRef<HTMLInputElement>(null);
@@ -91,11 +91,7 @@ export default function Search({ q: queryParam }: SearchProps): any {
   }
 
   return (
-    <View
-      headerText="Search"
-      centerMenuText={getCenterText()}
-      showHeader={false}
-    >
+    <View headerText="Search" centerMenuText={getCenterText()}>
       <input
         id="search"
         type="text"
