@@ -12,6 +12,7 @@
     "32": "/assets/icons/icon-32.png",
     "24": "/assets/icons/icon-24.png"
   },
+  "theme_color": "#ec5817",
   "developer": {
     "name": "Garrett Downs",
     "url": "https://garrettdowns.com"

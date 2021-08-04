@@ -4,7 +4,7 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
-  background: var(--main-bg-color);
+  background: var(--app-bg-color);
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 14px;
@@ -15,8 +15,8 @@ body {
 
 body {
   --app-bg-color: #fff;
-  --app-accent-color: #873eff;
-  --app-accent-dark-color: #320374;
+  --app-accent-color: #ec5817;
+  --app-accent-dark-color: #d04a11;
 
   --primary-text-color: rgba(0, 0, 0, 0.88);
   --secondary-text-color: rgba(0, 0, 0, 0.5);
