@@ -1,5 +1,13 @@
 import Dexie from 'dexie';
-import { Podcast, Episode, EpisodeFilterId, EpisodeExtended } from '../models';
+import {
+  Podcast,
+  Episode,
+  EpisodeFilterId,
+  EpisodeExtended,
+  ITunesPodcast,
+  RawEpisode,
+} from '../models';
+import { formatPodcast } from '../utils';
 
 export class DatabaseService {
   private db: Dexie;
@@ -7,31 +15,32 @@ export class DatabaseService {
   constructor() {
     this.db = new Dexie('foxcasts');
     this.db.version(1).stores({
-      podcasts: '++id, authorId, podcastId',
-      episodes: '++id, authorId, podcastId, date, progress, guid',
+      podcasts: '++id, &storeId',
+      episodes: '++id, &guid, podcastId, date, progress',
     });
   }
 
   //#region Podcasts
 
   public async addPodcast(
-    podcast: Podcast,
-    episodes: Episode[]
+    rawPodcast: ITunesPodcast,
+    rawEpisodes: RawEpisode[]
   ): Promise<void> {
-    const existingSubscription = await this.getPodcastById(podcast.id);
-    if (existingSubscription) {
-      console.log(
-        `Already subscribed to ${podcast.title}. (ID: ${existingSubscription.id}`
-      );
-      return;
-    }
-
     await this.db.transaction(
       'rw',
       this.db.table('podcasts'),
       this.db.table('episodes'),
       async () => {
-        await this.db.table('podcasts').add(podcast);
+        const podcastId = await this.db
+          .table('podcasts')
+          .add(formatPodcast(rawPodcast));
+        const episodes: Episode[] = rawEpisodes.map(
+          (rawEpisode) =>
+            ({
+              ...rawEpisode,
+              podcastId,
+            } as Episode)
+        );
         await this.db.table('episodes').bulkAdd(episodes);
       }
     );
@@ -94,6 +103,11 @@ export class DatabaseService {
     return podcast;
   }
 
+  public async getPodcastByStoreId(storeId: number): Promise<Podcast> {
+    const podcast: Podcast = await this.db.table('podcasts').get({ storeId });
+    return podcast;
+  }
+
   public async getPodcasts(): Promise<Podcast[]> {
     return await this.db.table('podcasts').toCollection().sortBy('title');
   }
@@ -102,7 +116,10 @@ export class DatabaseService {
 
   //#region Episodes
 
-  public async addEpisode(episode: Episode): Promise<void> {
+  public async addEpisode(
+    podcastId: number,
+    episode: RawEpisode
+  ): Promise<void> {
     const existingEpisode = await this.getEpisodeByGuid(episode.guid);
     if (existingEpisode) {
       console.log(
@@ -110,16 +127,22 @@ export class DatabaseService {
       );
       return;
     }
-    await this.db.table('episodes').add(episode);
+    await this.db.table('episodes').add({
+      ...episode,
+      podcastId,
+    });
   }
 
-  public async addEpisodes(episodes: Episode[]): Promise<void> {
+  public async addEpisodes(
+    podcastId: number,
+    episodes: RawEpisode[]
+  ): Promise<void> {
     for (const episode of episodes) {
-      await this.addEpisode(episode);
+      await this.addEpisode(podcastId, episode);
     }
   }
 
-  public async getEpisodesByPodcast(podcastId: number): Promise<Episode[]> {
+  public async getEpisodesByPodcastId(podcastId: number): Promise<Episode[]> {
     return await this.db
       .table('episodes')
       .where({ podcastId })
@@ -141,17 +164,7 @@ export class DatabaseService {
   public async getEpisodesByFilter(
     filterId: EpisodeFilterId,
     limit = 30
-  ): Promise<EpisodeExtended[]> {
-    const podcastCovers = await this.getPodcasts().then((podcasts) => {
-      return podcasts.reduce((coverMap: any, podcast) => {
-        coverMap[podcast.id] = {
-          title: podcast.title,
-          cover: podcast.cover,
-        };
-        return coverMap;
-      }, {});
-    });
-
+  ): Promise<Episode[]> {
     let episodes = [];
 
     switch (filterId) {
@@ -172,15 +185,9 @@ export class DatabaseService {
           .sortBy('date')
           .then((results) => results.filter((e) => e.progress < e.duration));
         break;
-      default:
-        break;
     }
 
-    return episodes.map((episode) => ({
-      ...episode,
-      cover: podcastCovers[episode.podcastId].cover,
-      podcastTitle: podcastCovers[episode.podcastId].title,
-    }));
+    return episodes;
   }
 
   public async updateEpisode(

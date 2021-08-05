@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "preact build --no-prerender --no-sw",
+    "build": "preact build --no-prerender --no-sw --no-esm",
     "serve": "sirv build --port 8080 --cors --single",
-    "build:dev": "preact build --no-prerender --no-inline-css --no-sw && cp ./manifest.webapp ./build/manifest.webapp",
-    "build:analyze": "preact build --no-prerender --json",
+    "build:dev": "preact build --no-prerender --no-inline-css --no-sw --no-esm && cp ./manifest.webapp ./build/manifest.webapp",
+    "build:analyze": "preact build --no-prerender --no-esm --json",
     "build:package": "node build.mjs",
     "build:deploy": " node build.mjs --deploy",
     "dev": "preact watch",
@@ -25,7 +25,7 @@
     ]
   },
   "dependencies": {
-    "dexie": "^2.0.4",
+    "dexie": "^3.0.3",
     "preact": "^10.3.1",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1"
@@ -54,5 +54,10 @@
       "<rootDir>/tests/__mocks__/browserMocks.ts",
       "<rootDir>/tests/__mocks__/setupTests.ts"
     ]
-  }
+  },
+  "browserslist": [
+    "Kaios 2.5",
+    "Firefox 48",
+    "Chrome 90"
+  ]
 }

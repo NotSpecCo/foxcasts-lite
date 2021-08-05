@@ -1,7 +1,7 @@
 import { createContext, h, VNode } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 import { EpisodeExtended } from '../core/models';
-import { EpisodeService } from '../core/services';
+import { getEpisodeById } from '../core/services/podcasts';
 import { ComponentBaseProps } from '../models';
 
 export type PlaybackStatus = {
@@ -44,8 +44,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   const [audioRef] = useState<HTMLAudioElement>(new Audio());
 
   async function load(episodeId: number, resume = false): Promise<void> {
-    const episodeService = new EpisodeService();
-    const data = await episodeService.getById(episodeId);
+    const data = await getEpisodeById(episodeId);
 
     if (!data) return;
 

@@ -1,14 +1,12 @@
-import { h, createRef, VNode } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended, EpisodeFilterId } from '../core/models';
-import { EpisodeService } from '../core/services';
 import styles from './Filter.module.css';
 import { ListItem, View } from '../ui-components';
 import { NavItem, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-
-const episodeService = new EpisodeService();
+import { getEpisodesByFilter } from '../core/services/podcasts';
 
 interface FilterProps {
   filterId: EpisodeFilterId;
@@ -19,7 +17,7 @@ export default function Filter({ filterId }: FilterProps): VNode {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    episodeService.getByFilter(filterId).then((episodes) => {
+    getEpisodesByFilter(filterId).then((episodes) => {
       setItems(wrapItems(episodes, true));
       setLoading(false);
     });
@@ -52,9 +50,9 @@ export default function Filter({ filterId }: FilterProps): VNode {
           key={item.data.id}
           ref={item.ref}
           isSelected={item.isSelected}
-          imageUrl={item.data.cover[60]}
+          imageUrl={item.data.artworkUrl60}
           primaryText={item.data.title}
-          secondaryText={item.data.date.toLocaleDateString()}
+          secondaryText={new Date(item.data.date).toLocaleDateString()}
           shortcutKey={item.shortcutKey}
           onClick={(): void => viewEpisode(item.data)}
         />

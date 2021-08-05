@@ -10,7 +10,7 @@ import PodcastPreview from '../routes/PodcastPreview';
 import Search from '../routes/Search';
 import Podcasts from '../routes/Podcasts';
 import { useNavKeys } from '../hooks/useNavKeys';
-import { PodcastService } from '../core/services';
+import { checkForUpdates } from '../core/services/podcasts';
 
 const App: FunctionalComponent = () => {
   useEffect(() => {
@@ -18,8 +18,7 @@ const App: FunctionalComponent = () => {
       route('/podcasts');
     }
 
-    const podcastService = new PodcastService();
-    // podcastService.checkForUpdates();
+    // checkForUpdates();
   }, []);
 
   useNavKeys({
@@ -33,11 +32,8 @@ const App: FunctionalComponent = () => {
       <PlayerProvider>
         <Router>
           <Route path="/search" component={Search} />
+          <Route path="/search/:podcastStoreId" component={PodcastPreview} />
           <Route path="/podcast/:podcastId" component={PodcastDetail} />
-          <Route
-            path="/podcast/:podcastId/preview"
-            component={PodcastPreview}
-          />
           <Route path="/episode/:episodeId" component={EpisodeDetail} />
           <Route path="/filter/:filterId" component={Filter} />
           <Route path="/player" component={Player} />

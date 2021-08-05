@@ -1,6 +1,4 @@
-export type Episode = {
-  id: number;
-  podcastId: number;
+export type RawEpisode = {
   guid: string;
   date: string; // ISO 8601
   title: string;

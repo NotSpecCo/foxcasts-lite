@@ -1,13 +1,11 @@
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended } from '../core/models';
-import { EpisodeService } from '../core/services';
 import { formatFileSize, formatTime } from '../core/utils';
 import { MenuOption, View } from '../ui-components';
 import styles from './EpisodeDetail.module.css';
 import { usePlayer } from '../contexts/playerContext';
-
-const episodeService = new EpisodeService();
+import { getEpisodeById } from '../core/services/podcasts';
 
 interface EpisodeDetailProps {
   episodeId: string;
@@ -21,7 +19,7 @@ export default function EpisodeDetail({
   const player = usePlayer();
 
   useEffect(() => {
-    episodeService.getById(parseInt(episodeId, 10)).then((result) => {
+    getEpisodeById(parseInt(episodeId, 10)).then((result) => {
       setEpisode(result);
     });
   }, [episodeId]);
@@ -64,7 +62,9 @@ export default function EpisodeDetail({
     >
       <div className={styles.details}>
         <div className={styles.title}>{episode?.title}</div>
-        <div className={styles.date}>{episode?.date.toLocaleDateString()}</div>
+        <div className={styles.date}>
+          {episode ? new Date(episode.date).toLocaleDateString() : null}
+        </div>
         <div>
           Duration:{' '}
           <span className={styles.accent}>
@@ -77,7 +77,7 @@ export default function EpisodeDetail({
             {episode?.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'}
           </span>
         </div>
-        <p>{episode?.subTitle}</p>
+        <p>{episode?.subtitle}</p>
       </div>
     </View>
   );

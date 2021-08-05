@@ -1,15 +1,11 @@
-import { Episode, Podcast } from '../models';
+import { Episode, ITunesPodcast, Podcast, RawEpisode } from '../models';
 import { formatPodcast } from '../utils';
 
 interface HttpClient {
   get: (url: string, contentType?: string) => Promise<any>;
 }
 
-function getDurationInSeconds(duration: string | number): number {
-  if (typeof duration === 'number') {
-    return duration;
-  }
-
+function getDurationInSeconds(duration: string): number {
   if (!duration.includes(':')) {
     return parseInt(duration, 10);
   }
@@ -23,17 +19,14 @@ function getDurationInSeconds(duration: string | number): number {
   return seconds;
 }
 
-function parseXmlEpisodes(xmlString: string): Episode[] {
+function parseXmlEpisodes(xmlString: string, limit = 50): RawEpisode[] {
   const xml = new DOMParser().parseFromString(xmlString, 'text/xml');
 
   const recentEpisodes = Array.from(xml.getElementsByTagName('item'));
 
-  const episodes: Episode[] = [];
+  const episodes: RawEpisode[] = [];
 
-  recentEpisodes.forEach((rawEpisode) => {
-    const authorNode =
-      rawEpisode.getElementsByTagName('itunes:author')[0] ||
-      rawEpisode.getElementsByTagName('author')[0];
+  recentEpisodes.slice(0, limit).forEach((rawEpisode) => {
     const descriptionNode =
       rawEpisode.getElementsByTagName('itunes:description')[0] ||
       rawEpisode.getElementsByTagName('description')[0];
@@ -48,32 +41,29 @@ function parseXmlEpisodes(xmlString: string): Episode[] {
       rawEpisode.getElementsByTagName('duration')[0];
 
     try {
-      const episode = {
-        duration:
-          durationNode &&
-          getDurationInSeconds(durationNode.textContent as string),
-        progress: 0,
+      const episode: RawEpisode = {
         guid: rawEpisode.getElementsByTagName('guid')[0].textContent,
+        title: titleNode.textContent,
+        subtitle: subTitleNode?.textContent,
         date: new Date(
           rawEpisode.getElementsByTagName('pubDate')[0].textContent as string
-        ),
-        author: authorNode && authorNode.textContent,
-        title: titleNode && titleNode.textContent,
-        subTitle: subTitleNode && subTitleNode.textContent,
-        description: descriptionNode && descriptionNode.textContent,
+        ).toISOString(),
+        duration: getDurationInSeconds(durationNode.textContent || ''),
+        progress: 0,
+        description: descriptionNode?.textContent,
         fileSize: parseInt(
           rawEpisode
             .getElementsByTagName('enclosure')[0]
-            ?.getAttribute('length') || '',
+            .getAttribute('length') as string,
           10
         ),
-        type: rawEpisode
+        fileType: rawEpisode
           .getElementsByTagName('enclosure')[0]
           .getAttribute('type'),
         fileUrl: rawEpisode
           .getElementsByTagName('enclosure')[0]
           .getAttribute('url'),
-      } as Episode;
+      } as RawEpisode;
 
       episodes.push(episode);
     } catch (err) {
@@ -116,7 +106,7 @@ const defaultHttpClient: HttpClient = {
 
 interface GetEpisodesOptions {
   numResults?: number;
-  afterDate?: Date;
+  afterDate?: string; // ISO 8601
 }
 
 export class ApiService {
@@ -126,10 +116,10 @@ export class ApiService {
     this.client = httpClient || defaultHttpClient;
   }
 
-  public async search(query: string, { numResults = 25 } = {}) {
+  public async search(query: string): Promise<ITunesPodcast[]> {
     return this.client
       .get(`https://itunes.apple.com/search?media=podcast&term=${query}`)
-      .then((res: any) => res.results.slice(0, numResults)) // TODO: Use formatPodcast
+      .then((res: any) => res.results) // TODO: Use formatPodcast
       .catch((err) => {
         console.log('Failed to search', err);
         throw new Error('Failed to search iTunes catalog.');
@@ -138,8 +128,8 @@ export class ApiService {
 
   public async getEpisodes(
     feedUrl: string,
-    { numResults = 25, afterDate }: GetEpisodesOptions = {}
-  ): Promise<Episode[]> {
+    { numResults = 50, afterDate }: GetEpisodesOptions = {}
+  ): Promise<RawEpisode[]> {
     return this.client
       .get(feedUrl, 'text/xml')
       .then((result: string) => parseXmlEpisodes(result))
@@ -156,10 +146,10 @@ export class ApiService {
       });
   }
 
-  public async getPodcastById(podcastId: number): Promise<Podcast> {
+  public async getPodcastById(podcastId: number): Promise<ITunesPodcast> {
     return this.client
       .get(`https://itunes.apple.com/lookup?id=${podcastId}`)
-      .then((res) => formatPodcast(res.results[0]))
+      .then((res) => res.results[0])
       .catch((err) => {
         console.log('Failed to get podcast', err);
         throw new Error('Failed to get podcast detail from iTunes.');

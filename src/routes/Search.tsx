@@ -2,12 +2,12 @@ import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { useNavKeys } from '../hooks/useNavKeys';
-import { ITunesSearchResult } from '../core/models';
 import { ApiService } from '../core/services/apiService';
 import { ListItem, View } from '../ui-components';
 import { NavItem, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import styles from './Search.module.css';
+import { ITunesPodcast } from '../core/models';
 
 const apiService = new ApiService();
 
@@ -17,7 +17,7 @@ interface SearchProps {
 
 export default function Search({ q: queryParam }: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
-  const [items, setItems] = useState<NavItem<ITunesSearchResult>[]>([]);
+  const [items, setItems] = useState<NavItem<ITunesPodcast>[]>([]);
   const searchbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -34,8 +34,8 @@ export default function Search({ q: queryParam }: SearchProps): VNode {
       .catch((err) => console.error(err));
   }, [queryParam]);
 
-  function viewPodcast(id: number): void {
-    route(`/podcast/${id}/preview`);
+  function viewPodcast(podcastStoreId: number): void {
+    route(`/search/${podcastStoreId}`);
   }
 
   function setQueryParam(): void {

@@ -2,18 +2,16 @@ import { h } from 'preact';
 import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { Podcast } from '../core/models';
-import { PodcastService } from '../core/services';
 import { ListItem, View } from '../ui-components';
 import { NavItem, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-
-const podcastService = new PodcastService();
+import { getAllPodcasts, subscribe } from '../core/services/podcasts';
 
 export default function Podcasts(): any {
   const [items, setItems] = useState<NavItem<Podcast>[]>([]);
 
   useEffect(() => {
-    podcastService.getAll().then((result) => {
+    getAllPodcasts().then((result) => {
       setItems(wrapItems(result, true));
     });
   }, []);
@@ -29,16 +27,14 @@ export default function Podcasts(): any {
     options: { stopPropagation: true },
   });
 
-  // useShortcutKeys(podcasts, {}, (podcast) => handlePodcastClick(podcast)());
-
   async function seedData() {
     try {
       await Promise.all([
-        podcastService.subscribe(1237401284), // JavaScript Jabber
-        podcastService.subscribe(493890455), // Shop Talk
-        podcastService.subscribe(1253186678), // Syntax
-        podcastService.subscribe(1341969432), // React Podcast
-        podcastService.subscribe(430333725), // Vergecast
+        subscribe(1237401284), // JavaScript Jabber
+        subscribe(493890455), // Shop Talk
+        subscribe(1253186678), // Syntax
+        subscribe(1341969432), // React Podcast
+        subscribe(430333725), // Vergecast
       ]);
       console.log('seed success');
     } catch (err) {
@@ -63,7 +59,7 @@ export default function Podcasts(): any {
           key={item.data.id}
           ref={item.ref}
           isSelected={item.isSelected}
-          imageUrl={item.data.cover[60]}
+          imageUrl={item.data.artworkUrl60}
           primaryText={item.data.title}
           shortcutKey={item.shortcutKey}
           onClick={(): void => handlePodcastClick(item.data)}

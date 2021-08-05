@@ -1,21 +1,26 @@
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { Podcast, Episode } from '../core/models';
-import { ApiService, PodcastService } from '../core/services';
+import { Episode, ITunesPodcast, RawEpisode } from '../core/models';
+import { ApiService } from '../core/services/apiService';
+import {
+  getPodcastById,
+  getPodcastByStoreId,
+  subscribe,
+  unsubscribe,
+} from '../core/services/podcasts';
 import { ListItem, View } from '../ui-components';
 import styles from './PodcastPreview.module.css';
 
 const apiService = new ApiService();
-const podcastService = new PodcastService();
 
 interface PodcastPreviewProps {
-  podcastId: number;
+  podcastStoreId: string;
 }
 export default function PodcastPreview({
-  podcastId,
+  podcastStoreId,
 }: PodcastPreviewProps): VNode {
-  const [podcast, setPodcast] = useState<Podcast | null>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [podcast, setPodcast] = useState<ITunesPodcast>();
+  const [episodes, setEpisodes] = useState<RawEpisode[]>([]);
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -23,42 +28,61 @@ export default function PodcastPreview({
   useEffect(() => {
     setLoading(true);
     apiService
-      .getPodcastById(podcastId)
+      .getPodcastById(parseInt(podcastStoreId, 10))
       .then((result) => {
         setPodcast(result);
         return result.feedUrl;
       })
-      .then((feedUrl) => apiService.getEpisodes(feedUrl))
+      .then((feedUrl) => apiService.getEpisodes(feedUrl, { numResults: 10 }))
       .then((result) => {
         setEpisodes(result);
-      })
-      .then(() => setLoading(false));
+        setLoading(false);
+      });
 
-    podcastService.getById(podcastId).then((result) => setSubscribed(!!result));
-  }, [podcastId]);
+    getPodcastByStoreId(parseInt(podcastStoreId, 10)).then((result) =>
+      setSubscribed(!!result)
+    );
+  }, [podcastStoreId]);
 
-  async function togggleSubscribe(): Promise<void> {
+  async function subscribeToPodcast(): Promise<void> {
     if (subscribing) {
       return;
     }
     setSubscribing(true);
 
-    try {
-      subscribed
-        ? await podcastService.unsubscribe(podcastId)
-        : await podcastService.subscribe(podcastId);
+    await subscribe(parseInt(podcastStoreId, 10))
+      .then(() => setSubscribed(true))
+      .catch((err) =>
+        console.error('Failed to subscribe to podcast', err.message)
+      );
 
-      setSubscribed(!subscribed);
-    } catch (err) {
-      console.error(err);
+    setSubscribing(false);
+  }
+
+  async function unsubscribeFromPodcast(): Promise<void> {
+    if (subscribing) {
+      return;
     }
+    setSubscribing(true);
+
+    await unsubscribe(parseInt(podcastStoreId, 10), 'store')
+      .then(() => setSubscribed(false))
+
+      .catch((err) =>
+        console.error('Failed to unsubscribe from podcast', err.message)
+      );
 
     setSubscribing(false);
   }
 
   function handleAction(action: string): void {
-    if (action === 'subscribe' || action === 'unsubscribe') {
-      togggleSubscribe();
+    switch (action) {
+      case 'subscribe':
+        subscribeToPodcast();
+        break;
+      case 'unsubscribe':
+        unsubscribeFromPodcast();
+        break;
     }
   }
 
@@ -81,18 +105,18 @@ export default function PodcastPreview({
       <div className={styles.details}>
         {podcast && (
           <img
-            src={podcast.cover[600] || podcast.cover[100]}
+            src={podcast.artworkUrl600 || podcast.artworkUrl100}
             className={styles.logo}
           />
         )}
-        <div className={styles.title}>{podcast?.title}</div>
-        <div className={styles.author}>{podcast?.author}</div>
+        <div className={styles.title}>{podcast?.collectionName}</div>
+        <div className={styles.author}>{podcast?.artistName}</div>
       </div>
       {episodes.map((episode) => (
         <ListItem
-          key={episode.id}
+          key={episode.guid}
           primaryText={episode.title}
-          secondaryText={episode.date.toLocaleDateString()}
+          secondaryText={episode.date}
         />
       ))}
     </View>

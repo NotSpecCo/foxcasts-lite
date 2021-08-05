@@ -1,19 +1,14 @@
 import { ITunesPodcast, Podcast } from '../models';
 
-export function formatPodcast(rawPodcast: ITunesPodcast): Podcast {
+export function formatPodcast(podcast: ITunesPodcast): Podcast {
   return {
-    id: rawPodcast.collectionId,
-    authorId: rawPodcast.artistId,
-    title: rawPodcast.collectionName,
-    author: rawPodcast.artistName,
-    cover: {
-      30: rawPodcast.artworkUrl30,
-      60: rawPodcast.artworkUrl60,
-      100: rawPodcast.artworkUrl100,
-      600: rawPodcast.artworkUrl600,
-    },
-    summary: rawPodcast.summary,
-    description: rawPodcast.description,
-    feedUrl: rawPodcast.feedUrl,
-  };
+    storeId: podcast.collectionId,
+    title: podcast.collectionName,
+    author: podcast.artistName,
+    artworkUrl30: podcast.artworkUrl30,
+    artworkUrl60: podcast.artworkUrl60,
+    artworkUrl100: podcast.artworkUrl100,
+    artworkUrl600: podcast.artworkUrl600,
+    feedUrl: podcast.feedUrl,
+  } as Podcast;
 }
