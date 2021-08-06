@@ -142,14 +142,17 @@ export class DatabaseService {
     }
   }
 
-  public async getEpisodesByPodcastId(podcastId: number): Promise<Episode[]> {
-    return await this.db
+  public async getEpisodesByPodcastId(
+    podcastId: number,
+    limit = 30,
+    offset = 0
+  ): Promise<Episode[]> {
+    const result = await this.db
       .table('episodes')
       .where({ podcastId })
-      // .sortBy('date')
       .toArray()
-      .then((eps) =>
-        eps.sort((a, b) => {
+      .then((episodes) =>
+        episodes.sort((a, b) => {
           if (a.date > b.date) {
             return -1;
           }
@@ -158,7 +161,10 @@ export class DatabaseService {
           }
           return 0;
         })
-      );
+      )
+      .then((episodes) => episodes.slice(offset, limit));
+
+    return result;
   }
 
   public async getEpisodesByFilter(

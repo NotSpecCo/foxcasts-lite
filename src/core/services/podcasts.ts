@@ -93,10 +93,16 @@ export async function getEpisodeById(
 }
 
 export async function getEpisodesByPodcastId(
-  podcastId: number
+  podcastId: number,
+  limit = 30,
+  offset = 0
 ): Promise<EpisodeExtended[]> {
   const podcast = await databaseService.getPodcastById(podcastId);
-  const episodes = await databaseService.getEpisodesByPodcastId(podcastId);
+  const episodes = await databaseService.getEpisodesByPodcastId(
+    podcastId,
+    limit,
+    offset
+  );
 
   return episodes.map((episode) => addPodcastInfoToEpisode(podcast, episode));
 }

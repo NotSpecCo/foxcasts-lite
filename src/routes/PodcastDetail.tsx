@@ -5,7 +5,11 @@ import { Podcast, Episode } from '../core/models';
 import { ListItem, View } from '../ui-components';
 import { NavItem, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-import { getPodcastById, unsubscribe } from '../core/services/podcasts';
+import {
+  getEpisodesByPodcastId,
+  getPodcastById,
+  unsubscribe,
+} from '../core/services/podcasts';
 
 interface PodcastDetailProps {
   podcastId: string;
@@ -15,13 +19,13 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
   const [items, setItems] = useState<NavItem<Episode>[]>([]);
 
   useEffect(() => {
-    getPodcastById(parseInt(podcastId, 10), true).then((result) => {
-      if (!result.episodes) {
-        result.episodes = [];
-      }
-      setPodcast(result);
-      setItems(wrapItems(result.episodes, true));
-    });
+    getPodcastById(parseInt(podcastId, 10), true).then((result) =>
+      setPodcast(result)
+    );
+
+    getEpisodesByPodcastId(parseInt(podcastId, 10)).then((episodes) =>
+      setItems(wrapItems(episodes, true))
+    );
   }, [podcastId]);
 
   function viewEpisode(episode: Episode): void {
