@@ -4,26 +4,38 @@ import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended, EpisodeFilterId } from '../core/models';
 import styles from './Filter.module.css';
 import { ListItem, View } from '../ui-components';
-import { NavItem, wrapItems } from '../utils/navigation';
+import { NavItem, setSelected, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import { getEpisodesByFilter } from '../core/services/podcasts';
 
 interface FilterProps {
   filterId: EpisodeFilterId;
+  selectedItemId?: string;
 }
 
-export default function Filter({ filterId }: FilterProps): VNode {
+export default function Filter({
+  filterId,
+  selectedItemId,
+}: FilterProps): VNode {
   const [items, setItems] = useState<NavItem<EpisodeExtended>[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.time('filter');
     getEpisodesByFilter(filterId).then((episodes) => {
-      console.timeEnd('filter');
       setItems(wrapItems(episodes, 'id', true));
       setLoading(false);
     });
   }, [filterId]);
+
+  // Restore scroll position
+  useEffect(() => {
+    if (!selectedItemId) return;
+
+    const selected = items.find((a) => a.id === selectedItemId);
+    if (selected && !selected.isSelected) {
+      setItems(setSelected(items, selectedItemId));
+    }
+  }, [selectedItemId, items]);
 
   function viewEpisode(episode: EpisodeExtended): void {
     route(`/episode/${episode.id}`);
@@ -32,7 +44,15 @@ export default function Filter({ filterId }: FilterProps): VNode {
   useDpad({
     items,
     onEnter: (item) => viewEpisode(item.data),
-    onChange: (items) => setItems(items),
+    onChange: (items) => {
+      const selected = items.find((a) => a.isSelected);
+      if (selected) {
+        route(`/filter/${filterId}?selectedItemId=${selected.id}`, true);
+      } else {
+        route(`/filter/${filterId}`, true);
+      }
+      setItems(items);
+    },
     options: { stopPropagation: true },
   });
 

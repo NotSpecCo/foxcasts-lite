@@ -1,14 +1,9 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { Podcast, Episode } from '../core/models';
 import { ListItem, View } from '../ui-components';
-import {
-  NavItem,
-  scrollIntoView,
-  setSelected,
-  wrapItems,
-} from '../utils/navigation';
+import { NavItem, setSelected, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import {
   getEpisodesByPodcastId,
@@ -23,7 +18,7 @@ interface PodcastDetailProps {
 export default function PodcastDetail({
   podcastId,
   selectedItemId,
-}: PodcastDetailProps): any {
+}: PodcastDetailProps): VNode {
   const [podcast, setPodcast] = useState<Podcast | undefined>();
   const [items, setItems] = useState<NavItem<Episode>[]>([]);
 

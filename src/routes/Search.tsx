@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ApiService } from '../core/services/apiService';
 import { ListItem, View } from '../ui-components';
-import { NavItem, wrapItems } from '../utils/navigation';
+import { NavItem, setSelected, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import styles from './Search.module.css';
 import { ITunesPodcast } from '../core/models';
@@ -13,9 +13,13 @@ const apiService = new ApiService();
 
 interface SearchProps {
   q?: string;
+  selectedItemId?: string;
 }
 
-export default function Search({ q: queryParam }: SearchProps): VNode {
+export default function Search({
+  q: queryParam,
+  selectedItemId,
+}: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
   const [items, setItems] = useState<NavItem<ITunesPodcast>[]>([]);
   const searchbox = useRef<HTMLInputElement>(null);
@@ -34,6 +38,16 @@ export default function Search({ q: queryParam }: SearchProps): VNode {
       .catch((err) => console.error(err));
   }, [queryParam]);
 
+  // Restore scroll position
+  useEffect(() => {
+    if (!selectedItemId) return;
+
+    const selected = items.find((a) => a.id === selectedItemId);
+    if (selected && !selected.isSelected) {
+      setItems(setSelected(items, selectedItemId));
+    }
+  }, [selectedItemId, items]);
+
   function viewPodcast(podcastStoreId: number): void {
     route(`/search/${podcastStoreId}`);
   }
@@ -45,7 +59,15 @@ export default function Search({ q: queryParam }: SearchProps): VNode {
   useDpad({
     items,
     onEnter: (item) => viewPodcast(item.data.collectionId),
-    onChange: (items) => setItems(items),
+    onChange: (items) => {
+      const selected = items.find((a) => a.isSelected);
+      if (selected) {
+        route(`/search?q=${queryParam}&selectedItemId=${selected.id}`, true);
+      } else {
+        route(`/search?q=${queryParam}`, true);
+      }
+      setItems(items);
+    },
     options: { stopPropagation: true },
   });
 

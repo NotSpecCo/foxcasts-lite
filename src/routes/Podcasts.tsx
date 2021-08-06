@@ -1,13 +1,17 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { Podcast } from '../core/models';
 import { ListItem, View } from '../ui-components';
-import { NavItem, wrapItems } from '../utils/navigation';
+import { NavItem, setSelected, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import { getAllPodcasts, subscribe } from '../core/services/podcasts';
 
-export default function Podcasts(): any {
+interface Props {
+  selectedItemId?: string;
+}
+
+export default function Podcasts({ selectedItemId }: Props): VNode {
   const [items, setItems] = useState<NavItem<Podcast>[]>([]);
 
   useEffect(() => {
@@ -16,6 +20,16 @@ export default function Podcasts(): any {
     });
   }, []);
 
+  // Restore scroll position
+  useEffect(() => {
+    if (!selectedItemId) return;
+
+    const selected = items.find((a) => a.id === selectedItemId);
+    if (selected && !selected.isSelected) {
+      setItems(setSelected(items, selectedItemId));
+    }
+  }, [selectedItemId, items]);
+
   function handlePodcastClick(podcast: Podcast): void {
     route(`/podcast/${podcast.id}`);
   }
@@ -23,7 +37,15 @@ export default function Podcasts(): any {
   useDpad({
     items,
     onEnter: (item) => handlePodcastClick(item.data),
-    onChange: (items) => setItems(items),
+    onChange: (items) => {
+      const selected = items.find((a) => a.isSelected);
+      if (selected) {
+        route(`/podcasts/?selectedItemId=${selected.id}`, true);
+      } else {
+        route(`/podcasts/`, true);
+      }
+      setItems(items);
+    },
     options: { stopPropagation: true },
   });
 
