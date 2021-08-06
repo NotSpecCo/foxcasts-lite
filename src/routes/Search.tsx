@@ -30,7 +30,7 @@ export default function Search({ q: queryParam }: SearchProps): VNode {
 
     apiService
       .search(queryParam)
-      .then((result) => setItems(wrapItems(result)))
+      .then((result) => setItems(wrapItems(result, 'collectionId')))
       .catch((err) => console.error(err));
   }, [queryParam]);
 

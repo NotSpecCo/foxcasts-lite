@@ -17,8 +17,10 @@ export default function Filter({ filterId }: FilterProps): VNode {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    console.time('filter');
     getEpisodesByFilter(filterId).then((episodes) => {
-      setItems(wrapItems(episodes, true));
+      console.timeEnd('filter');
+      setItems(wrapItems(episodes, 'id', true));
       setLoading(false);
     });
   }, [filterId]);

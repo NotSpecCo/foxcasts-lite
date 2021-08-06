@@ -1,14 +1,20 @@
 import { h, createRef, RefObject } from 'preact';
 
 export type NavItem<T = unknown> = {
+  id: string;
   shortcutKey?: string;
   isSelected: boolean;
   ref: RefObject<any>;
   data: T;
 };
 
-export function wrapItems<T>(items: T[], assignNumKeys = false): NavItem<T>[] {
+export function wrapItems<T>(
+  items: T[],
+  idKey: keyof T,
+  assignNumKeys = false
+): NavItem<T>[] {
   return items.map((item, i) => ({
+    id: `${item[idKey]}`,
     shortcutKey: assignNumKeys && i + 1 <= 9 ? `${i + 1}` : undefined,
     isSelected: false,
     ref: createRef(),
@@ -29,6 +35,36 @@ export function cursorSelectByKey<T>(
   return item;
 }
 
+export function scrollIntoView(ref?: RefObject<any>): void {
+  if (!ref?.current) return;
+
+  ref.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+
+  // Workaround for KaiOS being based on an old browser
+  // TODO: Use scroll-margin on ListItem when available
+  const rect = ref.current.getBoundingClientRect();
+  const diff = rect.top + rect.height + 19 - window.innerHeight;
+  if (diff > 0) {
+    window.scroll({ top: window.scrollY + diff });
+  }
+
+  // This doesn't work on KaiOS
+  // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+export function setSelected<T>(items: NavItem<T>[], id: string): NavItem<T>[] {
+  return items.map((item) => {
+    if (item.id === id && item.ref) {
+      scrollIntoView(item.ref);
+    }
+
+    return {
+      ...item,
+      isSelected: item.id === id,
+    };
+  });
+}
+
 export function moveCursor<T>(
   items: NavItem<T>[],
   direction: 'next' | 'prev'
@@ -41,18 +77,7 @@ export function moveCursor<T>(
 
   return items.map((item, index) => {
     if (index === newIndex && item.ref) {
-      item.ref.current.scrollIntoView({ behavior: 'auto', block: 'end' });
-
-      // Workaround for KaiOS being based on an old browser
-      // TODO: Use scroll-margin on ListItem when available
-      const rect = item.ref.current.getBoundingClientRect();
-      const diff = rect.top + rect.height + 19 - window.innerHeight;
-      if (diff > 0) {
-        window.scroll({ top: window.scrollY + diff });
-      }
-
-      // This doesn't work on KaiOS
-      // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      scrollIntoView(item.ref);
     }
 
     return {

@@ -3,7 +3,12 @@ import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { Podcast, Episode } from '../core/models';
 import { ListItem, View } from '../ui-components';
-import { NavItem, wrapItems } from '../utils/navigation';
+import {
+  NavItem,
+  scrollIntoView,
+  setSelected,
+  wrapItems,
+} from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import {
   getEpisodesByPodcastId,
@@ -13,8 +18,12 @@ import {
 
 interface PodcastDetailProps {
   podcastId: string;
+  selectedItemId?: string;
 }
-export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
+export default function PodcastDetail({
+  podcastId,
+  selectedItemId,
+}: PodcastDetailProps): any {
   const [podcast, setPodcast] = useState<Podcast | undefined>();
   const [items, setItems] = useState<NavItem<Episode>[]>([]);
 
@@ -24,9 +33,19 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
     );
 
     getEpisodesByPodcastId(parseInt(podcastId, 10)).then((episodes) =>
-      setItems(wrapItems(episodes, true))
+      setItems(wrapItems(episodes, 'id', true))
     );
   }, [podcastId]);
+
+  // Restore scroll position
+  useEffect(() => {
+    if (!selectedItemId) return;
+
+    const selected = items.find((a) => a.id === selectedItemId);
+    if (selected && !selected.isSelected) {
+      setItems(setSelected(items, selectedItemId));
+    }
+  }, [selectedItemId, items]);
 
   function viewEpisode(episode: Episode): void {
     route(`/episode/${episode.id}`);
@@ -35,7 +54,15 @@ export default function PodcastDetail({ podcastId }: PodcastDetailProps): any {
   useDpad({
     items,
     onEnter: (item) => viewEpisode(item.data),
-    onChange: (items) => setItems(items),
+    onChange: (items) => {
+      const selected = items.find((a) => a.isSelected);
+      if (selected) {
+        route(`/podcast/${podcastId}?selectedItemId=${selected.id}`, true);
+      } else {
+        route(`/podcast/${podcastId}`, true);
+      }
+      setItems(items);
+    },
     options: { stopPropagation: true },
   });
 

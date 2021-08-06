@@ -12,7 +12,7 @@ export default function Podcasts(): any {
 
   useEffect(() => {
     getAllPodcasts().then((result) => {
-      setItems(wrapItems(result, true));
+      setItems(wrapItems(result, 'id', true));
     });
   }, []);
 

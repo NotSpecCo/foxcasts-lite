@@ -24,7 +24,7 @@ export function Menu({ closeSide = 'left', ...props }: Props): any {
   const [items, setItems] = useState<NavItem<MenuOption>[]>([]);
 
   useEffect(() => {
-    setItems(wrapItems(props.options, true));
+    setItems(wrapItems(props.options, 'id', true));
   }, [props.options]);
 
   useDpad({
