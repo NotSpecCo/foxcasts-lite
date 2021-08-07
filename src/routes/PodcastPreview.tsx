@@ -116,7 +116,7 @@ export default function PodcastPreview({
         <ListItem
           key={episode.guid}
           primaryText={episode.title}
-          secondaryText={episode.date}
+          secondaryText={new Date(episode.date).toLocaleDateString()}
         />
       ))}
     </View>
