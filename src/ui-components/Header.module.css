@@ -1,6 +1,7 @@
 .root {
   background-color: var(--header-bg-color);
   color: var(--header-text-color);
+  border-bottom: 1px solid var(--divider-color);
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;

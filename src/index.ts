@@ -1,4 +1,4 @@
 import './style/index.css';
-import App from './components/App';
+import { AppWrapper } from './components/App';
 
-export default App;
+export default AppWrapper;
