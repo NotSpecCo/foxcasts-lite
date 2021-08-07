@@ -2,9 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px;
+  padding: 12px 5px;
 }
 .row.selected {
   background-color: var(--highlight-bg-color);
   color: var(--highlight-text-color);
+}
+
+body[data-compact-layout] .row {
+  padding: 9px 5px;
 }

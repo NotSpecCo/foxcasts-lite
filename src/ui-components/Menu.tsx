@@ -1,4 +1,4 @@
-import { h, options } from 'preact';
+import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { useDpad } from '../hooks/useDpad';
 import { useNavKeys } from '../hooks/useNavKeys';
@@ -34,7 +34,7 @@ export function Menu({ closeSide = 'left', ...props }: Props): any {
       // props.onClose();
     },
     onChange: (items) => setItems(items),
-    options: { stopPropagation: true, capture: true },
+    options: { stopPropagation: true, capture: true, scrollIntoView: false },
   });
 
   useNavKeys(

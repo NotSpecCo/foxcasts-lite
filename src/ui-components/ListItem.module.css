@@ -1,6 +1,9 @@
 .root {
   display: flex;
   align-items: center;
+  padding: 6px 5px;
+}
+body[data-compact-layout] .root {
   padding: 3px 5px;
 }
 .root.selected {

@@ -22,6 +22,11 @@ export default function AppSettings(): VNode {
   useEffect(() => {
     const settingsList: SettingItem[] = [
       { key: 'darkTheme', label: 'Dark Theme', value: settings['darkTheme'] },
+      {
+        key: 'compactLayout',
+        label: 'Compact Layout',
+        value: settings['compactLayout'],
+      },
     ];
     setItems(wrapItems(settingsList, 'key'));
   }, []);

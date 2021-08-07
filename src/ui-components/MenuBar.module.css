@@ -6,6 +6,10 @@
   background-color: var(--menubar-bg-color);
   color: var(--menubar-text-color);
   font-weight: bold;
+  height: 28px;
+}
+body[data-compact-layout] .root {
+  height: unset;
   font-size: 12px;
 }
 

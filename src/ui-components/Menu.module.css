@@ -19,7 +19,7 @@
 }
 
 .option {
-  padding: 3px 5px;
+  padding: 5px;
   font-size: 17px;
   display: flex;
   align-items: center;
@@ -30,6 +30,12 @@
 }
 .option.disabled {
   opacity: 0.5;
+}
+body[data-compact-layout] .option {
+  padding: 3px 5px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .shortcut {

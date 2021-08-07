@@ -9,6 +9,7 @@ import {
 interface Options {
   capture?: boolean;
   stopPropagation?: boolean;
+  scrollIntoView?: boolean;
 }
 
 type Props<T> = {
@@ -19,6 +20,14 @@ type Props<T> = {
 };
 
 export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
+  // Apply defaults
+  options = {
+    capture: false,
+    stopPropagation: false,
+    scrollIntoView: true,
+    ...options,
+  };
+
   const shortcutKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const dpadKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
 
@@ -53,7 +62,7 @@ export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
     }
 
     const direction = ev.key === 'ArrowUp' ? 'prev' : 'next';
-    const newItems = moveCursor(props.items, direction);
+    const newItems = moveCursor(props.items, direction, options.scrollIntoView);
 
     props.onChange(newItems);
   }

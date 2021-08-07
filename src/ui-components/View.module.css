@@ -9,6 +9,9 @@
 
 .content {
   overflow-x: hidden;
+  padding: 28px 0;
+}
+body[data-compact-layout] .content {
   padding: 18px 0;
 }
 

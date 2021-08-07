@@ -43,7 +43,7 @@ export function scrollIntoView(ref?: RefObject<any>): void {
   // Workaround for KaiOS being based on an old browser
   // TODO: Use scroll-margin on ListItem when available
   const rect = ref.current.getBoundingClientRect();
-  const diff = rect.top + rect.height + 19 - window.innerHeight;
+  const diff = rect.top + rect.height + 50 - window.innerHeight;
   if (diff > 0) {
     window.scroll({ top: window.scrollY + diff });
   }
@@ -52,9 +52,13 @@ export function scrollIntoView(ref?: RefObject<any>): void {
   // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-export function setSelected<T>(items: NavItem<T>[], id: string): NavItem<T>[] {
+export function setSelected<T>(
+  items: NavItem<T>[],
+  id: string,
+  scroll = true
+): NavItem<T>[] {
   return items.map((item) => {
-    if (item.id === id && item.ref) {
+    if (scroll && item.id === id && item.ref) {
       scrollIntoView(item.ref);
     }
 
@@ -67,7 +71,8 @@ export function setSelected<T>(items: NavItem<T>[], id: string): NavItem<T>[] {
 
 export function moveCursor<T>(
   items: NavItem<T>[],
-  direction: 'next' | 'prev'
+  direction: 'next' | 'prev',
+  scroll = true
 ): NavItem<T>[] {
   const currentIndex = items.findIndex((a) => a.isSelected);
   let newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
@@ -76,7 +81,7 @@ export function moveCursor<T>(
   // console.log('new index', newIndex);
 
   return items.map((item, index) => {
-    if (index === newIndex && item.ref) {
+    if (scroll && index === newIndex && item.ref) {
       scrollIntoView(item.ref);
     }
 

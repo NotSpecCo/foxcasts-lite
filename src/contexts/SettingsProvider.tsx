@@ -10,6 +10,7 @@ import {
 const defaultSettings: Settings = {
   darkTheme: false,
   fullScreen: false,
+  compactLayout: true,
 };
 
 type SettingsContextValue = {

@@ -51,6 +51,14 @@ export default function App(): VNode {
     }
   }, [settings.darkTheme]);
 
+  useEffect(() => {
+    if (settings.compactLayout) {
+      document.body.setAttribute('data-compact-layout', '');
+    } else {
+      document.body.removeAttribute('data-compact-layout');
+    }
+  }, [settings.compactLayout]);
+
   useNavKeys({
     Backspace: (ev) => {
       console.log('root backspace');
