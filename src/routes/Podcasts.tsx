@@ -59,6 +59,9 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
         subscribe(430333725), // Vergecast
       ]);
       console.log('seed success');
+      getAllPodcasts().then((result) => {
+        setItems(wrapItems(result, 'id', true));
+      });
     } catch (err) {
       console.error('Failed to seed data', err);
     }
