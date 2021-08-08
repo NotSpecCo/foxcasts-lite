@@ -13,6 +13,7 @@ interface Props {
 
 export default function Podcasts({ selectedItemId }: Props): VNode {
   const [items, setItems] = useState<NavItem<Podcast>[]>([]);
+  const [seeding, setSeeding] = useState(false);
 
   useEffect(() => {
     getAllPodcasts().then((result) => {
@@ -49,7 +50,8 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
     options: { stopPropagation: true },
   });
 
-  async function seedData() {
+  async function seedData(): Promise<void> {
+    setSeeding(true);
     try {
       await Promise.all([
         subscribe(1237401284), // JavaScript Jabber
@@ -59,12 +61,15 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
         subscribe(430333725), // Vergecast
       ]);
       console.log('seed success');
-      getAllPodcasts().then((result) => {
-        setItems(wrapItems(result, 'id', true));
-      });
     } catch (err) {
       console.error('Failed to seed data', err);
     }
+
+    getAllPodcasts().then((result) => {
+      setItems(wrapItems(result, 'id', true));
+    });
+
+    setSeeding(false);
   }
 
   async function handleAction(action: string): Promise<void> {
@@ -76,7 +81,13 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   return (
     <View
       headerText="Podcasts"
-      actions={[{ id: 'seed', label: 'Seed podcasts' }]}
+      actions={[
+        {
+          id: 'seed',
+          label: seeding ? 'Seeding...' : 'Seed podcasts',
+          disabled: seeding,
+        },
+      ]}
       onAction={handleAction}
     >
       {items.map((item) => (
