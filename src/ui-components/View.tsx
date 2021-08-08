@@ -36,17 +36,24 @@ export function View({
       SoftLeft: () => setAppMenuOpen(true),
       SoftRight: () => setActionsMenuOpen(true),
       Backspace: () => {
-        setAppMenuOpen(false);
-        setActionsMenuOpen(false);
+        if (appMenuOpen || actionsMenuOpen) {
+          setAppMenuOpen(false);
+          setActionsMenuOpen(false);
+          return;
+        }
+
+        // If on the main screen, let KaiOS minimize the app
+        if (window.location.pathname.includes('/podcasts')) {
+          return false;
+        }
+        window.history.back();
       },
       Escape: () => {
         setAppMenuOpen(false);
         setActionsMenuOpen(false);
       },
-      ArrowLeft: () => window.history.back(),
-      ArrowRight: () => window.history.forward(),
     },
-    { disabled: appMenuOpen || actionsMenuOpen }
+    { disabled: appMenuOpen || actionsMenuOpen, stopPropagation: true }
   );
 
   return (

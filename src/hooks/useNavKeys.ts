@@ -19,7 +19,7 @@ interface Options {
 }
 
 export function useNavKeys(
-  actions: { [key in NavKey]?: (ev: KeyboardEvent) => void },
+  actions: { [key in NavKey]?: (ev: KeyboardEvent) => boolean | void },
   options: Options = {}
 ): void {
   const keys = [
@@ -60,12 +60,16 @@ export function useNavKeys(
       return;
     }
 
-    if (options.stopPropagation) {
-      ev.stopPropagation();
-      ev.preventDefault();
+    const handled = action(ev);
+    if (handled === false) {
+      return;
     }
 
-    action(ev);
+    if (options.stopPropagation) {
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+      ev.preventDefault();
+    }
   }
 
   useEffect(() => {
