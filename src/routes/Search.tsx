@@ -79,16 +79,18 @@ export default function Search({
           ev.stopImmediatePropagation();
         }
       },
-      ArrowUp: () => {
+      ArrowUp: (ev: KeyboardEvent) => {
         const noneSelected = !items.some((a) => a.isSelected);
         if (noneSelected) {
           searchbox.current?.focus();
+          ev.stopImmediatePropagation();
         }
       },
       ArrowDown: () => {
-        const noneSelected = !items.some((a) => a.isSelected);
-        if (!noneSelected) return;
         searchbox.current?.blur();
+      },
+      SoftRight: () => {
+        searchbox.current?.focus();
       },
     },
     { allowInInputs: true }
@@ -113,7 +115,11 @@ export default function Search({
   }
 
   return (
-    <View headerText="Search" centerMenuText={getCenterText()}>
+    <View
+      headerText="Search"
+      centerMenuText={getCenterText()}
+      rightMenuText="Search"
+    >
       <input
         id="search"
         type="text"

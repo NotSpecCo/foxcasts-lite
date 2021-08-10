@@ -82,8 +82,13 @@ export function moveCursor<T>(
 ): NavItem<T>[] {
   const currentIndex = items.findIndex((a) => a.isSelected);
   let newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
-  if (newIndex < -1) newIndex = -1;
-  else if (newIndex > items.length - 1) newIndex = items.length - 1;
+  if (currentIndex === -1 && direction === 'prev') {
+    newIndex = items.length - 1;
+  } else if (newIndex < -1) {
+    newIndex = -1;
+  } else if (newIndex > items.length - 1) {
+    newIndex = 0;
+  }
   // console.log('new index', newIndex);
 
   return items.map((item, index) => {

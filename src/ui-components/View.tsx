@@ -34,7 +34,7 @@ export function View({
   useNavKeys(
     {
       SoftLeft: () => setAppMenuOpen(true),
-      SoftRight: () => setActionsMenuOpen(true),
+      SoftRight: () => actions.length > 0 && setActionsMenuOpen(true),
       Backspace: () => {
         if (appMenuOpen || actionsMenuOpen) {
           setAppMenuOpen(false);

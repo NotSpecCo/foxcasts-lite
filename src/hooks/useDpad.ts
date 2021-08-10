@@ -10,6 +10,7 @@ interface Options {
   capture?: boolean;
   stopPropagation?: boolean;
   scrollIntoView?: boolean;
+  disabled?: boolean;
 }
 
 type Props<T> = {
@@ -25,14 +26,16 @@ export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
     capture: false,
     stopPropagation: false,
     scrollIntoView: true,
+    disabled: false,
     ...options,
   };
 
   const shortcutKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const dpadKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
+  const dpadKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'];
 
   function handleKeyPress(ev: KeyboardEvent): void {
     if (
+      options.disabled ||
       ![...dpadKeys, ...shortcutKeys].includes(ev.key) ||
       ev.shiftKey ||
       (ev.target as HTMLElement).tagName === 'INPUT'
@@ -61,7 +64,9 @@ export function useDpad<T>({ options = {}, ...props }: Props<T>): void {
       return;
     }
 
-    const direction = ev.key === 'ArrowUp' ? 'prev' : 'next';
+    const direction = ['ArrowUp', 'ArrowLeft'].includes(ev.key)
+      ? 'prev'
+      : 'next';
     const newItems = moveCursor(props.items, direction, options.scrollIntoView);
 
     props.onChange(newItems);
