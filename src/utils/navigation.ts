@@ -41,21 +41,22 @@ export function scrollIntoView(
 ): void {
   if (!ref?.current) return;
 
-  // Workaround for KaiOS being based on an old browser
-  // TODO: Use scroll-margin on ListItem when available
-  const rect = ref.current.getBoundingClientRect();
+  // This doesn't work on KaiOS 2.x
+  // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  if (rect.top < 20) {
-    window.scroll({ top: window.scrollY + rect.top - 30, behavior });
+  // So let's try to recreate it
+  const rect = ref.current.getBoundingClientRect();
+  const offset = 30;
+
+  if (rect.top < offset) {
+    window.scroll({ top: window.scrollY + rect.top - offset, behavior });
+    return;
   }
 
-  const diff = rect.top + rect.height + 40 - window.innerHeight;
+  const diff = rect.top + rect.height + offset - window.innerHeight;
   if (diff > 0) {
     window.scroll({ top: window.scrollY + diff, behavior });
   }
-
-  // This doesn't work on KaiOS 2.x
-  // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 export function setSelected<T>(
