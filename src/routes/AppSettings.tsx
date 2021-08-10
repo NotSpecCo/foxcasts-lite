@@ -1,74 +1,61 @@
 import { h, VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
 import { useSettings } from '../contexts/SettingsProvider';
-import { useDpad } from '../hooks/useDpad';
+import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import { Settings } from '../models';
-import { View } from '../ui-components';
-import { ifClass, joinClasses } from '../utils/classes';
-import { NavItem, wrapItems } from '../utils/navigation';
+import { MenuOption, View } from '../ui-components';
 import styles from './AppSettings.module.css';
 
 type SettingItem = {
   key: keyof Settings;
   label: string;
-  value: boolean;
+  type: 'checkbox' | 'input' | 'select';
+  options?: MenuOption[];
+  value: boolean | string;
 };
 
 export default function AppSettings(): VNode {
-  const [items, setItems] = useState<NavItem<SettingItem>[]>([]);
-
   const { settings, setSettings } = useSettings();
 
-  useEffect(() => {
-    const settingsList: SettingItem[] = [
-      { key: 'darkTheme', label: 'Dark Theme', value: settings['darkTheme'] },
-      {
-        key: 'compactLayout',
-        label: 'Compact Layout',
-        value: settings['compactLayout'],
-      },
-    ];
-    setItems(wrapItems(settingsList, 'key'));
-  }, []);
+  function saveSetting(key: keyof Settings, value: any): void {
+    setSettings({
+      ...settings,
+      [key]: value,
+    });
+  }
+
+  function handleClick(id: string): void {
+    switch (id) {
+      case 'darkTheme':
+      case 'compactLayout':
+        saveSetting(id, !settings[id]);
+    }
+  }
 
   useDpad({
-    items,
-    onEnter: (item) => {
-      const newSettings = {
-        ...settings,
-        [item.data.key]: !item.data.value,
-      };
-      setSettings(newSettings);
-
-      setItems(
-        items.map((a) => ({
-          ...a,
-          data: {
-            ...a.data,
-            value: newSettings[a.data.key],
-          },
-        }))
-      );
-    },
-    onChange: (items) => setItems(items),
-    options: { stopPropagation: true },
+    priority: SelectablePriority.Low,
+    onEnter: handleClick,
   });
 
   return (
     <View headerText="Settings">
-      {items.map((item) => (
+      <div className={styles.container}>
         <div
-          key={item.id}
-          ref={item.ref}
-          className={joinClasses(
-            styles.row,
-            ifClass(item.isSelected, styles.selected)
-          )}
+          data-selectable-priority={SelectablePriority.Low}
+          data-selectable-id="darkTheme"
+          className={styles.row}
         >
-          {item.data.label}
-          <input type="checkbox" checked={item.data.value} />
+          Dark Theme
+          <input type="checkbox" checked={settings.darkTheme} />
         </div>
-      ))}
+        <div
+          data-selectable-priority={SelectablePriority.Low}
+          data-selectable-id="compactLayout"
+          className={styles.row}
+        >
+          Compact Layout
+          <input type="checkbox" checked={settings.compactLayout} />
+        </div>
+      </div>
     </View>
   );
 }

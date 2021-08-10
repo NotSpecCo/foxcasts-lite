@@ -115,6 +115,7 @@ export default function PodcastPreview({
       {episodes.map((episode) => (
         <ListItem
           key={episode.guid}
+          itemId={episode.guid}
           primaryText={episode.title}
           secondaryText={new Date(episode.date).toLocaleDateString()}
         />

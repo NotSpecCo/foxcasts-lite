@@ -1,10 +1,8 @@
 import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import { useDpad } from '../hooks/useDpad';
+import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
-import { NavItem, wrapItems } from '../utils/navigation';
 import styles from './Menu.module.css';
 import { MenuBar } from './MenuBar';
 
@@ -15,26 +13,23 @@ export type MenuOption = {
 };
 type Props = ComponentBaseProps & {
   options: MenuOption[];
+  title?: string;
   closeSide?: 'left' | 'right';
   onSelect: (menuOptionId: string) => void;
   onClose: () => void;
 };
 
-export function Menu({ closeSide = 'left', ...props }: Props): any {
-  const [items, setItems] = useState<NavItem<MenuOption>[]>([]);
-
-  useEffect(() => {
-    setItems(wrapItems(props.options, 'id', true));
-  }, [props.options]);
-
+export function Menu({
+  closeSide = 'left',
+  options = [],
+  ...props
+}: Props): any {
   useDpad({
-    items,
-    onEnter: (item) => {
-      props.onSelect(item.data.id);
+    priority: SelectablePriority.Medium,
+    onEnter: (itemId) => {
+      props.onSelect(itemId);
       // props.onClose();
     },
-    onChange: (items) => setItems(items),
-    options: { stopPropagation: true, capture: true, scrollIntoView: false },
   });
 
   useNavKeys(
@@ -48,20 +43,19 @@ export function Menu({ closeSide = 'left', ...props }: Props): any {
   return (
     <div className={styles.root}>
       <div className={styles.content}>
-        {items.map((item) => (
+        {props.title ? <div className={styles.title}>{props.title}</div> : null}
+        {options.map((option, i) => (
           <div
-            key={item.data.id}
-            ref={item.ref}
+            key={option.id}
             className={joinClasses(
               styles.option,
-              ifClass(item.isSelected, styles.selected),
-              ifClass(!!item.data.disabled, styles.disabled)
+              ifClass(!!option.disabled, styles.disabled)
             )}
+            data-selectable-priority={SelectablePriority.Medium}
+            data-selectable-id={option.id}
           >
-            {item.shortcutKey ? (
-              <div className={styles.shortcut}>{item.shortcutKey}</div>
-            ) : null}
-            {item.data.label}
+            <div className={styles.shortcut}>{i + 1}</div>
+            {option.label}
           </div>
         ))}
       </div>

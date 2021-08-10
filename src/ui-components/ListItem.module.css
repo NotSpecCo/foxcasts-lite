@@ -6,7 +6,7 @@
 body[data-compact-layout] .root {
   padding: 3px 5px;
 }
-.root.selected {
+[data-selected].root {
   background-color: var(--highlight-bg-color);
   color: var(--highlight-text-color);
 }
@@ -18,7 +18,7 @@ body[data-compact-layout] .root {
   margin-right: 3px;
   margin-left: -3px;
 }
-.root.selected .shortcut {
+[data-selected].root .shortcut {
   color: var(--highlight-text-color);
 }
 
@@ -54,14 +54,14 @@ body[data-compact-layout] .root {
   color: var(--accent-text-color);
 }
 
-.root.selected .primary {
+[data-selected].root .primary {
   color: var(--highlight-text-color);
 }
 
-.root.selected .secondary {
+[data-selected].root .secondary {
   color: var(--highlight-text-color);
 }
 
-.root.selected .accent {
+[data-selected].root .accent {
   color: var(--highlight-text-color);
 }

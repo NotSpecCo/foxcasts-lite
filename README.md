@@ -4,8 +4,7 @@ Please note: This is currently in the middle of a rewrite, so things will be cha
 
 ## Navigation
 
-- Up/Down on the d-pad will scroll through menus and lists
-- Left/Right on the d-pad will navigate back and forward
+- Use the d-pad to scroll through menus and lists
 
 ## How to Install
 

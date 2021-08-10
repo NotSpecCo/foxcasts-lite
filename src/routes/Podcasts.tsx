@@ -3,7 +3,7 @@ import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { Podcast } from '../core/models';
 import { View } from '../ui-components';
-import { NavItem, setSelected, wrapItems } from '../utils/navigation';
+import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import { getAllPodcasts, subscribe } from '../core/services/podcasts';
 import { GridItem } from '../ui-components/GridItem';
@@ -14,42 +14,36 @@ interface Props {
 }
 
 export default function Podcasts({ selectedItemId }: Props): VNode {
-  const [items, setItems] = useState<NavItem<Podcast>[]>([]);
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [seeding, setSeeding] = useState(false);
 
   useEffect(() => {
     getAllPodcasts().then((result) => {
-      setItems(wrapItems(result, 'id', true));
+      setPodcasts(result);
     });
   }, []);
 
-  // Restore scroll position
+  /// Restore scroll position
   useEffect(() => {
     if (!selectedItemId) return;
+    setSelected(selectedItemId, true);
+  }, [selectedItemId, podcasts]);
 
-    const selected = items.find((a) => a.id === selectedItemId);
-    if (selected && !selected.isSelected) {
-      setItems(setSelected(items, selectedItemId));
-    }
-  }, [selectedItemId, items]);
-
-  function handlePodcastClick(podcast: Podcast): void {
-    route(`/podcast/${podcast.id}`);
+  function viewPodcast(podcastId: string | number): void {
+    route(`/podcast/${podcastId}`);
   }
 
   useDpad({
-    items,
-    onEnter: (item) => handlePodcastClick(item.data),
-    onChange: (items) => {
-      const selected = items.find((a) => a.isSelected);
-      if (selected) {
-        route(`/podcasts/?selectedItemId=${selected.id}`, true);
+    onEnter: (itemId) => viewPodcast(itemId),
+    onChange: (itemId) => {
+      console.log(itemId);
+
+      if (itemId) {
+        route(`/podcasts/?selectedItemId=${itemId}`, true);
       } else {
         route(`/podcasts/`, true);
       }
-      setItems(items);
     },
-    options: { stopPropagation: true },
   });
 
   async function seedData(): Promise<void> {
@@ -68,7 +62,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
     }
 
     getAllPodcasts().then((result) => {
-      setItems(wrapItems(result, 'id', true));
+      setPodcasts(result);
     });
 
     setSeeding(false);
@@ -93,15 +87,14 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
       onAction={handleAction}
     >
       <div className={styles.grid}>
-        {items.map((item) => (
+        {podcasts.map((podcast, i) => (
           <GridItem
-            key={item.data.id}
-            ref={item.ref}
-            isSelected={item.isSelected}
-            dimIfUnselected={items.some((a) => a.isSelected)}
-            imageUrl={item.data.artworkUrl100}
-            shortcutKey={item.shortcutKey}
-            onClick={(): void => handlePodcastClick(item.data)}
+            key={podcast.id}
+            itemId={podcast.id}
+            dimIfUnselected={!!selectedItemId}
+            imageUrl={podcast.artworkUrl100}
+            shortcutKey={i + 1}
+            onClick={(): void => viewPodcast(podcast.id)}
           />
         ))}
       </div>

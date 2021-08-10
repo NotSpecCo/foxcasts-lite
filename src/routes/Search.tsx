@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ApiService } from '../core/services/apiService';
 import { ListItem, View } from '../ui-components';
-import { NavItem, setSelected, wrapItems } from '../utils/navigation';
-import { useDpad } from '../hooks/useDpad';
+import { setSelected } from '../utils/navigation';
+import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import styles from './Search.module.css';
 import { ITunesPodcast } from '../core/models';
 
@@ -21,34 +21,30 @@ export default function Search({
   selectedItemId,
 }: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
-  const [items, setItems] = useState<NavItem<ITunesPodcast>[]>([]);
+  const [results, setResults] = useState<ITunesPodcast[]>([]);
   const searchbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     searchbox.current?.focus();
-    setItems([]);
+    setResults([]);
     if (!queryParam) return;
 
     setQuery(queryParam);
-    searchbox.current?.blur();
+    // searchbox.current?.blur();
 
     apiService
       .search(queryParam)
-      .then((result) => setItems(wrapItems(result, 'collectionId')))
+      .then((result) => setResults(result))
       .catch((err) => console.error(err));
   }, [queryParam]);
 
   // Restore scroll position
   useEffect(() => {
-    if (!selectedItemId) return;
+    // if (!selectedItemId) return;
+    setSelected(selectedItemId || 'search', true);
+  }, [selectedItemId, results]);
 
-    const selected = items.find((a) => a.id === selectedItemId);
-    if (selected && !selected.isSelected) {
-      setItems(setSelected(items, selectedItemId));
-    }
-  }, [selectedItemId, items]);
-
-  function viewPodcast(podcastStoreId: number): void {
+  function viewPodcast(podcastStoreId: string | number): void {
     route(`/search/${podcastStoreId}`);
   }
 
@@ -57,44 +53,53 @@ export default function Search({
   }
 
   useDpad({
-    items,
-    onEnter: (item) => viewPodcast(item.data.collectionId),
-    onChange: (items) => {
-      const selected = items.find((a) => a.isSelected);
-      if (selected) {
-        route(`/search?q=${queryParam}&selectedItemId=${selected.id}`, true);
+    onEnter: (itemId) => {
+      if (itemId === 'search') {
+        // searchbox.current?.blur();
+        setQueryParam();
+        return;
+      }
+      viewPodcast(itemId);
+    },
+    onChange: (itemId) => {
+      if (itemId === 'search') {
+        searchbox.current?.focus();
+      } else {
+        searchbox.current?.blur();
+      }
+
+      if (itemId) {
+        route(`/search?q=${queryParam}&selectedItemId=${itemId}`, true);
       } else {
         route(`/search?q=${queryParam}`, true);
       }
-      setItems(items);
     },
-    options: { stopPropagation: true },
   });
 
-  useNavKeys(
-    {
-      Enter: (ev: KeyboardEvent) => {
-        if ((ev.target as HTMLElement).tagName === 'INPUT') {
-          setQueryParam();
-          ev.stopImmediatePropagation();
-        }
-      },
-      ArrowUp: (ev: KeyboardEvent) => {
-        const noneSelected = !items.some((a) => a.isSelected);
-        if (noneSelected) {
-          searchbox.current?.focus();
-          ev.stopImmediatePropagation();
-        }
-      },
-      ArrowDown: () => {
-        searchbox.current?.blur();
-      },
-      SoftRight: () => {
-        searchbox.current?.focus();
-      },
-    },
-    { allowInInputs: true }
-  );
+  // useNavKeys(
+  //   {
+  //     Enter: (ev: KeyboardEvent) => {
+  //       if ((ev.target as HTMLElement).tagName === 'INPUT') {
+  //         setQueryParam();
+  //         ev.stopImmediatePropagation();
+  //       }
+  //     },
+  //     ArrowUp: (ev: KeyboardEvent) => {
+  //       const noneSelected = !results.some((a) => a.isSelected);
+  //       if (noneSelected) {
+  //         searchbox.current?.focus();
+  //         ev.stopImmediatePropagation();
+  //       }
+  //     },
+  //     ArrowDown: () => {
+  //       searchbox.current?.blur();
+  //     },
+  //     SoftRight: () => {
+  //       searchbox.current?.focus();
+  //     },
+  //   },
+  //   { allowInInputs: true }
+  // );
 
   function handleQueryChange(ev: any): void {
     if (ev.target.value !== query) {
@@ -107,7 +112,7 @@ export default function Search({
       return 'Search';
     }
 
-    if (items.some((a) => a.isSelected)) {
+    if (selectedItemId) {
       return 'Select';
     }
 
@@ -129,16 +134,17 @@ export default function Search({
         ref={searchbox}
         onChange={handleQueryChange}
         onInput={handleQueryChange}
+        data-selectable-priority={SelectablePriority.Low}
+        data-selectable-id="search"
       />
-      {items.map((item) => (
+      {results.map((result) => (
         <ListItem
-          key={item.data.collectionId}
-          ref={item.ref}
-          isSelected={item.isSelected}
-          imageUrl={item.data.artworkUrl60}
-          primaryText={item.data.collectionName}
-          secondaryText={item.data.artistName}
-          onClick={(): void => viewPodcast(item.data.collectionId)}
+          key={result.collectionId}
+          itemId={result.collectionId}
+          imageUrl={result.artworkUrl60}
+          primaryText={result.collectionName}
+          secondaryText={result.artistName}
+          onClick={(): void => viewPodcast(result.collectionId)}
         />
       ))}
     </View>

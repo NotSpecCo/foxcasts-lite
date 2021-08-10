@@ -4,7 +4,10 @@
   margin: 0 5px;
   border: none;
   outline: none;
-  border-bottom: 2px solid var(--app-accent-color);
+  border-bottom: 2px solid var(--divider-color);
   margin-bottom: 5px;
   font-size: 17px;
+}
+[data-selected].searchBox {
+  border-bottom: 2px solid var(--app-accent-color);
 }

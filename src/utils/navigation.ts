@@ -1,51 +1,12 @@
-import { h, createRef, RefObject } from 'preact';
-
-export type NavItem<T = unknown> = {
-  id: string;
-  shortcutKey?: string;
-  isSelected: boolean;
-  ref: RefObject<any>;
-  data: T;
-};
-
-export function wrapItems<T>(
-  items: T[],
-  idKey: keyof T,
-  assignNumKeys = false
-): NavItem<T>[] {
-  return items.map((item, i) => ({
-    id: `${item[idKey]}`,
-    shortcutKey: assignNumKeys && i + 1 <= 9 ? `${i + 1}` : undefined,
-    isSelected: false,
-    ref: createRef(),
-    data: item,
-  }));
-}
-
-export function cursorSelect<T>(items: NavItem<T>[]): NavItem<T> | undefined {
-  const item = items.find((a) => a.isSelected);
-  return item;
-}
-
-export function cursorSelectByKey<T>(
-  items: NavItem<T>[],
-  shortcutKey: string
-): NavItem<T> | undefined {
-  const item = items.find((a) => a.shortcutKey === shortcutKey);
-  return item;
-}
-
 export function scrollIntoView(
-  ref?: RefObject<HTMLDivElement>,
+  element: Element,
   behavior: 'smooth' | 'auto' = 'smooth'
 ): void {
-  if (!ref?.current) return;
-
   // This doesn't work on KaiOS 2.x
   // item.ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   // So let's try to recreate it
-  const rect = ref.current.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
   const offset = 30;
 
   if (rect.top < offset) {
@@ -59,47 +20,48 @@ export function scrollIntoView(
   }
 }
 
-export function setSelected<T>(
-  items: NavItem<T>[],
-  id: string,
-  scroll = true
-): NavItem<T>[] {
-  return items.map((item) => {
-    if (scroll && item.id === id && item.ref) {
-      scrollIntoView(item.ref, 'auto');
-    }
+export function setSelected<T>(selectableId: string, scroll = true): void {
+  const element = document.querySelector(
+    `[data-selectable-id="${selectableId}"]`
+  );
 
-    return {
-      ...item,
-      isSelected: item.id === id,
-    };
-  });
+  if (!element) return;
+
+  element.setAttribute('data-selected', '');
+  if (scroll) {
+    scrollIntoView(element, 'auto');
+  }
 }
 
-export function moveCursor<T>(
-  items: NavItem<T>[],
+export function moveCursor(
+  elements: Element[],
   direction: 'next' | 'prev',
   scroll = true
-): NavItem<T>[] {
-  const currentIndex = items.findIndex((a) => a.isSelected);
+): Element | undefined {
+  const currentIndex = elements.findIndex((a) =>
+    a.hasAttribute('data-selected')
+  );
   let newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
   if (currentIndex === -1 && direction === 'prev') {
-    newIndex = items.length - 1;
+    newIndex = elements.length - 1;
   } else if (newIndex < -1) {
     newIndex = -1;
-  } else if (newIndex > items.length - 1) {
+  } else if (newIndex > elements.length - 1) {
     newIndex = 0;
   }
-  // console.log('new index', newIndex);
 
-  return items.map((item, index) => {
-    if (scroll && index === newIndex && item.ref) {
-      scrollIntoView(item.ref);
+  let selectedElement;
+  elements.forEach((element, i) => {
+    if (i === newIndex) {
+      if (scroll) {
+        scrollIntoView(element);
+      }
+      element.setAttribute('data-selected', '');
+      selectedElement = element;
+    } else {
+      element.removeAttribute('data-selected');
     }
-
-    return {
-      ...item,
-      isSelected: index === newIndex,
-    };
   });
+
+  return selectedElement;
 }

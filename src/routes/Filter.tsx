@@ -4,7 +4,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { EpisodeExtended, EpisodeFilterId } from '../core/models';
 import styles from './Filter.module.css';
 import { ListItem, View } from '../ui-components';
-import { NavItem, setSelected, wrapItems } from '../utils/navigation';
+import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import { getEpisodesByFilter } from '../core/services/podcasts';
 
@@ -17,12 +17,12 @@ export default function Filter({
   filterId,
   selectedItemId,
 }: FilterProps): VNode {
-  const [items, setItems] = useState<NavItem<EpisodeExtended>[]>([]);
+  const [episodes, setEpisodes] = useState<EpisodeExtended[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getEpisodesByFilter(filterId).then((episodes) => {
-      setItems(wrapItems(episodes, 'id', true));
+    getEpisodesByFilter(filterId).then((eps) => {
+      setEpisodes(eps);
       setLoading(false);
     });
   }, [filterId]);
@@ -30,30 +30,22 @@ export default function Filter({
   // Restore scroll position
   useEffect(() => {
     if (!selectedItemId) return;
+    setSelected(selectedItemId, true);
+  }, [selectedItemId, episodes]);
 
-    const selected = items.find((a) => a.id === selectedItemId);
-    if (selected && !selected.isSelected) {
-      setItems(setSelected(items, selectedItemId));
-    }
-  }, [selectedItemId, items]);
-
-  function viewEpisode(episode: EpisodeExtended): void {
-    route(`/episode/${episode.id}`);
+  function viewEpisode(episodeId: string | number): void {
+    route(`/episode/${episodeId}`);
   }
 
   useDpad({
-    items,
-    onEnter: (item) => viewEpisode(item.data),
-    onChange: (items) => {
-      const selected = items.find((a) => a.isSelected);
-      if (selected) {
-        route(`/filter/${filterId}?selectedItemId=${selected.id}`, true);
+    onEnter: (itemId) => viewEpisode(itemId),
+    onChange: (itemId) => {
+      if (itemId) {
+        route(`/filter/${filterId}?selectedItemId=${itemId}`, true);
       } else {
         route(`/filter/${filterId}`, true);
       }
-      setItems(items);
     },
-    options: { stopPropagation: true },
   });
 
   const filterName: { [key: string]: string } = {
@@ -64,19 +56,18 @@ export default function Filter({
   return (
     <View headerText={filterName[filterId]}>
       {loading && <div className={`kui-sec ${styles.message}`}>Loading...</div>}
-      {!loading && items.length === 0 && (
+      {!loading && episodes.length === 0 && (
         <div className={`kui-sec ${styles.message}`}>No episodes.</div>
       )}
-      {items.map((item) => (
+      {episodes.map((episode, i) => (
         <ListItem
-          key={item.data.id}
-          ref={item.ref}
-          isSelected={item.isSelected}
-          imageUrl={item.data.artworkUrl60}
-          primaryText={item.data.title}
-          secondaryText={new Date(item.data.date).toLocaleDateString()}
-          shortcutKey={item.shortcutKey}
-          onClick={(): void => viewEpisode(item.data)}
+          key={episode.id}
+          itemId={episode.id}
+          imageUrl={episode.artworkUrl60}
+          primaryText={episode.title}
+          secondaryText={new Date(episode.date).toLocaleDateString()}
+          shortcutKey={i + 1}
+          onClick={(): void => viewEpisode(episode.id)}
         />
       ))}
     </View>

@@ -3,7 +3,7 @@ import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { Podcast, Episode } from '../core/models';
 import { ListItem, View } from '../ui-components';
-import { NavItem, setSelected, wrapItems } from '../utils/navigation';
+import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import {
   getEpisodesByPodcastId,
@@ -20,45 +20,37 @@ export default function PodcastDetail({
   selectedItemId,
 }: PodcastDetailProps): VNode {
   const [podcast, setPodcast] = useState<Podcast | undefined>();
-  const [items, setItems] = useState<NavItem<Episode>[]>([]);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
     getPodcastById(parseInt(podcastId, 10), true).then((result) =>
       setPodcast(result)
     );
 
-    getEpisodesByPodcastId(parseInt(podcastId, 10)).then((episodes) =>
-      setItems(wrapItems(episodes, 'id', true))
+    getEpisodesByPodcastId(parseInt(podcastId, 10)).then((result) =>
+      setEpisodes(result)
     );
   }, [podcastId]);
 
   // Restore scroll position
   useEffect(() => {
     if (!selectedItemId) return;
+    setSelected(selectedItemId, true);
+  }, [selectedItemId, episodes]);
 
-    const selected = items.find((a) => a.id === selectedItemId);
-    if (selected && !selected.isSelected) {
-      setItems(setSelected(items, selectedItemId));
-    }
-  }, [selectedItemId, items]);
-
-  function viewEpisode(episode: Episode): void {
-    route(`/episode/${episode.id}`);
+  function viewEpisode(episodeId: string | number): void {
+    route(`/episode/${episodeId}`);
   }
 
   useDpad({
-    items,
-    onEnter: (item) => viewEpisode(item.data),
-    onChange: (items) => {
-      const selected = items.find((a) => a.isSelected);
-      if (selected) {
-        route(`/podcast/${podcastId}?selectedItemId=${selected.id}`, true);
+    onEnter: (itemId) => viewEpisode(itemId),
+    onChange: (itemId) => {
+      if (itemId) {
+        route(`/podcast/${podcastId}?selectedItemId=${itemId}`, true);
       } else {
         route(`/podcast/${podcastId}`, true);
       }
-      setItems(items);
     },
-    options: { stopPropagation: true },
   });
 
   async function handleAction(action: string): Promise<void> {
@@ -75,15 +67,14 @@ export default function PodcastDetail({
       actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
       onAction={handleAction}
     >
-      {items.map((item) => (
+      {episodes.map((episode, i) => (
         <ListItem
-          key={item.data.id}
-          ref={item.ref}
-          isSelected={item.isSelected}
-          primaryText={item.data.title}
-          secondaryText={new Date(item.data.date).toLocaleDateString()}
-          shortcutKey={item.shortcutKey}
-          onClick={(): void => viewEpisode(item.data)}
+          key={episode.id}
+          itemId={episode.id}
+          primaryText={episode.title}
+          secondaryText={new Date(episode.date).toLocaleDateString()}
+          shortcutKey={i + 1}
+          onClick={(): void => viewEpisode(episode.id)}
         />
       ))}
     </View>

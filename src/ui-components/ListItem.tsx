@@ -1,11 +1,13 @@
 import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
+import { SelectablePriority } from '../hooks/useDpad';
 import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './ListItem.module.css';
 
 type Props = ComponentBaseProps & {
   isSelected?: boolean;
+  itemId: string | number;
   shortcutKey?: string | number;
   imageUrl?: string;
   primaryText?: string;
@@ -24,6 +26,8 @@ export const ListItem = forwardRef(
           ifClass(isSelected, styles.selected)
         )}
         onClick={(): void => props.onClick?.()}
+        data-selectable-priority={SelectablePriority.Low}
+        data-selectable-id={props.itemId}
       >
         {props.shortcutKey ? (
           <div className={styles.shortcut}>{props.shortcutKey}</div>
