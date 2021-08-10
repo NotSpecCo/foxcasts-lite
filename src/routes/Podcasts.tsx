@@ -2,10 +2,12 @@ import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { Podcast } from '../core/models';
-import { ListItem, View } from '../ui-components';
+import { View } from '../ui-components';
 import { NavItem, setSelected, wrapItems } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import { getAllPodcasts, subscribe } from '../core/services/podcasts';
+import { GridItem } from '../ui-components/GridItem';
+import styles from './Podcasts.module.css';
 
 interface Props {
   selectedItemId?: string;
@@ -90,17 +92,19 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
       ]}
       onAction={handleAction}
     >
-      {items.map((item) => (
-        <ListItem
-          key={item.data.id}
-          ref={item.ref}
-          isSelected={item.isSelected}
-          imageUrl={item.data.artworkUrl60}
-          primaryText={item.data.title}
-          shortcutKey={item.shortcutKey}
-          onClick={(): void => handlePodcastClick(item.data)}
-        />
-      ))}
+      <div className={styles.grid}>
+        {items.map((item) => (
+          <GridItem
+            key={item.data.id}
+            ref={item.ref}
+            isSelected={item.isSelected}
+            dimIfUnselected={items.some((a) => a.isSelected)}
+            imageUrl={item.data.artworkUrl100}
+            shortcutKey={item.shortcutKey}
+            onClick={(): void => handlePodcastClick(item.data)}
+          />
+        ))}
+      </div>
     </View>
   );
 }
