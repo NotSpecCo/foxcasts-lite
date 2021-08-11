@@ -13,6 +13,8 @@ import { useNavKeys } from '../hooks/useNavKeys';
 import { checkForUpdates } from '../core/services/podcasts';
 import AppSettings from '../routes/AppSettings';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
+import { DisplayDensity } from '../models';
+import { themes } from '../themes';
 
 export function AppWrapper(): VNode {
   return (
@@ -34,30 +36,43 @@ export default function App(): VNode {
       route('/podcasts');
     }
 
-    // checkForUpdates();
+    checkForUpdates();
   }, []);
 
   useEffect(() => {
-    if (settings.darkTheme) {
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', '#d04a11');
-      document.body.classList.add('dark');
-    } else {
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', '#ec5817');
-      document.body.classList.remove('dark');
+    const theme = themes.find((a) => a.id === settings.theme) || themes[0];
+    for (const id in theme.values) {
+      document.body.style.setProperty(
+        `--${theme.values[id].variable}`,
+        theme.values[id].value
+      );
     }
-  }, [settings.darkTheme]);
+
+    document.body.style.setProperty(
+      '--app-accent-color',
+      `#${settings.accentColor}`
+    );
+    document.body.style.setProperty(
+      '--accent-text-color',
+      `#${settings.accentColor}`
+    );
+    document.body.style.setProperty(
+      '--highlight-bg-color',
+      `#${settings.accentColor}`
+    );
+    document.body.style.setProperty(
+      '--header-bg-color',
+      `#${settings.accentColor}`
+    );
+  }, [settings.theme, settings.accentColor]);
 
   useEffect(() => {
-    if (settings.compactLayout) {
+    if (settings.displayDensity === DisplayDensity.Compact) {
       document.body.setAttribute('data-compact-layout', '');
     } else {
       document.body.removeAttribute('data-compact-layout');
     }
-  }, [settings.compactLayout]);
+  }, [settings.displayDensity]);
 
   useNavKeys({
     Backspace: (ev) => {

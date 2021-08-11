@@ -1,6 +1,12 @@
 import { h, createContext, VNode } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
-import { ComponentBaseProps, Settings } from '../models';
+import {
+  ComponentBaseProps,
+  DisplayDensity,
+  PodcastsLayout,
+  Settings,
+  Theme,
+} from '../models';
 import {
   getStorageItem,
   setStorageItem,
@@ -8,9 +14,11 @@ import {
 } from '../services/storage';
 
 const defaultSettings: Settings = {
-  darkTheme: false,
+  displayDensity: DisplayDensity.Compact,
+  podcastsLayout: PodcastsLayout.Grid,
   fullScreen: false,
-  compactLayout: true,
+  theme: Theme.Light,
+  accentColor: 'ec5817',
 };
 
 type SettingsContextValue = {

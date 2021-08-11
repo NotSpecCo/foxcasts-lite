@@ -15,37 +15,13 @@ body {
 
 body {
   --app-bg-color: #fff;
-  --app-accent-color: #ec5817;
+  --app-accent-color: #fff;
 
   --primary-text-color: rgba(0, 0, 0, 0.88);
   --secondary-text-color: rgba(0, 0, 0, 0.5);
   --accent-text-color: var(--app-accent-color);
 
   --divider-color: rgba(0, 0, 0, 0.1);
-
-  --highlight-bg-color: var(--app-accent-color);
-  --highlight-text-color: rgba(255, 255, 255, 0.88);
-
-  --header-bg-color: var(--app-accent-color);
-  --header-text-color: rgba(255, 255, 255, 0.88);
-
-  --menu-bg-color: var(--app-bg-color);
-  --menu-text-color: var(--primary-text-color);
-
-  --menubar-bg-color: #000;
-  --menubar-text-color: rgba(255, 255, 255, 0.88);
-
-  --input-border-color: #aaa;
-}
-body.dark {
-  --app-bg-color: #211c1e;
-  --app-accent-color: #d04a11;
-
-  --primary-text-color: rgba(255, 255, 255, 0.88);
-  --secondary-text-color: rgba(255, 255, 255, 0.5);
-  --accent-text-color: var(--app-accent-color);
-
-  --divider-color: rgba(255, 255, 255, 0.1);
 
   --highlight-bg-color: var(--app-accent-color);
   --highlight-text-color: rgba(255, 255, 255, 0.88);
