@@ -1,7 +1,6 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { useNavKeys } from '../hooks/useNavKeys';
 import { ApiService } from '../core/services/apiService';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
@@ -30,7 +29,6 @@ export default function Search({
     if (!queryParam) return;
 
     setQuery(queryParam);
-    // searchbox.current?.blur();
 
     apiService
       .search(queryParam)
@@ -40,7 +38,6 @@ export default function Search({
 
   // Restore scroll position
   useEffect(() => {
-    // if (!selectedItemId) return;
     setSelected(selectedItemId || 'search', true);
   }, [selectedItemId, results]);
 
@@ -68,38 +65,17 @@ export default function Search({
         searchbox.current?.blur();
       }
 
-      if (itemId) {
-        route(`/search?q=${queryParam}&selectedItemId=${itemId}`, true);
-      } else {
-        route(`/search?q=${queryParam}`, true);
+      const params = [];
+      if (queryParam) {
+        params.push(`q=${queryParam}`);
       }
+      if (itemId) {
+        params.push(`selectedItemId=${itemId}`);
+      }
+
+      route(`/search?${params.join('&')}`, true);
     },
   });
-
-  // useNavKeys(
-  //   {
-  //     Enter: (ev: KeyboardEvent) => {
-  //       if ((ev.target as HTMLElement).tagName === 'INPUT') {
-  //         setQueryParam();
-  //         ev.stopImmediatePropagation();
-  //       }
-  //     },
-  //     ArrowUp: (ev: KeyboardEvent) => {
-  //       const noneSelected = !results.some((a) => a.isSelected);
-  //       if (noneSelected) {
-  //         searchbox.current?.focus();
-  //         ev.stopImmediatePropagation();
-  //       }
-  //     },
-  //     ArrowDown: () => {
-  //       searchbox.current?.blur();
-  //     },
-  //     SoftRight: () => {
-  //       searchbox.current?.focus();
-  //     },
-  //   },
-  //   { allowInInputs: true }
-  // );
 
   function handleQueryChange(ev: any): void {
     if (ev.target.value !== query) {
