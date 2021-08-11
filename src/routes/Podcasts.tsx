@@ -1,13 +1,15 @@
-import { h, VNode } from 'preact';
+import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { Podcast } from '../core/models';
-import { View } from '../ui-components';
+import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
 import { getAllPodcasts, subscribe } from '../core/services/podcasts';
 import { GridItem } from '../ui-components/GridItem';
 import styles from './Podcasts.module.css';
+import { useSettings } from '../contexts/SettingsProvider';
+import { PodcastsLayout } from '../models';
 
 interface Props {
   selectedItemId?: string;
@@ -16,6 +18,8 @@ interface Props {
 export default function Podcasts({ selectedItemId }: Props): VNode {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [seeding, setSeeding] = useState(false);
+
+  const { settings } = useSettings();
 
   useEffect(() => {
     getAllPodcasts().then((result) => {
@@ -36,8 +40,6 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   useDpad({
     onEnter: (itemId) => viewPodcast(itemId),
     onChange: (itemId) => {
-      console.log(itemId);
-
       if (itemId) {
         route(`/podcasts/?selectedItemId=${itemId}`, true);
       } else {
@@ -86,18 +88,33 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
       ]}
       onAction={handleAction}
     >
-      <div className={styles.grid}>
-        {podcasts.map((podcast, i) => (
-          <GridItem
-            key={podcast.id}
-            itemId={podcast.id}
-            dimIfUnselected={!!selectedItemId}
-            imageUrl={podcast.artworkUrl100}
-            shortcutKey={i + 1}
-            onClick={(): void => viewPodcast(podcast.id)}
-          />
-        ))}
-      </div>
+      {settings.podcastsLayout === PodcastsLayout.List ? (
+        <Fragment>
+          {podcasts.map((podcast, i) => (
+            <ListItem
+              key={podcast.id}
+              itemId={podcast.id}
+              imageUrl={podcast.artworkUrl60}
+              primaryText={podcast.title}
+              shortcutKey={i <= 8 ? i + 1 : undefined}
+              onClick={(): void => viewPodcast(podcast.id)}
+            />
+          ))}
+        </Fragment>
+      ) : (
+        <div className={styles.grid}>
+          {podcasts.map((podcast, i) => (
+            <GridItem
+              key={podcast.id}
+              itemId={podcast.id}
+              dimIfUnselected={!!selectedItemId}
+              imageUrl={podcast.artworkUrl100}
+              shortcutKey={i + 1}
+              onClick={(): void => viewPodcast(podcast.id)}
+            />
+          ))}
+        </div>
+      )}
     </View>
   );
 }
