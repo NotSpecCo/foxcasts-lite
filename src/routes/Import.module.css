@@ -1,0 +1,22 @@
+.accent {
+  color: var(--accent-text-color);
+}
+
+.message {
+  padding: 5px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+}
+[data-selected].row {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+.actions {
+  padding: 5px;
+}

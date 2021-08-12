@@ -9,9 +9,10 @@ import PodcastDetail from '../routes/PodcastDetail';
 import PodcastPreview from '../routes/PodcastPreview';
 import Search from '../routes/Search';
 import Podcasts from '../routes/Podcasts';
+import AppSettings from '../routes/AppSettings';
+import Import from '../routes/Import';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { checkForUpdates } from '../core/services/podcasts';
-import AppSettings from '../routes/AppSettings';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
 import { DisplayDensity } from '../models';
 import { themes } from '../themes';
@@ -89,6 +90,7 @@ export default function App(): VNode {
       <Route path="/filter/:filterId" component={Filter} />
       <Route path="/player" component={Player} />
       <Route path="/settings" component={AppSettings} />
+      <Route path="/import" component={Import} />
       <Route path="/podcasts" component={Podcasts} default={true} />
     </Router>
   );

@@ -71,8 +71,13 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   }
 
   async function handleAction(action: string): Promise<void> {
-    if (action === 'seed') {
-      await seedData();
+    switch (action) {
+      case 'seed':
+        await seedData();
+        break;
+      case 'import':
+        route('/import');
+        break;
     }
   }
 
@@ -84,6 +89,10 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
           id: 'seed',
           label: seeding ? 'Seeding...' : 'Seed podcasts',
           disabled: seeding,
+        },
+        {
+          id: 'import',
+          label: 'Import OPML',
         },
       ]}
       onAction={handleAction}

@@ -19,6 +19,12 @@ export async function subscribe(
   feedUrl: string,
   rawPodcast?: RawPodcast
 ): Promise<void> {
+  const existingSubscription = await databaseService.getPodcastByFeed(feedUrl);
+  if (existingSubscription) {
+    console.log(`Already subscribed to ${feedUrl}`);
+    return;
+  }
+
   if (!rawPodcast) {
     rawPodcast = await apiService.getPodcastByFeed(feedUrl, 50);
   }

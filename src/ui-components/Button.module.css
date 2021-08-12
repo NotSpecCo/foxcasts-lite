@@ -1,0 +1,15 @@
+.root {
+  margin: 10px 0px;
+  padding: 5px;
+  background: none;
+  border-radius: 15px;
+  width: 100%;
+  border: 2px solid var(--divider-color);
+}
+[data-selected].root {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+.root:disabled {
+  opacity: 0.5;
+}

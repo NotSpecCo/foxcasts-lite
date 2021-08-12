@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<opml version="1.0">
+	<head>
+		<title>Podcast Feeds</title>
+	</head>
+	<body>
+		<outline text="feeds">
+			<outline text="ShopTalk" type="rss" xmlUrl="https://shoptalkshow.com/feed/podcast" />
+			<outline text="The Vergecast" type="rss" xmlUrl="https://feeds.megaphone.fm/vergecast" />
+			<outline text="Darknet Diaries" type="rss" xmlUrl="https://feeds.megaphone.fm/darknetdiaries" />
+			<outline text="React Podcast" type="rss" xmlUrl="https://feeds.simplecast.com/JoR28o79" />
+			<outline text="Syntax - Tasty Web Development Treats" type="rss" xmlUrl="https://feed.syntax.fm/rss" />
+			<outline text="The Daily" type="rss" xmlUrl="https://feeds.simplecast.com/54nAGcIl" />
+		</outline>
+	</body>
+</opml>
