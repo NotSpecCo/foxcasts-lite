@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { formatPodcast } from './formatPodcast';
+import { formatItunesPodcast } from './formatPodcast';
 
 describe('formatPodcast', () => {
   it('should return a properly formatted podcast', () => {

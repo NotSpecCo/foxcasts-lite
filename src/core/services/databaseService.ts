@@ -1,13 +1,5 @@
 import Dexie from 'dexie';
-import {
-  Podcast,
-  Episode,
-  EpisodeFilterId,
-  EpisodeExtended,
-  ITunesPodcast,
-  RawEpisode,
-} from '../models';
-import { formatPodcast } from '../utils';
+import { Podcast, Episode, EpisodeFilterId, RawEpisode } from '../models';
 
 export class DatabaseService {
   private db: Dexie;
@@ -15,7 +7,7 @@ export class DatabaseService {
   constructor() {
     this.db = new Dexie('foxcasts');
     this.db.version(1).stores({
-      podcasts: '++id, &storeId',
+      podcasts: '++id, &feedUrl',
       episodes: '++id, &guid, podcastId, date, progress',
     });
   }
@@ -23,17 +15,18 @@ export class DatabaseService {
   //#region Podcasts
 
   public async addPodcast(
-    rawPodcast: ITunesPodcast,
+    podcast: Podcast,
     rawEpisodes: RawEpisode[]
   ): Promise<void> {
+    // Make sure no IDs are passed in
+    (podcast as any).id = undefined;
+
     await this.db.transaction(
       'rw',
       this.db.table('podcasts'),
       this.db.table('episodes'),
       async () => {
-        const podcastId = await this.db
-          .table('podcasts')
-          .add(formatPodcast(rawPodcast));
+        const podcastId = await this.db.table('podcasts').add(podcast);
         const episodes: Episode[] = rawEpisodes.map(
           (rawEpisode) =>
             ({
@@ -103,8 +96,8 @@ export class DatabaseService {
     return podcast;
   }
 
-  public async getPodcastByStoreId(storeId: number): Promise<Podcast> {
-    const podcast: Podcast = await this.db.table('podcasts').get({ storeId });
+  public async getPodcastByFeed(feedUrl: string): Promise<Podcast> {
+    const podcast: Podcast = await this.db.table('podcasts').get({ feedUrl });
     return podcast;
   }
 

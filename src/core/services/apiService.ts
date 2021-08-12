@@ -1,5 +1,6 @@
-import { Episode, ITunesPodcast, Podcast, RawEpisode } from '../models';
-import { formatPodcast } from '../utils';
+import { ITunesPodcast, Podcast, RawEpisode } from '../models';
+import { RawPodcast } from '../models/RawPodcast';
+import { formatItunesPodcast } from '../utils';
 
 interface HttpClient {
   get: (url: string, contentType?: string) => Promise<any>;
@@ -19,14 +20,41 @@ function getDurationInSeconds(duration: string): number {
   return seconds;
 }
 
-function parseXmlEpisodes(xmlString: string, limit = 50): RawEpisode[] {
+function parseFeed(xmlString: string, episodeLimit = 50): RawPodcast {
   const xml = new DOMParser().parseFromString(xmlString, 'text/xml');
 
+  // Get podcast info
+
+  const podTitle =
+    xml.querySelector('image>title')?.textContent ||
+    xml.querySelector('title')?.textContent;
+  const podAuthor = xml.getElementsByTagName('itunes:author')[0]?.textContent;
+  const podArtwork = xml
+    .getElementsByTagName('itunes:image')[0]
+    ?.getAttribute('href');
+  const podSummary = xml.getElementsByTagName('itunes:summary')[0]?.textContent;
+
+  if (!podTitle || !podAuthor || !podArtwork) {
+    throw new Error('Missing podcast info');
+  }
+
+  const result: RawPodcast = {
+    title: podTitle,
+    author: podAuthor,
+    summary: podSummary || '',
+    coverUrl: podArtwork,
+    feedUrl: '',
+    episodes: [],
+  };
+
+  if (episodeLimit === 0) {
+    return result;
+  }
+
+  // Get episodes
   const recentEpisodes = Array.from(xml.getElementsByTagName('item'));
 
-  const episodes: RawEpisode[] = [];
-
-  recentEpisodes.slice(0, limit).forEach((rawEpisode) => {
+  recentEpisodes.slice(0, episodeLimit).forEach((rawEpisode) => {
     const descriptionNode =
       rawEpisode.getElementsByTagName('itunes:description')[0] ||
       rawEpisode.getElementsByTagName('description')[0];
@@ -65,13 +93,13 @@ function parseXmlEpisodes(xmlString: string, limit = 50): RawEpisode[] {
           .getAttribute('url'),
       } as RawEpisode;
 
-      episodes.push(episode);
+      result.episodes.push(episode);
     } catch (err) {
       console.log('Error parsing episode', err, rawEpisode);
     }
   });
 
-  return episodes;
+  return result;
 }
 
 const defaultHttpClient: HttpClient = {
@@ -83,6 +111,9 @@ const defaultHttpClient: HttpClient = {
 
     return new Promise((resolve, reject) => {
       const xmlhttp = new (XMLHttpRequest as any)({ mozSystem: true });
+      if (contentType.includes('image')) {
+        xmlhttp.responseType = 'blob';
+      }
       xmlhttp.addEventListener('load', () => {
         if (xmlhttp.status >= 400) {
           return reject(`Failed to GET ${url}`);
@@ -116,14 +147,40 @@ export class ApiService {
     this.client = httpClient || defaultHttpClient;
   }
 
-  public async search(query: string): Promise<ITunesPodcast[]> {
+  public async search(query: string): Promise<Podcast[]> {
     return this.client
       .get(`https://itunes.apple.com/search?media=podcast&term=${query}`)
-      .then((res: any) => res.results) // TODO: Use formatPodcast
+      .then((res) => {
+        return res.results.map((a: ITunesPodcast) => formatItunesPodcast(a));
+      })
       .catch((err) => {
         console.log('Failed to search', err);
         throw new Error('Failed to search iTunes catalog.');
       });
+  }
+
+  public async getPodcastByFeed(
+    feedUrl: string,
+    episodes = 0
+  ): Promise<RawPodcast> {
+    return this.client
+      .get(feedUrl, 'text/xml')
+      .then((result) => {
+        const podcast = parseFeed(result, episodes);
+        podcast.feedUrl = feedUrl;
+        return podcast;
+      })
+      .catch((err) => {
+        console.error('Failed to get podcast', err);
+        throw new Error('Failed to get episodes for podcast.');
+      });
+  }
+
+  public async getCoverImage(imageUrl: string): Promise<Blob> {
+    return this.client.get(imageUrl, 'image/*').catch((err) => {
+      console.error('Failed to get cover', err);
+      throw new Error('Failed to get cover for podcast.');
+    });
   }
 
   public async getEpisodes(
@@ -132,27 +189,18 @@ export class ApiService {
   ): Promise<RawEpisode[]> {
     return this.client
       .get(feedUrl, 'text/xml')
-      .then((result: string) => parseXmlEpisodes(result))
-      .then((episodes) => {
+      .then((result) => parseFeed(result))
+      .then(({ episodes }) => {
         if (!afterDate) {
           return episodes;
         }
-        return episodes.filter((episode) => episode.date > afterDate);
+        return episodes
+          .filter((episode) => episode.date > afterDate)
+          .slice(0, numResults);
       })
-      .then((episodes) => episodes.slice(0, numResults))
       .catch((err) => {
         console.error('Failed to get episodes', err);
         throw new Error('Failed to get episodes for podcast.');
-      });
-  }
-
-  public async getPodcastById(podcastId: number): Promise<ITunesPodcast> {
-    return this.client
-      .get(`https://itunes.apple.com/lookup?id=${podcastId}`)
-      .then((res) => res.results[0])
-      .catch((err) => {
-        console.log('Failed to get podcast', err);
-        throw new Error('Failed to get podcast detail from iTunes.');
       });
   }
 }

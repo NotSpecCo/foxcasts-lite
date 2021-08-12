@@ -83,7 +83,7 @@ export default function App(): VNode {
   return (
     <Router>
       <Route path="/search" component={Search} />
-      <Route path="/search/:podcastStoreId" component={PodcastPreview} />
+      <Route path="/podcast/preview" component={PodcastPreview} />
       <Route path="/podcast/:podcastId" component={PodcastDetail} />
       <Route path="/episode/:episodeId" component={EpisodeDetail} />
       <Route path="/filter/:filterId" component={Filter} />

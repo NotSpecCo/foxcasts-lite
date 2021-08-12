@@ -1,9 +1,5 @@
 .details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 10px;
-  text-align: center;
 }
 
 .logo {
@@ -20,7 +16,7 @@
 
 .date {
   color: var(--accent-text-color);
-  margin: 5px;
+  margin: 5px 0;
 }
 
 .author {

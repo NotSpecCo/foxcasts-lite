@@ -63,7 +63,7 @@ export default function Filter({
         <ListItem
           key={episode.id}
           itemId={episode.id}
-          imageUrl={episode.artworkUrl60}
+          imageUrl={episode.cover}
           primaryText={episode.title}
           secondaryText={new Date(episode.date).toLocaleDateString()}
           shortcutKey={i + 1}

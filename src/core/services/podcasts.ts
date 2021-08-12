@@ -1,31 +1,61 @@
-import { Podcast, Episode, EpisodeExtended, EpisodeFilterId } from '../models';
+import {
+  Podcast,
+  Episode,
+  EpisodeExtended,
+  EpisodeFilterId,
+  RawPodcast,
+} from '../models';
 import { ApiService } from './apiService';
 import { DatabaseService } from './databaseService';
+import imageCompression from 'browser-image-compression';
+import { toBase64 } from '../utils';
 
 const apiService = new ApiService();
 const databaseService = new DatabaseService();
 
 // Podcasts
 
-export async function subscribe(podcastStoreId: number): Promise<void> {
-  const podcast = await apiService.getPodcastById(podcastStoreId);
-  const episodes = await apiService.getEpisodes(podcast.feedUrl);
-
-  await databaseService.addPodcast(podcast, episodes);
-}
-
-export async function unsubscribe(
-  podcastId: number,
-  idType: 'db' | 'store' = 'db'
+export async function subscribe(
+  feedUrl: string,
+  rawPodcast?: RawPodcast
 ): Promise<void> {
-  let id = podcastId;
-
-  if (idType === 'store') {
-    const podcast = await databaseService.getPodcastByStoreId(podcastId);
-    id = podcast.id;
+  if (!rawPodcast) {
+    rawPodcast = await apiService.getPodcastByFeed(feedUrl, 50);
   }
 
-  await databaseService.deletePodcast(id);
+  const cover = await apiService.getCoverImage(rawPodcast.coverUrl);
+  const coverLarge = await imageCompression(cover as File, {
+    maxWidthOrHeight: 256,
+    useWebWorker: false,
+  });
+  const coverSmall = await imageCompression(cover as File, {
+    maxWidthOrHeight: 64,
+    useWebWorker: false,
+  });
+
+  const podcast: Podcast = {
+    id: 0,
+    title: rawPodcast.title,
+    author: rawPodcast.author,
+    summary: rawPodcast.summary,
+    feedUrl: rawPodcast.feedUrl,
+    coverSmall: await toBase64(coverSmall),
+    coverLarge: await toBase64(coverLarge),
+  };
+
+  await databaseService.addPodcast(podcast, rawPodcast.episodes);
+}
+
+export async function unsubscribe(podcastId: number): Promise<void> {
+  await databaseService.deletePodcast(podcastId);
+}
+
+export async function unsubscribeByFeed(feedUrl: string): Promise<void> {
+  const podcast = await databaseService.getPodcastByFeed(feedUrl);
+
+  if (!podcast) return;
+
+  await databaseService.deletePodcast(podcast.id);
 }
 
 export async function getAllPodcasts(): Promise<Podcast[]> {
@@ -39,8 +69,8 @@ export async function getPodcastById(
   return await databaseService.getPodcastById(podcastId, includeEpisodes);
 }
 
-export async function getPodcastByStoreId(storeId: number): Promise<Podcast> {
-  return await databaseService.getPodcastByStoreId(storeId);
+export async function getPodcastByFeed(feedUrl: string): Promise<Podcast> {
+  return await databaseService.getPodcastByFeed(feedUrl);
 }
 
 export async function checkForUpdates(): Promise<void> {
@@ -76,10 +106,7 @@ function addPodcastInfoToEpisode(
   return {
     ...episode,
     podcastTitle: podcast.title,
-    artworkUrl30: podcast.artworkUrl30,
-    artworkUrl60: podcast.artworkUrl60,
-    artworkUrl100: podcast.artworkUrl100,
-    artworkUrl600: podcast.artworkUrl600,
+    cover: podcast.coverSmall,
   };
 }
 

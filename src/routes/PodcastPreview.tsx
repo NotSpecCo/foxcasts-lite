@@ -1,12 +1,11 @@
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { Episode, ITunesPodcast, RawEpisode } from '../core/models';
+import { RawPodcast } from '../core/models/RawPodcast';
 import { ApiService } from '../core/services/apiService';
 import {
-  getPodcastById,
-  getPodcastByStoreId,
+  getPodcastByFeed,
   subscribe,
-  unsubscribe,
+  unsubscribeByFeed,
 } from '../core/services/podcasts';
 import { ListItem, View } from '../ui-components';
 import styles from './PodcastPreview.module.css';
@@ -14,35 +13,25 @@ import styles from './PodcastPreview.module.css';
 const apiService = new ApiService();
 
 interface PodcastPreviewProps {
-  podcastStoreId: string;
+  feedUrl: string;
 }
 export default function PodcastPreview({
-  podcastStoreId,
+  feedUrl,
 }: PodcastPreviewProps): VNode {
-  const [podcast, setPodcast] = useState<ITunesPodcast>();
-  const [episodes, setEpisodes] = useState<RawEpisode[]>([]);
+  const [podcast, setPodcast] = useState<RawPodcast>();
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    apiService
-      .getPodcastById(parseInt(podcastStoreId, 10))
-      .then((result) => {
-        setPodcast(result);
-        return result.feedUrl;
-      })
-      .then((feedUrl) => apiService.getEpisodes(feedUrl, { numResults: 10 }))
-      .then((result) => {
-        setEpisodes(result);
-        setLoading(false);
-      });
+    apiService.getPodcastByFeed(feedUrl, 50).then((result) => {
+      setPodcast(result);
+      setLoading(false);
+    });
 
-    getPodcastByStoreId(parseInt(podcastStoreId, 10)).then((result) =>
-      setSubscribed(!!result)
-    );
-  }, [podcastStoreId]);
+    getPodcastByFeed(feedUrl).then((result) => setSubscribed(!!result));
+  }, [feedUrl]);
 
   async function subscribeToPodcast(): Promise<void> {
     if (subscribing) {
@@ -50,7 +39,7 @@ export default function PodcastPreview({
     }
     setSubscribing(true);
 
-    await subscribe(parseInt(podcastStoreId, 10))
+    await subscribe(feedUrl, podcast)
       .then(() => setSubscribed(true))
       .catch((err) =>
         console.error('Failed to subscribe to podcast', err.message)
@@ -65,9 +54,8 @@ export default function PodcastPreview({
     }
     setSubscribing(true);
 
-    await unsubscribe(parseInt(podcastStoreId, 10), 'store')
+    await unsubscribeByFeed(feedUrl)
       .then(() => setSubscribed(false))
-
       .catch((err) =>
         console.error('Failed to unsubscribe from podcast', err.message)
       );
@@ -88,7 +76,7 @@ export default function PodcastPreview({
 
   return (
     <View
-      showHeader={false}
+      headerText="Feed Preview"
       centerMenuText=""
       actions={[
         {
@@ -103,16 +91,12 @@ export default function PodcastPreview({
       onAction={handleAction}
     >
       <div className={styles.details}>
-        {podcast && (
-          <img
-            src={podcast.artworkUrl600 || podcast.artworkUrl100}
-            className={styles.logo}
-          />
-        )}
-        <div className={styles.title}>{podcast?.collectionName}</div>
-        <div className={styles.author}>{podcast?.artistName}</div>
+        <div className={styles.title}>{podcast?.title}</div>
+        <div className={styles.author}>{podcast?.author}</div>
+        <div>{podcast?.summary}</div>
       </div>
-      {episodes.map((episode) => (
+      {loading ? <div className={styles.message}>Loading feed...</div> : null}
+      {podcast?.episodes.slice(0, 10).map((episode) => (
         <ListItem
           key={episode.guid}
           itemId={episode.guid}

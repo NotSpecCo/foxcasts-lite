@@ -5,3 +5,4 @@ export * from './ITunesPodcast';
 export * from './Option';
 export * from './Podcast';
 export * from './RawEpisode';
+export * from './RawPodcast';

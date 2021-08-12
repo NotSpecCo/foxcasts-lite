@@ -55,7 +55,7 @@ export default function Player(): VNode {
             </div>
             <img
               className={styles.logo}
-              src={player.episode && player.episode.artworkUrl600}
+              src={player.episode && player.episode.cover}
             />
             <div className={styles.author}>
               {player.episode && player.episode.podcastTitle}

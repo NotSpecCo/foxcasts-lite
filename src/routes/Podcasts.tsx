@@ -51,13 +51,13 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   async function seedData(): Promise<void> {
     setSeeding(true);
     try {
-      await Promise.all([
-        subscribe(1237401284), // JavaScript Jabber
-        subscribe(493890455), // Shop Talk
-        subscribe(1253186678), // Syntax
-        subscribe(1341969432), // React Podcast
-        subscribe(430333725), // Vergecast
-      ]);
+      // Need to do one at a time so KaiOS can handle it
+      await subscribe('https://feed.syntax.fm/rss');
+      await subscribe('https://shoptalkshow.com/feed/podcast');
+      await subscribe('https://feeds.simplecast.com/JoR28o79'); // React Podcast
+      await subscribe('https://feeds.feedwrench.com/js-jabber.rss');
+      await subscribe('https://feeds.megaphone.fm/vergecast');
+
       console.log('seed success');
     } catch (err) {
       console.error('Failed to seed data', err);
@@ -94,7 +94,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
             <ListItem
               key={podcast.id}
               itemId={podcast.id}
-              imageUrl={podcast.artworkUrl60}
+              imageUrl={podcast.coverSmall}
               primaryText={podcast.title}
               shortcutKey={i <= 8 ? i + 1 : undefined}
               onClick={(): void => viewPodcast(podcast.id)}
@@ -108,7 +108,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
               key={podcast.id}
               itemId={podcast.id}
               dimIfUnselected={!!selectedItemId}
-              imageUrl={podcast.artworkUrl100}
+              imageUrl={podcast.coverLarge}
               shortcutKey={i + 1}
               onClick={(): void => viewPodcast(podcast.id)}
             />

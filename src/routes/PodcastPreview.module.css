@@ -1,9 +1,5 @@
 .details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 10px;
-  text-align: center;
 }
 
 .logo {
@@ -18,5 +14,10 @@
 }
 
 .author {
-  color: var(--secondary-text-color);
+  color: var(--accent-text-color);
+  margin: 5px 0 10px 0;
+}
+
+.message {
+  text-align: center;
 }
