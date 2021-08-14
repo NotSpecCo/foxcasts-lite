@@ -1,6 +1,6 @@
 # Foxcasts Lite
 
-Please note: This is currently in the middle of a rewrite, so things will be changing and possibly breaking.
+![Dashboard view](/promo/foxcasts_banner1.png?raw=true)
 
 ## Navigation
 
