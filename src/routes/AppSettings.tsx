@@ -128,7 +128,8 @@ export default function AppSettings(): VNode {
             ref={accentColorRef}
             type="text"
             value={settings.accentColor}
-            size={7}
+            size={6}
+            maxLength={6}
           />
         </SelectableRow>
         <SelectableRow selectableId="accentHeader">
