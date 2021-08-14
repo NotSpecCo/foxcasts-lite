@@ -52,6 +52,10 @@ export default function App(): VNode {
       '--app-accent-color',
       `#${settings.accentColor}`
     );
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme.values.headerBgColor.value);
+
     if (settings.accentText) {
       document.body.style.setProperty(
         '--accent-text-color',
@@ -69,6 +73,9 @@ export default function App(): VNode {
         '--header-bg-color',
         `#${settings.accentColor}`
       );
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute('content', `#${settings.accentColor}`);
     }
 
     // Layout
