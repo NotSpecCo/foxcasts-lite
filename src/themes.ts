@@ -7,6 +7,11 @@ export type ThemeValue = {
   
 export type ThemeConfig = {
     id: Theme;
+    settings: {
+        accentHeader: boolean;
+        accentHighlight: boolean;
+        accentText: boolean;
+    };
     values: {
         [key: string]: ThemeValue;
         appBgColor: ThemeValue;
@@ -30,6 +35,11 @@ export type ThemeConfig = {
 export const themes: ThemeConfig[] = [
 {
     id: Theme.Light,
+    settings: {
+        accentHeader: true,
+        accentHighlight: true,
+        accentText: true,
+    },
     values: {
         appBgColor: { variable: 'app-bg-color', value: '#ffffff' },
         appAccentColor: { variable: 'app-accent-color', value: '#ec5817' },
@@ -50,6 +60,11 @@ export const themes: ThemeConfig[] = [
 },
 {
     id: Theme.Dark,
+    settings: {
+        accentHeader: true,
+        accentHighlight: true,
+        accentText: true,
+    },
     values: {
         appBgColor: { variable: 'app-bg-color', value: '#211c1e' },
         appAccentColor: { variable: 'app-accent-color', value: '#d04a11' },
@@ -70,6 +85,11 @@ export const themes: ThemeConfig[] = [
 },
 {
     id: Theme.Simple,
+    settings: {
+        accentHeader: true,
+        accentHighlight: true,
+        accentText: true,
+    },
     values: {
         appBgColor: { variable: 'app-bg-color', value: '#ffffff' },
         appAccentColor: { variable: 'app-accent-color', value: '#B7B6C1' },
@@ -90,6 +110,11 @@ export const themes: ThemeConfig[] = [
 },
 {
     id: Theme.Cobalt,
+    settings: {
+        accentHeader: false,
+        accentHighlight: true,
+        accentText: true,
+    },
     values: {
         appBgColor: { variable: 'app-bg-color', value: '#0f354b' },
         appAccentColor: { variable: 'app-accent-color', value: '#ffc600' },
@@ -108,22 +133,4 @@ export const themes: ThemeConfig[] = [
         inputBorderColor: { variable: 'input-border-color', value: 'rgba(255, 255, 255, 0.1)' },
     }
 },
-// {
-//   id: Theme.Dark,
-//   appBgColor: { variable: 'app-bg-color', value: '' },
-//   appAccentColor: { variable: 'app-accent-color', value: '' },
-//   primaryTextColor: { variable: 'primary-text-color', value: '' },
-//   secondaryTextColor: { variable: 'secondary-text-color', value: '' },
-//   accentTextColor: { variable: 'accent-text-color', value: '' },
-//   dividerColor: { variable: 'divider-color', value: '' },
-//   highlightBgColor: { variable: 'highlight-bg-color', value: '' },
-//   highlightTextColor: { variable: 'highlight-text-color', value: '' },
-//   headerBgColor: { variable: 'header-bg-color', value: '' },
-//   headerTextColor: { variable: 'header-text-color', value: '' },
-//   menuBgColor: { variable: 'menu-bg-color', value: '' },
-//   menuTextColor: { variable: 'menu-text-color', value: '' },
-//   menubarBgColor: { variable: 'menubar-bg-color', value: '' },
-//   menubarTextColor: { variable: 'menubar-text-color', value: '' },
-//   inputBorderColor: { variable: 'input-border-color', value: '' },
-// },
 ];

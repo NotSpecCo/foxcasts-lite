@@ -61,13 +61,7 @@ export default function AppSettings(): VNode {
         });
         break;
       case 'accentColor':
-        console.log('accent', accentColorRef.current?.value);
         saveSetting('accentColor', accentColorRef.current?.value);
-        break;
-      case 'accentHeader':
-      case 'accentHighlight':
-      case 'accentText':
-        saveSetting(id, !settings[id]);
         break;
     }
   }
@@ -92,9 +86,6 @@ export default function AppSettings(): VNode {
         ...settings,
         theme: value as Theme,
         accentColor: theme.values.appAccentColor.value.slice(1),
-        accentHeader: false,
-        accentHighlight: false,
-        accentText: false,
       });
     } else {
       saveSetting(key, value);
@@ -119,9 +110,6 @@ export default function AppSettings(): VNode {
           Theme
           <span className={styles.selectValue}>{settings.theme}</span>
         </SelectableRow>
-
-        <div className={styles.heading}>Custom Accent Color</div>
-
         <SelectableRow selectableId="accentColor">
           Accent Color
           <input
@@ -131,18 +119,6 @@ export default function AppSettings(): VNode {
             size={6}
             maxLength={6}
           />
-        </SelectableRow>
-        <SelectableRow selectableId="accentHeader">
-          Apply to header
-          <input type="checkbox" checked={settings.accentHeader} />
-        </SelectableRow>
-        <SelectableRow selectableId="accentHighlight">
-          Apply to highlight
-          <input type="checkbox" checked={settings.accentHighlight} />
-        </SelectableRow>
-        <SelectableRow selectableId="accentText">
-          Apply to text
-          <input type="checkbox" checked={settings.accentText} />
         </SelectableRow>
       </div>
       {selectMenu ? (

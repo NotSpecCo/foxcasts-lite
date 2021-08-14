@@ -19,9 +19,6 @@ const defaultSettings: Settings = {
   fullScreen: false,
   theme: Theme.Light,
   accentColor: 'ec5817',
-  accentHeader: false,
-  accentHighlight: false,
-  accentText: false,
 };
 
 type SettingsContextValue = {

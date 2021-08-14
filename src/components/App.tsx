@@ -56,19 +56,19 @@ export default function App(): VNode {
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', theme.values.headerBgColor.value);
 
-    if (settings.accentText) {
+    if (theme.settings.accentText) {
       document.body.style.setProperty(
         '--accent-text-color',
         `#${settings.accentColor}`
       );
     }
-    if (settings.accentHighlight) {
+    if (theme.settings.accentHighlight) {
       document.body.style.setProperty(
         '--highlight-bg-color',
         `#${settings.accentColor}`
       );
     }
-    if (settings.accentHeader) {
+    if (theme.settings.accentHeader) {
       document.body.style.setProperty(
         '--header-bg-color',
         `#${settings.accentColor}`

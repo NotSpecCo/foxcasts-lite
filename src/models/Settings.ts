@@ -21,7 +21,4 @@ export type Settings = {
   fullScreen: boolean;
   theme: Theme;
   accentColor: string;
-  accentHeader: boolean;
-  accentHighlight: boolean;
-  accentText: boolean;
 };
