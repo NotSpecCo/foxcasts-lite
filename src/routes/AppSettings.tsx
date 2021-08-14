@@ -36,6 +36,7 @@ export default function AppSettings(): VNode {
             { id: Theme.Light, label: 'Light' },
             { id: Theme.Dark, label: 'Dark' },
             { id: Theme.Cobalt, label: 'Cobalt' },
+            { id: Theme.Simple, label: 'Simple' },
           ],
         });
         break;

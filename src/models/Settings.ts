@@ -2,6 +2,7 @@ export enum Theme {
   Light = 'light',
   Dark = 'dark',
   Cobalt = 'cobalt',
+  Simple = 'simple',
 }
 
 export enum PodcastsLayout {
