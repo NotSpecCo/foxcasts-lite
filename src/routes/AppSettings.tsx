@@ -5,6 +5,7 @@ import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import { DisplayDensity, Settings, Theme } from '../models';
 import { ThemeConfig, themes } from '../themes';
 import { Menu, MenuOption, View } from '../ui-components';
+import { SelectableRow } from '../ui-components/SelectableRow';
 import styles from './AppSettings.module.css';
 
 type SelectMenu = {
@@ -34,6 +35,7 @@ export default function AppSettings(): VNode {
           options: [
             { id: Theme.Light, label: 'Light' },
             { id: Theme.Dark, label: 'Dark' },
+            { id: Theme.Cobalt, label: 'Cobalt' },
           ],
         });
         break;
@@ -61,6 +63,11 @@ export default function AppSettings(): VNode {
         console.log('accent', accentColorRef.current?.value);
         saveSetting('accentColor', accentColorRef.current?.value);
         break;
+      case 'accentHeader':
+      case 'accentHighlight':
+      case 'accentText':
+        saveSetting(id, !settings[id]);
+        break;
     }
   }
 
@@ -84,6 +91,9 @@ export default function AppSettings(): VNode {
         ...settings,
         theme: value as Theme,
         accentColor: theme.values.appAccentColor.value.slice(1),
+        accentHeader: false,
+        accentHighlight: false,
+        accentText: false,
       });
     } else {
       saveSetting(key, value);
@@ -95,44 +105,23 @@ export default function AppSettings(): VNode {
   return (
     <View headerText="Settings">
       <div className={styles.container}>
-        <div
-          data-selectable-priority={SelectablePriority.Low}
-          data-selectable-id="displayDensity"
-          className={styles.row}
-        >
+        <div className={styles.heading}>Appearance</div>
+        <SelectableRow selectableId="displayDensity">
           Display Density
-          <select value={settings.displayDensity}>
-            <option value={DisplayDensity.Normal}>Normal</option>
-            <option value={DisplayDensity.Compact}>Compact</option>
-          </select>
-        </div>
-        <div
-          data-selectable-priority={SelectablePriority.Low}
-          data-selectable-id="podcastsLayout"
-          className={styles.row}
-        >
+          <span className={styles.selectValue}>{settings.displayDensity}</span>
+        </SelectableRow>
+        <SelectableRow selectableId="podcastsLayout">
           Podcasts Layout
-          <select value={settings.podcastsLayout}>
-            <option value="list">List</option>
-            <option value="grid">Grid</option>
-          </select>
-        </div>
-        <div
-          data-selectable-priority={SelectablePriority.Low}
-          data-selectable-id="theme"
-          className={styles.row}
-        >
+          <span className={styles.selectValue}>{settings.podcastsLayout}</span>
+        </SelectableRow>
+        <SelectableRow selectableId="theme">
           Theme
-          <select value={settings.theme}>
-            <option value={Theme.Light}>Light</option>
-            <option value={Theme.Dark}>Dark</option>
-          </select>
-        </div>
-        <div
-          data-selectable-priority={SelectablePriority.Low}
-          data-selectable-id="accentColor"
-          className={styles.row}
-        >
+          <span className={styles.selectValue}>{settings.theme}</span>
+        </SelectableRow>
+
+        <div className={styles.heading}>Custom Accent Color</div>
+
+        <SelectableRow selectableId="accentColor">
           Accent Color
           <input
             ref={accentColorRef}
@@ -140,7 +129,19 @@ export default function AppSettings(): VNode {
             value={settings.accentColor}
             size={7}
           />
-        </div>
+        </SelectableRow>
+        <SelectableRow selectableId="accentHeader">
+          Apply to header
+          <input type="checkbox" checked={settings.accentHeader} />
+        </SelectableRow>
+        <SelectableRow selectableId="accentHighlight">
+          Apply to highlight
+          <input type="checkbox" checked={settings.accentHighlight} />
+        </SelectableRow>
+        <SelectableRow selectableId="accentText">
+          Apply to text
+          <input type="checkbox" checked={settings.accentText} />
+        </SelectableRow>
       </div>
       {selectMenu ? (
         <Menu

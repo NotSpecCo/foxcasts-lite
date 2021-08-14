@@ -11,7 +11,6 @@ import Search from '../routes/Search';
 import Podcasts from '../routes/Podcasts';
 import AppSettings from '../routes/AppSettings';
 import Import from '../routes/Import';
-import { useNavKeys } from '../hooks/useNavKeys';
 import { checkForUpdates } from '../core/services/podcasts';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
 import { DisplayDensity } from '../models';
@@ -41,6 +40,7 @@ export default function App(): VNode {
   }, []);
 
   useEffect(() => {
+    // Theme
     const theme = themes.find((a) => a.id === settings.theme) || themes[0];
     for (const id in theme.values) {
       document.body.style.setProperty(
@@ -48,38 +48,36 @@ export default function App(): VNode {
         theme.values[id].value
       );
     }
-
     document.body.style.setProperty(
       '--app-accent-color',
       `#${settings.accentColor}`
     );
-    document.body.style.setProperty(
-      '--accent-text-color',
-      `#${settings.accentColor}`
-    );
-    document.body.style.setProperty(
-      '--highlight-bg-color',
-      `#${settings.accentColor}`
-    );
-    document.body.style.setProperty(
-      '--header-bg-color',
-      `#${settings.accentColor}`
-    );
-  }, [settings.theme, settings.accentColor]);
+    if (settings.accentText) {
+      document.body.style.setProperty(
+        '--accent-text-color',
+        `#${settings.accentColor}`
+      );
+    }
+    if (settings.accentHighlight) {
+      document.body.style.setProperty(
+        '--highlight-bg-color',
+        `#${settings.accentColor}`
+      );
+    }
+    if (settings.accentHeader) {
+      document.body.style.setProperty(
+        '--header-bg-color',
+        `#${settings.accentColor}`
+      );
+    }
 
-  useEffect(() => {
+    // Layout
     if (settings.displayDensity === DisplayDensity.Compact) {
       document.body.setAttribute('data-compact-layout', '');
     } else {
       document.body.removeAttribute('data-compact-layout');
     }
-  }, [settings.displayDensity]);
-
-  useNavKeys({
-    Backspace: (ev) => {
-      console.log('root backspace');
-    },
-  });
+  }, [settings]);
 
   return (
     <Router>

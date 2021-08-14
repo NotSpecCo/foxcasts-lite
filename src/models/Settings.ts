@@ -1,6 +1,7 @@
 export enum Theme {
   Light = 'light',
   Dark = 'dark',
+  Cobalt = 'cobalt',
 }
 
 export enum PodcastsLayout {
@@ -19,4 +20,7 @@ export type Settings = {
   fullScreen: boolean;
   theme: Theme;
   accentColor: string;
+  accentHeader: boolean;
+  accentHighlight: boolean;
+  accentText: boolean;
 };

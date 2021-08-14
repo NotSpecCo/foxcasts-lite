@@ -1,0 +1,14 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 5px;
+}
+[data-selected].root {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+body[data-compact-layout] .root {
+  padding: 9px 5px;
+}

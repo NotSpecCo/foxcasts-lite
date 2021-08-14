@@ -23,7 +23,7 @@
 .content {
   background-color: var(--menu-bg-color);
   color: var(--menu-text-color);
-  border-top: 2px solid var(--app-accent-color);
+  border-top: 2px solid var(--accent-text-color);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -52,7 +52,7 @@ body[data-compact-layout] .option {
   font-size: 17px;
   font-weight: 300;
   margin-right: 5px;
-  color: var(--app-accent-color);
+  color: var(--accent-text-color);
 }
 [data-selected] > .shortcut {
   color: var(--highlight-text-color);

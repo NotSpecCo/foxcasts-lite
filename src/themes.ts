@@ -68,6 +68,26 @@ export const themes: ThemeConfig[] = [
         inputBorderColor: { variable: 'input-border-color', value: '#aaaaaa' },
     }
 },
+{
+    id: Theme.Cobalt,
+    values: {
+        appBgColor: { variable: 'app-bg-color', value: 'rgb(15,53,75)' },
+        appAccentColor: { variable: 'app-accent-color', value: '#ffc600' },
+        primaryTextColor: { variable: 'primary-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+        secondaryTextColor: { variable: 'secondary-text-color', value: 'rgba(255, 255, 255, 0.5)' },
+        accentTextColor: { variable: 'accent-text-color', value: '#ffc600' },
+        dividerColor: { variable: 'divider-color', value: 'rgba(255, 255, 255, 0.1)' },
+        highlightBgColor: { variable: 'highlight-bg-color', value: '#ffc600' },
+        highlightTextColor: { variable: 'highlight-text-color', value: 'rgba(0, 0, 0, 0.88)' },
+        headerBgColor: { variable: 'header-bg-color', value: 'rgb(17,35,46)'},
+        headerTextColor: { variable: 'header-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+        menuBgColor: { variable: 'menu-bg-color', value: 'rgb(15,53,75)' },
+        menuTextColor: { variable: 'menu-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+        menubarBgColor: { variable: 'menubar-bg-color', value: 'rgb(17,35,46)' },
+        menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+        inputBorderColor: { variable: 'input-border-color', value: 'rgba(255, 255, 255, 0.1)' },
+    }
+},
 // {
 //   id: Theme.Dark,
 //   appBgColor: { variable: 'app-bg-color', value: '' },
