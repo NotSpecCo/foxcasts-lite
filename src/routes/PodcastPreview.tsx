@@ -4,7 +4,7 @@ import { RawPodcast } from '../core/models/RawPodcast';
 import { ApiService } from '../core/services/apiService';
 import {
   getPodcastByFeed,
-  subscribe,
+  subscribeByFeed,
   unsubscribeByFeed,
 } from '../core/services/podcasts';
 import { ListItem, View } from '../ui-components';
@@ -39,7 +39,7 @@ export default function PodcastPreview({
     }
     setSubscribing(true);
 
-    await subscribe(feedUrl, podcast)
+    await subscribeByFeed(feedUrl, podcast)
       .then(() => setSubscribed(true))
       .catch((err) =>
         console.error('Failed to subscribe to podcast', err.message)

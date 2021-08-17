@@ -21,8 +21,8 @@ export function formatRawPodcast(podcast: RawPodcast): Podcast {
     author: podcast.author,
     summary: podcast.summary,
     feedUrl: podcast.feedUrl,
-    coverSmall: podcast.coverUrl,
-    coverLarge: podcast.coverUrl,
+    coverSmall: podcast.artworkUrl,
+    coverLarge: podcast.artworkUrl,
     episodes: [],
   };
 }

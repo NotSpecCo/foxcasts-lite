@@ -5,7 +5,7 @@ import { Podcast } from '../core/models';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-import { getAllPodcasts, subscribe } from '../core/services/podcasts';
+import { getAllPodcasts, subscribeByFeed } from '../core/services/podcasts';
 import { GridItem } from '../ui-components/GridItem';
 import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
@@ -52,11 +52,11 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
     setSeeding(true);
     try {
       // Need to do one at a time so KaiOS can handle it
-      await subscribe('https://feed.syntax.fm/rss');
-      await subscribe('https://shoptalkshow.com/feed/podcast');
-      await subscribe('https://feeds.simplecast.com/JoR28o79'); // React Podcast
-      await subscribe('https://feeds.feedwrench.com/js-jabber.rss');
-      await subscribe('https://feeds.megaphone.fm/vergecast');
+      await subscribeByFeed('https://feed.syntax.fm/rss');
+      await subscribeByFeed('https://shoptalkshow.com/feed/podcast');
+      await subscribeByFeed('https://feeds.simplecast.com/JoR28o79'); // React Podcast
+      await subscribeByFeed('https://feeds.feedwrench.com/js-jabber.rss');
+      await subscribeByFeed('https://feeds.megaphone.fm/vergecast');
 
       console.log('seed success');
     } catch (err) {

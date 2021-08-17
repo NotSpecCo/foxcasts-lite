@@ -7,15 +7,13 @@ import {
 } from '../models';
 import { ApiService } from './apiService';
 import { DatabaseService } from './databaseService';
-import imageCompression from 'browser-image-compression';
-import { toBase64 } from '../utils';
 
 const apiService = new ApiService();
 const databaseService = new DatabaseService();
 
 // Podcasts
 
-export async function subscribe(
+export async function subscribeByFeed(
   feedUrl: string,
   rawPodcast?: RawPodcast
 ): Promise<void> {
@@ -29,24 +27,14 @@ export async function subscribe(
     rawPodcast = await apiService.getPodcastByFeed(feedUrl, 50);
   }
 
-  const cover = await apiService.getCoverImage(rawPodcast.coverUrl);
-  const coverLarge = await imageCompression(cover as File, {
-    maxWidthOrHeight: 256,
-    useWebWorker: false,
-  });
-  const coverSmall = await imageCompression(cover as File, {
-    maxWidthOrHeight: 64,
-    useWebWorker: false,
-  });
-
   const podcast: Podcast = {
     id: 0,
     title: rawPodcast.title,
     author: rawPodcast.author,
     summary: rawPodcast.summary,
     feedUrl: rawPodcast.feedUrl,
-    coverSmall: await toBase64(coverSmall),
-    coverLarge: await toBase64(coverLarge),
+    coverSmall: await apiService.getArtwork(rawPodcast.artworkUrl, 40),
+    coverLarge: await apiService.getArtwork(rawPodcast.artworkUrl, 200),
   };
 
   await databaseService.addPodcast(podcast, rawPodcast.episodes);
@@ -90,10 +78,10 @@ export async function checkForUpdates(): Promise<void> {
       return;
     }
 
-    const newEpisodes = await apiService.getEpisodes(podcast.feedUrl, {
-      numResults: 50,
-      afterDate: latestEpisode.date,
-    });
+    const newEpisodes = await apiService.getEpisodes(
+      podcast.feedUrl,
+      latestEpisode.date
+    );
 
     if (newEpisodes.length === 0) {
       continue;
@@ -160,7 +148,7 @@ export async function getEpisodesByFilter(
 }
 
 export default {
-  subscribe,
+  subscribe: subscribeByFeed,
   unsubscribe,
   getAllPodcasts,
   getPodcastById,

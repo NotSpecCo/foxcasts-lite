@@ -4,8 +4,10 @@ export type RawPodcast = {
   title: string;
   author: string;
   summary: string;
-  description?: string;
+  categories: string[];
   feedUrl: string;
-  coverUrl: string;
+  artworkUrl: string;
+  artworkSmall?: string;
+  artworkLarge?: string;
   episodes: RawEpisode[];
 };

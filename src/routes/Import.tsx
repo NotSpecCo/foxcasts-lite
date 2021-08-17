@@ -5,7 +5,7 @@ import { View } from '../ui-components';
 import styles from './Import.module.css';
 import { readFileAsText } from '../services/files';
 import { Button } from '../ui-components/Button';
-import { subscribe } from '../core/services/podcasts';
+import { subscribeByFeed } from '../core/services/podcasts';
 
 type Feed = {
   id: number;
@@ -75,7 +75,7 @@ export default function Import(): VNode {
     setSubscribing(true);
     for (const podcast of podcasts.filter((a) => a.selected)) {
       console.log(`Subscribing to ${podcast.title}`);
-      await subscribe(podcast.feedUrl)
+      await subscribeByFeed(podcast.feedUrl)
         .then(() => console.log(`Subscribed to ${podcast.title}`))
         .catch((err) =>
           console.log(`Failed to subscribe to ${podcast.title}`, err)

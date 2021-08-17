@@ -6,7 +6,7 @@ import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import styles from './Search.module.css';
-import { Podcast } from '../core/models';
+import { SearchResult } from '../core/models';
 
 const apiService = new ApiService();
 
@@ -20,7 +20,7 @@ export default function Search({
   selectedItemId,
 }: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
-  const [results, setResults] = useState<Podcast[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const searchbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Search({
   }, [selectedItemId, results]);
 
   function viewPodcast(podcastStoreId: string | number): void {
-    const podcast = results.find((a) => a.id == podcastStoreId);
+    const podcast = results.find((a) => a.itunesId == podcastStoreId);
     if (podcast?.feedUrl) {
       route(`/podcast/preview?feedUrl=${encodeURIComponent(podcast.feedUrl)}`);
     }
@@ -118,12 +118,12 @@ export default function Search({
       />
       {results.map((result) => (
         <ListItem
-          key={result.id}
-          itemId={result.id}
-          imageUrl={result.coverSmall}
+          key={result.itunesId}
+          itemId={result.itunesId}
+          imageUrl={result.artworkUrl}
           primaryText={result.title}
           secondaryText={result.author}
-          onClick={(): void => viewPodcast(result.id)}
+          onClick={(): void => viewPodcast(result.itunesId)}
         />
       ))}
     </View>
