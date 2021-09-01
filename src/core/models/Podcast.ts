@@ -1,12 +1,13 @@
-import { Episode } from './Episode';
-
 export type Podcast = {
   id: number;
+  podexId: number | null;
+  itunesId: number | null;
   title: string;
   author: string;
-  summary: string;
+  description?: string;
   feedUrl: string;
-  coverSmall: string;
-  coverLarge: string;
-  episodes?: Episode[];
+  artworkUrl: string;
+  artwork: string;
+  categories: string[];
+  lastUpdated?: string;
 };

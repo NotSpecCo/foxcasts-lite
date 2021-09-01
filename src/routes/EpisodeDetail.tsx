@@ -77,7 +77,7 @@ export default function EpisodeDetail({
             {episode?.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'}
           </span>
         </div>
-        <p>{episode?.subtitle}</p>
+        <p>{episode?.description}</p>
       </div>
     </View>
   );

@@ -23,7 +23,7 @@ export default function PodcastDetail({
   const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
-    getPodcastById(parseInt(podcastId, 10), true).then((result) =>
+    getPodcastById(parseInt(podcastId, 10)).then((result) =>
       setPodcast(result)
     );
 

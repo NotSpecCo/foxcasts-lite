@@ -1,40 +1,68 @@
 import Dexie from 'dexie';
-import { Podcast, Episode, EpisodeFilterId, RawEpisode } from '../models';
+import {
+  Podcast,
+  Episode,
+  EpisodeFilterId,
+  ApiPodcast,
+  ApiEpisode,
+} from '../models';
+import { NotFoundError } from '../utils/errors';
+import { fromApiEpisode } from '../utils/formatEpisode';
 
-export class DatabaseService {
-  private db: Dexie;
+class FoxcastsDB extends Dexie {
+  podcasts: Dexie.Table<Podcast, number>;
+  episodes: Dexie.Table<Episode, number>;
 
   constructor() {
-    this.db = new Dexie('foxcasts');
-    this.db.version(1).stores({
-      podcasts: '++id, &feedUrl',
-      episodes: '++id, &guid, podcastId, date, progress',
+    super('foxcasts');
+
+    this.version(1).stores({
+      podcasts: '++id, &feedUrl, &podexId, itunesId',
+      episodes: '++id, &podexId, &guid, podcastId, date, progress',
     });
+
+    // The following lines are needed for it to work across typescipt using babel-preset-typescript:
+    this.podcasts = this.table('podcasts');
+    this.episodes = this.table('episodes');
+  }
+}
+
+export class DatabaseService {
+  private db: FoxcastsDB;
+
+  constructor() {
+    this.db = new FoxcastsDB();
   }
 
   //#region Podcasts
 
   public async addPodcast(
-    podcast: Podcast,
-    rawEpisodes: RawEpisode[]
+    podcast: ApiPodcast,
+    episodes: ApiEpisode[],
+    artwork: string
   ): Promise<void> {
-    // Make sure no IDs are passed in
-    (podcast as any).id = undefined;
+    const dbPodcast: Podcast = {
+      podexId: podcast.podexId || null,
+      itunesId: podcast.itunesId || null,
+      title: podcast.title,
+      author: podcast.author,
+      description: podcast.description,
+      feedUrl: podcast.feedUrl,
+      artworkUrl: podcast.artworkUrl,
+      artwork,
+    } as Podcast;
 
     await this.db.transaction(
       'rw',
-      this.db.table('podcasts'),
-      this.db.table('episodes'),
+      this.db.podcasts,
+      this.db.episodes,
       async () => {
-        const podcastId = await this.db.table('podcasts').add(podcast);
-        const episodes: Episode[] = rawEpisodes.map(
-          (rawEpisode) =>
-            ({
-              ...rawEpisode,
-              podcastId,
-            } as Episode)
-        );
-        await this.db.table('episodes').bulkAdd(episodes);
+        const podcastId = (await this.db.podcasts.add(dbPodcast)) as number;
+        const dbEpisodes: Omit<Episode, 'id'>[] = episodes.map((ep) => ({
+          ...fromApiEpisode(ep),
+          podcastId,
+        }));
+        await this.db.episodes.bulkAdd(dbEpisodes as Episode[]);
       }
     );
   }
@@ -46,63 +74,64 @@ export class DatabaseService {
 
     await this.db.transaction(
       'rw',
-      this.db.table('podcasts'),
-      this.db.table('episodes'),
+      this.db.podcasts,
+      this.db.episodes,
       async () => {
-        const episodes = await this.db
-          .table('episodes')
-          .where({ podcastId })
-          .toArray();
+        const episodes = await this.db.episodes.where({ podcastId }).toArray();
         const episodeIds = episodes.map((episode) => episode.id);
 
-        await this.db.table('podcasts').delete(podcastId);
-        await this.db.table('episodes').bulkDelete(episodeIds);
+        await this.db.podcasts.delete(podcastId);
+        await this.db.episodes.bulkDelete(episodeIds);
       }
     );
   }
 
-  public async getPodcastById(
-    podcastId: number,
-    includeEpisodes = false
-  ): Promise<Podcast> {
+  public async getPodcastById(podcastId: number): Promise<Podcast> {
     if (typeof podcastId === 'string') {
       podcastId = parseInt(podcastId, 10);
     }
 
-    const podcast: Podcast = await this.db
-      .table('podcasts')
-      .get({ id: podcastId });
+    const podcast = await this.db.podcasts.get({
+      id: podcastId,
+    });
 
-    if (podcast && includeEpisodes) {
-      const episodes: Episode[] = await this.db
-        .table('episodes')
-        .where({ podcastId })
-        // .sortBy('date')
-        .toArray()
-        .then((eps) =>
-          eps.sort((a, b) => {
-            if (a.date > b.date) {
-              return -1;
-            }
-            if (b.date > a.date) {
-              return 1;
-            }
-            return 0;
-          })
-        );
-      podcast.episodes = episodes;
+    if (!podcast) {
+      throw new NotFoundError(`No podcast found for id ${podcastId}`);
+    }
+
+    return podcast;
+  }
+
+  public async getPodcastByPodexId(podexId: number): Promise<Podcast> {
+    if (typeof podexId === 'string') {
+      podexId = parseInt(podexId, 10);
+    }
+
+    const podcast = await this.db.podcasts.get({
+      podexId,
+    });
+
+    if (!podcast) {
+      throw new NotFoundError(`No podcast found for podex id ${podexId}`);
     }
 
     return podcast;
   }
 
   public async getPodcastByFeed(feedUrl: string): Promise<Podcast> {
-    const podcast: Podcast = await this.db.table('podcasts').get({ feedUrl });
+    const podcast = await this.db.podcasts.get({
+      feedUrl,
+    });
+
+    if (!podcast) {
+      throw new NotFoundError(`No podcast found for feed url ${feedUrl}`);
+    }
+
     return podcast;
   }
 
   public async getPodcasts(): Promise<Podcast[]> {
-    return await this.db.table('podcasts').toCollection().sortBy('title');
+    return await this.db.podcasts.toCollection().sortBy('title');
   }
 
   //#endregion
@@ -111,7 +140,7 @@ export class DatabaseService {
 
   public async addEpisode(
     podcastId: number,
-    episode: RawEpisode
+    episode: ApiEpisode
   ): Promise<void> {
     const existingEpisode = await this.getEpisodeByGuid(episode.guid);
     if (existingEpisode) {
@@ -120,15 +149,15 @@ export class DatabaseService {
       );
       return;
     }
-    await this.db.table('episodes').add({
-      ...episode,
+    await this.db.episodes.add({
+      ...fromApiEpisode(episode),
       podcastId,
-    });
+    } as Episode);
   }
 
   public async addEpisodes(
     podcastId: number,
-    episodes: RawEpisode[]
+    episodes: ApiEpisode[]
   ): Promise<void> {
     for (const episode of episodes) {
       await this.addEpisode(podcastId, episode);
@@ -140,8 +169,7 @@ export class DatabaseService {
     limit = 30,
     offset = 0
   ): Promise<Episode[]> {
-    const result = await this.db
-      .table('episodes')
+    const result = await this.db.episodes
       .where({ podcastId })
       .toArray()
       .then((episodes) =>
@@ -168,16 +196,14 @@ export class DatabaseService {
 
     switch (filterId) {
       case 'recent':
-        episodes = await this.db
-          .table('episodes')
+        episodes = await this.db.episodes
           .orderBy('date')
           .reverse()
           .limit(limit)
           .toArray();
         break;
       case 'inProgress':
-        episodes = await this.db
-          .table('episodes')
+        episodes = await this.db.episodes
           .where('progress')
           .above(0)
           .reverse()
@@ -193,7 +219,7 @@ export class DatabaseService {
     episodeId: number,
     changes: any
   ): Promise<Episode> {
-    return (await this.db.table('episodes').update(episodeId, changes)) as any; // TODO: update() returns number?
+    return (await this.db.episodes.update(episodeId, changes)) as any; // TODO: update() returns number?
   }
 
   public async getEpisodeById(episodeId: number): Promise<Episode> {
@@ -201,11 +227,23 @@ export class DatabaseService {
       episodeId = parseInt(episodeId, 10);
     }
 
-    return await this.db.table('episodes').get({ id: episodeId });
+    const episode = await this.db.episodes.get({ id: episodeId });
+
+    if (!episode) {
+      throw new NotFoundError(`No episode found for id ${episodeId}`);
+    }
+
+    return episode;
   }
 
   public async getEpisodeByGuid(guid: string): Promise<Episode> {
-    return await this.db.table('episodes').get({ guid });
+    const episode = await this.db.episodes.get({ guid });
+
+    if (!episode) {
+      throw new NotFoundError(`No episode found for guid ${guid}`);
+    }
+
+    return episode;
   }
 
   //#endregion

@@ -1,37 +1,52 @@
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { RawPodcast } from '../core/models/RawPodcast';
-import { ApiService } from '../core/services/apiService';
+import { ApiEpisode, ApiPodcast } from '../core/models';
+import api from '../core/services/api';
 import {
   getPodcastByFeed,
+  getPodcastByPodexId,
   subscribeByFeed,
+  subscribeByPodexId,
   unsubscribeByFeed,
+  unsubscribeByPodexId,
 } from '../core/services/podcasts';
 import { ListItem, View } from '../ui-components';
 import styles from './PodcastPreview.module.css';
 
-const apiService = new ApiService();
-
 interface PodcastPreviewProps {
-  feedUrl: string;
+  podexId?: string;
+  feedUrl?: string;
 }
 export default function PodcastPreview({
+  podexId,
   feedUrl,
 }: PodcastPreviewProps): VNode {
-  const [podcast, setPodcast] = useState<RawPodcast>();
+  const [podcast, setPodcast] = useState<ApiPodcast>();
+  const [episodes, setEpisodes] = useState<ApiEpisode[]>([]);
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    apiService.getPodcastByFeed(feedUrl, 50).then((result) => {
-      setPodcast(result);
+
+    Promise.all([
+      api.getPodcast(podexId ? parseInt(podexId, 10) : null, feedUrl),
+      api.getEpisodes(podexId ? parseInt(podexId, 10) : null, feedUrl, 20),
+    ]).then(([apiPodcast, apiEpisodes]) => {
+      setPodcast(apiPodcast);
+      setEpisodes(apiEpisodes);
       setLoading(false);
     });
 
-    getPodcastByFeed(feedUrl).then((result) => setSubscribed(!!result));
-  }, [feedUrl]);
+    if (podexId) {
+      getPodcastByPodexId(parseInt(podexId, 10)).then((result) =>
+        setSubscribed(!!result)
+      );
+    } else if (feedUrl) {
+      getPodcastByFeed(feedUrl).then((result) => setSubscribed(!!result));
+    }
+  }, [podexId, feedUrl]);
 
   async function subscribeToPodcast(): Promise<void> {
     if (subscribing) {
@@ -39,11 +54,19 @@ export default function PodcastPreview({
     }
     setSubscribing(true);
 
-    await subscribeByFeed(feedUrl, podcast)
-      .then(() => setSubscribed(true))
-      .catch((err) =>
-        console.error('Failed to subscribe to podcast', err.message)
-      );
+    if (podexId) {
+      await subscribeByPodexId(parseInt(podexId, 10))
+        .then(() => setSubscribed(true))
+        .catch((err) =>
+          console.error('Failed to subscribe to podcast', err.message)
+        );
+    } else if (feedUrl) {
+      await subscribeByFeed(feedUrl)
+        .then(() => setSubscribed(true))
+        .catch((err) =>
+          console.error('Failed to subscribe to podcast', err.message)
+        );
+    }
 
     setSubscribing(false);
   }
@@ -54,11 +77,19 @@ export default function PodcastPreview({
     }
     setSubscribing(true);
 
-    await unsubscribeByFeed(feedUrl)
-      .then(() => setSubscribed(false))
-      .catch((err) =>
-        console.error('Failed to unsubscribe from podcast', err.message)
-      );
+    if (podexId) {
+      await unsubscribeByPodexId(parseInt(podexId, 10))
+        .then(() => setSubscribed(false))
+        .catch((err) =>
+          console.error('Failed to unsubscribe from podcast', err.message)
+        );
+    } else if (feedUrl) {
+      await unsubscribeByFeed(feedUrl)
+        .then(() => setSubscribed(false))
+        .catch((err) =>
+          console.error('Failed to unsubscribe from podcast', err.message)
+        );
+    }
 
     setSubscribing(false);
   }
@@ -93,13 +124,13 @@ export default function PodcastPreview({
       <div className={styles.details}>
         <div className={styles.title}>{podcast?.title}</div>
         <div className={styles.author}>{podcast?.author}</div>
-        <div>{podcast?.summary}</div>
+        <div>{podcast?.description}</div>
       </div>
       {loading ? <div className={styles.message}>Loading feed...</div> : null}
-      {podcast?.episodes.slice(0, 10).map((episode) => (
+      {episodes.map((episode) => (
         <ListItem
-          key={episode.guid}
-          itemId={episode.guid}
+          key={episode.fileUrl}
+          itemId={episode.fileUrl}
           primaryText={episode.title}
           secondaryText={new Date(episode.date).toLocaleDateString()}
         />

@@ -1,7 +1,7 @@
 export type SearchResult = {
+  podexId: number;
   title: string;
   author: string;
-  itunesId: number;
   feedUrl: string;
   artworkUrl: string;
 };

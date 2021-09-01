@@ -103,7 +103,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
             <ListItem
               key={podcast.id}
               itemId={podcast.id}
-              imageUrl={podcast.coverSmall}
+              imageUrl={podcast.artwork}
               primaryText={podcast.title}
               shortcutKey={i <= 8 ? i + 1 : undefined}
               onClick={(): void => viewPodcast(podcast.id)}
@@ -117,7 +117,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
               key={podcast.id}
               itemId={podcast.id}
               dimIfUnselected={!!selectedItemId}
-              imageUrl={podcast.coverLarge}
+              imageUrl={podcast.artwork}
               shortcutKey={i + 1}
               onClick={(): void => viewPodcast(podcast.id)}
             />

@@ -1,14 +1,12 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { ApiService } from '../core/services/apiService';
+import api from '../core/services/api';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import styles from './Search.module.css';
 import { SearchResult } from '../core/models';
-
-const apiService = new ApiService();
 
 interface SearchProps {
   q?: string;
@@ -30,7 +28,7 @@ export default function Search({
 
     setQuery(queryParam);
 
-    apiService
+    api
       .search(queryParam)
       .then((result) => setResults(result))
       .catch((err) => console.error(err));
@@ -42,9 +40,9 @@ export default function Search({
   }, [selectedItemId, results]);
 
   function viewPodcast(podcastStoreId: string | number): void {
-    const podcast = results.find((a) => a.itunesId == podcastStoreId);
+    const podcast = results.find((a) => a.podexId == podcastStoreId);
     if (podcast?.feedUrl) {
-      route(`/podcast/preview?feedUrl=${encodeURIComponent(podcast.feedUrl)}`);
+      route(`/podcast/preview?podexId=${podcast.podexId}`);
     }
   }
 
@@ -118,12 +116,12 @@ export default function Search({
       />
       {results.map((result) => (
         <ListItem
-          key={result.itunesId}
-          itemId={result.itunesId}
+          key={result.podexId}
+          itemId={result.podexId}
           imageUrl={result.artworkUrl}
           primaryText={result.title}
           secondaryText={result.author}
-          onClick={(): void => viewPodcast(result.itunesId)}
+          onClick={(): void => viewPodcast(result.podexId)}
         />
       ))}
     </View>
