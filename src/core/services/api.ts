@@ -11,7 +11,9 @@ function xhrFetch<T>(
       : `https://api.foxcasts.com/${path}`;
 
   return new Promise((resolve, reject) => {
-    const xhr = new (XMLHttpRequest as any)({ mozSystem: true });
+    const xhr: XMLHttpRequest = new (XMLHttpRequest as any)({
+      mozSystem: true,
+    });
     if (responseType === 'blob') {
       xhr.responseType = 'blob';
     }
@@ -29,6 +31,11 @@ function xhrFetch<T>(
     xhr.addEventListener('error', () => reject(`Failed to GET ${path}`));
 
     xhr.open('GET', fullUrl, true);
+    // This isn't really a secret
+    xhr.setRequestHeader(
+      'Authorization',
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZm94Y2FzdHMtbGl0ZSIsImNyZWF0ZWRBdCI6IjIwMjEtMDktMDRUMjE6NDE6MjUuODQxWiIsImlhdCI6MTYzMDc5MTY4NX0.Z9JKUYmPE59Al9q82ctGUg9SeAks9KKOjz-qDm4s3GM'
+    );
     xhr.send();
   });
 }

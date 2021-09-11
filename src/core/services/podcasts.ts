@@ -1,4 +1,10 @@
-import { Podcast, Episode, EpisodeExtended, EpisodeFilterId } from '../models';
+import {
+  Podcast,
+  Episode,
+  EpisodeExtended,
+  EpisodeFilterId,
+  Chapter,
+} from '../models';
 import { NotFoundError } from '../utils/errors';
 import api from './api';
 import { DatabaseService } from './databaseService';
@@ -177,8 +183,40 @@ export async function getEpisodesByFilter(
   );
 }
 
+export async function getEpisodeChapters(
+  episodeId: number,
+  podexId: number | null,
+  fileUrl?: string,
+  forceRefresh = false
+): Promise<Chapter[]> {
+  if (!podexId && !fileUrl) {
+    throw new Error('Must provide podexId or fileUrl');
+  }
+
+  const episode = await databaseService
+    .getEpisodeById(episodeId)
+    .catch((err) => {
+      if (err instanceof NotFoundError) {
+        return null;
+      }
+      throw err;
+    });
+
+  if (!episode) {
+    return [];
+  } else if (!forceRefresh && Array.isArray(episode.chapters)) {
+    return episode.chapters;
+  }
+
+  const chapters = await api.getChapters(podexId, fileUrl);
+
+  databaseService.updateEpisode(episodeId, { chapters });
+  return chapters;
+}
+
 export default {
-  subscribe: subscribeByFeed,
+  subscribeByPodexId,
+  subscribeByFeed,
   unsubscribe,
   getAllPodcasts,
   getPodcastById,

@@ -10,8 +10,9 @@
 
 .title {
   color: var(--primary-text-color);
-  font-size: 17px;
   font-weight: bold;
+  padding: 0 5px;
+  margin-bottom: 5px;
 }
 
 .author {

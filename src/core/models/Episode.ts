@@ -1,3 +1,5 @@
+import { Chapter } from './Chapter';
+
 export type Episode = {
   id: number;
   podexId: number | null;
@@ -12,5 +14,6 @@ export type Episode = {
   fileType: string;
   fileUrl: string;
   chaptersUrl?: string;
+  chapters?: Chapter[];
   transcriptUrl?: string;
 };

@@ -1,12 +1,17 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { ComponentBaseProps } from '../models';
+import { joinClasses } from '../utils/classes';
 import style from './ProgressBar.module.css';
 
-interface ProgressBarProps {
+type ProgressBarProps = ComponentBaseProps & {
   position: number;
-}
+};
 
-export default function ProgressBar({ position }: ProgressBarProps): any {
+export default function ProgressBar({
+  position,
+  ...props
+}: ProgressBarProps): VNode {
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
@@ -22,7 +27,7 @@ export default function ProgressBar({ position }: ProgressBarProps): any {
   }, [position]);
 
   return (
-    <div className={style.root}>
+    <div className={joinClasses(style.root, props.className)}>
       <div className={style.bar} style={{ width: `${width}%` }} />
     </div>
   );

@@ -17,6 +17,7 @@ type PlayerContextValue = {
   pause: () => void;
   stop: () => void;
   jump: (seconds: number) => void;
+  goTo: (seconds: number) => void;
   getStatus: () => PlaybackStatus;
   audioRef: HTMLAudioElement;
   playing: boolean;
@@ -28,6 +29,7 @@ const defaulValue: PlayerContextValue = {
   pause: () => console.log('pause'),
   stop: () => console.log('stop'),
   jump: () => console.log('jump'),
+  goTo: () => console.log('goTo'),
   getStatus: () => ({
     playing: false,
     currentTime: 0,
@@ -79,6 +81,10 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     audioRef.currentTime = newTime;
   }
 
+  function goTo(seconds: number): void {
+    audioRef.currentTime = seconds;
+  }
+
   function getStatus(): PlaybackStatus {
     return {
       playing: !audioRef.paused,
@@ -96,6 +102,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
         pause,
         stop,
         jump,
+        goTo,
         getStatus,
         audioRef,
         playing,

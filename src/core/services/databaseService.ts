@@ -50,6 +50,7 @@ export class DatabaseService {
       feedUrl: podcast.feedUrl,
       artworkUrl: podcast.artworkUrl,
       artwork,
+      categories: podcast.categories,
     } as Podcast;
 
     await this.db.transaction(
@@ -142,7 +143,12 @@ export class DatabaseService {
     podcastId: number,
     episode: ApiEpisode
   ): Promise<void> {
-    const existingEpisode = await this.getEpisodeByGuid(episode.guid);
+    const existingEpisode = await this.getEpisodeByGuid(episode.guid).catch(
+      (err) => {
+        if (err instanceof NotFoundError) return null;
+        throw err;
+      }
+    );
     if (existingEpisode) {
       console.log(
         `Episode ${episode.guid} (${episode.title}) already exists in database.`
@@ -217,9 +223,11 @@ export class DatabaseService {
 
   public async updateEpisode(
     episodeId: number,
-    changes: any
+    changes: Partial<Episode>
   ): Promise<Episode> {
-    return (await this.db.episodes.update(episodeId, changes)) as any; // TODO: update() returns number?
+    await this.db.episodes.update(episodeId, changes);
+    const result = await this.db.episodes.get(episodeId);
+    return result as Episode;
   }
 
   public async getEpisodeById(episodeId: number): Promise<Episode> {
@@ -241,6 +249,16 @@ export class DatabaseService {
 
     if (!episode) {
       throw new NotFoundError(`No episode found for guid ${guid}`);
+    }
+
+    return episode;
+  }
+
+  public async getEpisodeByPodexId(podexId: number): Promise<Episode> {
+    const episode = await this.db.episodes.get({ podexId });
+
+    if (!episode) {
+      throw new NotFoundError(`No episode found for podexId ${podexId}`);
     }
 
     return episode;

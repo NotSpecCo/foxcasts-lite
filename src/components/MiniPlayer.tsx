@@ -28,13 +28,12 @@ export default function MiniPlayer(): VNode {
 
   return (
     <div className={styles.root}>
+      <span>{formatTime(status.currentTime || 0)}</span>
       <ProgressBar
+        className={styles.progressbar}
         position={(status.currentTime / status.duration) * 100 || 0}
       />
-      <div className={styles.times}>
-        <span>{formatTime(status.currentTime || 0)}</span>
-        <span>-{formatTime(status.duration - status.currentTime || 0)}</span>
-      </div>
+      <span>-{formatTime(status.duration - status.currentTime || 0)}</span>
     </div>
   );
 }

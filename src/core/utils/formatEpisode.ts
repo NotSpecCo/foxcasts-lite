@@ -13,6 +13,7 @@ export function fromApiEpisode(source: ApiEpisode): Omit<Episode, 'id'> {
     fileSize: source.fileSize,
     fileType: source.fileType,
     fileUrl: source.fileUrl,
+    chapters: undefined,
     chaptersUrl: source.chaptersUrl,
     transcriptUrl: source.transcriptUrl,
   };
