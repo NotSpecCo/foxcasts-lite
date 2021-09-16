@@ -1,15 +1,7 @@
+import { ApiEpisode, ApiPodcast } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { ApiEpisode, ApiPodcast } from '../core/models';
-import api from '../core/services/api';
-import {
-  getPodcastByFeed,
-  getPodcastByPodexId,
-  subscribeByFeed,
-  subscribeByPodexId,
-  unsubscribeByFeed,
-  unsubscribeByPodexId,
-} from '../core/services/podcasts';
+import { Core } from '../services/core';
 import { ListItem, View } from '../ui-components';
 import styles from './PodcastPreview.module.css';
 
@@ -31,8 +23,8 @@ export default function PodcastPreview({
     setLoading(true);
 
     Promise.all([
-      api.getPodcast(podexId ? parseInt(podexId, 10) : null, feedUrl),
-      api.getEpisodes(podexId ? parseInt(podexId, 10) : null, feedUrl, 20),
+      Core.fetchPodcast(podexId ? parseInt(podexId, 10) : null, feedUrl),
+      Core.fetchEpisodes(podexId ? parseInt(podexId, 10) : null, feedUrl, 20),
     ]).then(([apiPodcast, apiEpisodes]) => {
       setPodcast(apiPodcast);
       setEpisodes(apiEpisodes);
@@ -40,11 +32,13 @@ export default function PodcastPreview({
     });
 
     if (podexId) {
-      getPodcastByPodexId(parseInt(podexId, 10)).then((result) =>
+      Core.getPodcastByPodexId(parseInt(podexId, 10)).then((result) =>
         setSubscribed(!!result)
       );
     } else if (feedUrl) {
-      getPodcastByFeed(feedUrl).then((result) => setSubscribed(!!result));
+      Core.getPodcastByFeedUrl(feedUrl).then((result) =>
+        setSubscribed(!!result)
+      );
     }
   }, [podexId, feedUrl]);
 
@@ -55,13 +49,13 @@ export default function PodcastPreview({
     setSubscribing(true);
 
     if (podexId) {
-      await subscribeByPodexId(parseInt(podexId, 10))
+      await Core.subscribeByPodexId(parseInt(podexId, 10))
         .then(() => setSubscribed(true))
         .catch((err) =>
           console.error('Failed to subscribe to podcast', err.message)
         );
     } else if (feedUrl) {
-      await subscribeByFeed(feedUrl)
+      await Core.subscribeByFeedUrl(feedUrl)
         .then(() => setSubscribed(true))
         .catch((err) =>
           console.error('Failed to subscribe to podcast', err.message)
@@ -78,13 +72,13 @@ export default function PodcastPreview({
     setSubscribing(true);
 
     if (podexId) {
-      await unsubscribeByPodexId(parseInt(podexId, 10))
+      await Core.unsubscribeByPodexId(parseInt(podexId, 10))
         .then(() => setSubscribed(false))
         .catch((err) =>
           console.error('Failed to unsubscribe from podcast', err.message)
         );
     } else if (feedUrl) {
-      await unsubscribeByFeed(feedUrl)
+      await Core.unsubscribeByFeedUrl(feedUrl)
         .then(() => setSubscribed(false))
         .catch((err) =>
           console.error('Failed to unsubscribe from podcast', err.message)

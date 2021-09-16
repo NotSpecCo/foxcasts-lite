@@ -1,12 +1,12 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import { EpisodeExtended, EpisodeFilterId } from '../core/models';
 import styles from './Filter.module.css';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-import { getEpisodesByFilter } from '../core/services/podcasts';
+import { EpisodeExtended, EpisodeFilterId } from 'foxcasts-core/lib/types';
+import { Core } from '../services/core';
 
 interface FilterProps {
   filterId: EpisodeFilterId;
@@ -21,7 +21,7 @@ export default function Filter({
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getEpisodesByFilter(filterId).then((eps) => {
+    Core.getEpisodesByFilter(filterId).then((eps) => {
       setEpisodes(eps);
       setLoading(false);
     });

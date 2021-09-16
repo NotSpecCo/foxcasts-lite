@@ -1,15 +1,11 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import { Podcast, Episode } from '../core/models';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-import {
-  getEpisodesByPodcastId,
-  getPodcastById,
-  unsubscribe,
-} from '../core/services/podcasts';
+import { Episode, Podcast } from 'foxcasts-core/lib/types';
+import { Core } from '../services/core';
 
 interface PodcastDetailProps {
   podcastId: string;
@@ -23,11 +19,11 @@ export default function PodcastDetail({
   const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
-    getPodcastById(parseInt(podcastId, 10)).then((result) =>
+    Core.getPodcastById(parseInt(podcastId, 10)).then((result) =>
       setPodcast(result)
     );
 
-    getEpisodesByPodcastId(parseInt(podcastId, 10)).then((result) =>
+    Core.getEpisodesByPodcastId(parseInt(podcastId, 10)).then((result) =>
       setEpisodes(result)
     );
   }, [podcastId]);
@@ -55,7 +51,7 @@ export default function PodcastDetail({
 
   async function handleAction(action: string): Promise<void> {
     if (action === 'unsubscribe' && podcast) {
-      await unsubscribe(podcast.id)
+      await Core.unsubscribe(podcast.id)
         .then(() => route('/podcasts', true))
         .catch((err) => console.error('Failed to unsubscribe', err));
     }

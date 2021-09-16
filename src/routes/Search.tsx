@@ -1,12 +1,12 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import api from '../core/services/api';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import styles from './Search.module.css';
-import { SearchResult } from '../core/models';
+import { SearchResult } from 'foxcasts-core/lib/types';
+import { Core } from '../services/core';
 
 interface SearchProps {
   q?: string;
@@ -28,8 +28,7 @@ export default function Search({
 
     setQuery(queryParam);
 
-    api
-      .search(queryParam)
+    Core.searchPodcasts(queryParam)
       .then((result) => setResults(result))
       .catch((err) => console.error(err));
   }, [queryParam]);

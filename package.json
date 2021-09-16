@@ -27,6 +27,7 @@
   "dependencies": {
     "browser-image-compression": "^1.0.15",
     "dexie": "^3.0.3",
+    "foxcasts-core": "^0.1.0",
     "preact": "^10.3.1",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1"

@@ -1,15 +1,15 @@
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
-import { Podcast } from '../core/models';
 import { ListItem, View } from '../ui-components';
 import { setSelected } from '../utils/navigation';
 import { useDpad } from '../hooks/useDpad';
-import { getAllPodcasts, subscribeByFeed } from '../core/services/podcasts';
 import { GridItem } from '../ui-components/GridItem';
 import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
 import { PodcastsLayout } from '../models';
+import { Podcast } from 'foxcasts-core/lib/types';
+import { Core } from '../services/core';
 
 interface Props {
   selectedItemId?: string;
@@ -22,7 +22,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   const { settings } = useSettings();
 
   useEffect(() => {
-    getAllPodcasts().then((result) => {
+    Core.getPodcasts().then((result) => {
       setPodcasts(result);
     });
   }, []);
@@ -52,18 +52,20 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
     setSeeding(true);
     try {
       // Need to do one at a time so KaiOS can handle it
-      await subscribeByFeed('https://feed.syntax.fm/rss');
-      await subscribeByFeed('https://shoptalkshow.com/feed/podcast');
-      await subscribeByFeed('https://feeds.simplecast.com/JoR28o79'); // React Podcast
-      await subscribeByFeed('https://feeds.feedwrench.com/js-jabber.rss');
-      await subscribeByFeed('https://feeds.megaphone.fm/vergecast');
+      await Core.subscribeByFeedUrl('https://feed.syntax.fm/rss');
+      await Core.subscribeByFeedUrl('https://shoptalkshow.com/feed/podcast');
+      await Core.subscribeByFeedUrl('https://feeds.simplecast.com/JoR28o79'); // React Podcast
+      await Core.subscribeByFeedUrl(
+        'https://feeds.feedwrench.com/js-jabber.rss'
+      );
+      await Core.subscribeByFeedUrl('https://feeds.megaphone.fm/vergecast');
 
       console.log('seed success');
     } catch (err) {
       console.error('Failed to seed data', err);
     }
 
-    getAllPodcasts().then((result) => {
+    Core.getPodcasts().then((result) => {
       setPodcasts(result);
     });
 

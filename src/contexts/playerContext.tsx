@@ -1,7 +1,9 @@
+import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { createContext, h, VNode } from 'preact';
 import { useContext, useState } from 'preact/hooks';
-import { EpisodeExtended } from '../core/models';
-import { getEpisodeById } from '../core/services/podcasts';
+// import { EpisodeExtended } from '../core/models';
+// import { getEpisodeById } from '../core/services/podcasts';
+import { Core } from '../services/core';
 import { ComponentBaseProps } from '../models';
 
 export type PlaybackStatus = {
@@ -46,7 +48,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   const [audioRef] = useState<HTMLAudioElement>(new Audio());
 
   async function load(episodeId: number, resume = false): Promise<void> {
-    const data = await getEpisodeById(episodeId);
+    const data = await Core.getEpisodeById(episodeId);
 
     if (!data) return;
 

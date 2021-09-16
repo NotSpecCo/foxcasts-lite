@@ -1,11 +1,11 @@
+import { Chapter } from 'foxcasts-core/lib/types';
+import { formatTime } from 'foxcasts-core/lib/utils';
 import { Fragment, h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import MiniPlayer from '../components/MiniPlayer';
 import { usePlayer } from '../contexts/playerContext';
-import { Chapter } from '../core/models';
-import { getEpisodeChapters } from '../core/services/podcasts';
-import { formatTime } from '../core/utils';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
+import { Core } from '../services/core';
 import { ListItem, MenuOption, View } from '../ui-components';
 import styles from './Player.module.css';
 
@@ -25,9 +25,11 @@ export default function Player(): VNode {
     if (episode?.chapters) {
       setChapters(episode.chapters);
     } else {
-      getEpisodeChapters(episode.id, episode.podexId, episode.fileUrl).then(
-        (res) => setChapters(res)
-      );
+      Core.getEpisodeChapters(
+        episode.id,
+        episode.podexId,
+        episode.fileUrl
+      ).then((res) => setChapters(res));
     }
   }, [player.episode]);
 

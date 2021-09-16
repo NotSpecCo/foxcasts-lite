@@ -1,11 +1,11 @@
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { EpisodeExtended } from '../core/models';
-import { formatFileSize, formatTime } from '../core/utils';
 import { MenuOption, View } from '../ui-components';
 import styles from './EpisodeDetail.module.css';
 import { usePlayer } from '../contexts/playerContext';
-import { getEpisodeById } from '../core/services/podcasts';
+import { EpisodeExtended } from 'foxcasts-core/lib/types';
+import { formatFileSize, formatTime } from 'foxcasts-core/lib/utils';
+import { Core } from '../services/core';
 
 interface EpisodeDetailProps {
   episodeId: string;
@@ -19,7 +19,7 @@ export default function EpisodeDetail({
   const player = usePlayer();
 
   useEffect(() => {
-    getEpisodeById(parseInt(episodeId, 10)).then((result) => {
+    Core.getEpisodeById(parseInt(episodeId, 10)).then((result) => {
       setEpisode(result);
     });
   }, [episodeId]);

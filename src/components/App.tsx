@@ -11,10 +11,10 @@ import Search from '../routes/Search';
 import Podcasts from '../routes/Podcasts';
 import AppSettings from '../routes/AppSettings';
 import Import from '../routes/Import';
-import { checkForUpdates } from '../core/services/podcasts';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
 import { DisplayDensity } from '../models';
 import { themes } from '../themes';
+import { Core } from '../services/core';
 
 export function AppWrapper(): VNode {
   return (
@@ -36,7 +36,10 @@ export default function App(): VNode {
       route('/podcasts');
     }
 
-    checkForUpdates();
+    Core.health().then((res) => console.log(res));
+
+    // checkForUpdates();
+    // Core.checkForUpdates();
   }, []);
 
   useEffect(() => {

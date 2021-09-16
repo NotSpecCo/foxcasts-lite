@@ -2,8 +2,8 @@ import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import ProgressBar from './ProgressBar';
 import { PlaybackStatus, usePlayer } from '../contexts/playerContext';
-import { formatTime } from '../core/utils';
 import styles from './MiniPlayer.module.css';
+import { formatTime } from 'foxcasts-core/lib/utils';
 
 export default function MiniPlayer(): VNode {
   const [status, setStatus] = useState<PlaybackStatus>({
