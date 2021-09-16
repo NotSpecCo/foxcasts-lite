@@ -36,10 +36,9 @@ export default function App(): VNode {
       route('/podcasts');
     }
 
-    Core.health().then((res) => console.log(res));
+    // Core.health().then((res) => console.log(res));
 
-    // checkForUpdates();
-    // Core.checkForUpdates();
+    Core.checkForUpdates();
   }, []);
 
   useEffect(() => {
