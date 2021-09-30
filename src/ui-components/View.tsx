@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import { AppMenu } from '../components/AppMenu';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps } from '../models';
+import { ifClass, joinClasses } from '../utils/classes';
 import { Header } from './Header';
 import { Menu, MenuOption } from './Menu';
 import { MenuBar } from './MenuBar';
@@ -11,6 +12,7 @@ import styles from './View.module.css';
 type Props = ComponentBaseProps & {
   showHeader?: boolean;
   showMenubar?: boolean;
+  backgroundImageUrl?: string;
   headerText?: string;
   leftMenuText?: string;
   centerMenuText?: string;
@@ -57,7 +59,17 @@ export function View({
   );
 
   return (
-    <div className={styles.root}>
+    <div
+      className={joinClasses(
+        styles.root,
+        ifClass(!showHeader, styles.noHeader)
+      )}
+      style={
+        props.backgroundImageUrl
+          ? { backgroundImage: `url(${props.backgroundImageUrl})` }
+          : {}
+      }
+    >
       {showHeader && props.headerText && (
         <Header text={props.headerText} className={styles.header} />
       )}
