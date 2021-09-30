@@ -1,4 +1,17 @@
 .root {
+  padding: 28px 0;
+  background-size: 100vh;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-attachment: fixed;
+}
+body[data-compact-layout] .root {
+  padding: 18px 0;
+}
+
+.root.noHeader,
+body[data-compact-layout] .root.noHeader {
+  padding-top: 0;
 }
 
 .header {
@@ -10,10 +23,6 @@
 
 .content {
   overflow-x: hidden;
-  padding: 28px 0;
-}
-body[data-compact-layout] .content {
-  padding: 18px 0;
 }
 
 .menubar {
