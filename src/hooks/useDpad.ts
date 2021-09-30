@@ -6,6 +6,7 @@ interface Options {
   stopPropagation?: boolean;
   scrollIntoView?: boolean;
   disabled?: boolean;
+  mode?: 'updownleftright' | 'updown';
 }
 
 export enum SelectablePriority {
@@ -32,11 +33,15 @@ export function useDpad<T>({
     stopPropagation: true,
     scrollIntoView: true,
     disabled: false,
+    mode: 'updownleftright',
     ...options,
   };
 
   const shortcutKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const dpadKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'];
+  const dpadKeys =
+    options.mode === 'updownleftright'
+      ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter']
+      : ['ArrowUp', 'ArrowDown', 'Enter'];
 
   function getElements(priority: SelectablePriority): Element[] {
     return Array.from(
