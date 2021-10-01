@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps } from '../models';
@@ -10,6 +10,7 @@ export type MenuOption = {
   id: string;
   label: string;
   disabled?: boolean;
+  keepMenuOpen?: boolean;
 };
 type Props = ComponentBaseProps & {
   options: MenuOption[];
@@ -23,12 +24,15 @@ export function Menu({
   closeSide = 'left',
   options = [],
   ...props
-}: Props): any {
+}: Props): VNode {
   useDpad({
     priority: SelectablePriority.Medium,
     onEnter: (itemId) => {
-      props.onSelect(itemId);
-      // props.onClose();
+      const option = options.find((a) => a.id === itemId) as MenuOption;
+      props.onSelect(option.id);
+      if (!option.keepMenuOpen) {
+        props.onClose();
+      }
     },
   });
 
