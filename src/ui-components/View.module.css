@@ -30,3 +30,9 @@ body[data-compact-layout] .root.noHeader {
   bottom: 0;
   left: 0;
 }
+
+@media only screen and (min-width: 241px) {
+  .root {
+    background-size: 100vw;
+  }
+}

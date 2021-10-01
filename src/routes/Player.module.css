@@ -5,11 +5,6 @@
   flex-direction: column;
 }
 
-.info {
-  color: #fff;
-  padding: 5px;
-}
-
 .gradient {
   flex: 1;
   display: flex;
@@ -23,6 +18,10 @@
   );
 }
 
+.info {
+  color: #fff;
+  padding: 5px;
+}
 .author {
   font-size: 12px;
 }
@@ -39,9 +38,17 @@
 }
 .currentTime {
   font-size: 26px;
+  font-weight: 600;
 }
 .duration {
   font-size: 18px;
+}
+.duration::before {
+  content: '/';
+  padding: 0 2px 0 4px;
+}
+.progressbar {
+  display: none;
 }
 
 .chapters {
@@ -53,7 +60,7 @@
   text-align: center;
 }
 
-.flex {
+.spacer {
   flex: 1;
 }
 
@@ -65,4 +72,57 @@
   transform: rotate(45deg);
   display: inline-block;
   margin: 0 10px;
+}
+
+.videoPlayer {
+  width: 100%;
+}
+
+@media only screen and (min-width: 241px) {
+  .gradient {
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.85) 35%,
+      50%,
+      rgba(0, 0, 0, 0)
+    );
+  }
+
+  .video .gradient {
+    background: rgba(0, 0, 0, 0.85);
+  }
+  .video .info {
+    padding: 0 5px;
+  }
+  .video .author {
+    display: none;
+  }
+
+  .video .title,
+  .video .currentTime,
+  .video .duration {
+    font-size: 14px;
+  }
+
+  .video .duration::before {
+    content: '';
+    padding: 0;
+  }
+
+  .video .times {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+
+  .video .progressbar {
+    display: block;
+    flex: 1;
+    margin: 0 10px;
+  }
+
+  .video .spacer {
+    display: none;
+  }
 }
