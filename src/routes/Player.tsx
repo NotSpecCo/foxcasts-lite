@@ -1,6 +1,7 @@
 import { Chapter, Podcast } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
 import { Fragment, h, VNode } from 'preact';
+import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { PlaybackStatus, usePlayer } from '../contexts/playerContext';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
@@ -55,7 +56,6 @@ export default function Player(): VNode {
 
   useEffect(() => {
     if (player.episode) {
-      // console.log('update', player.episode.id, status.currentTime);
       Core.updateEpisode(player.episode.id, { progress: status.currentTime });
     }
   }, [player.episode, status.currentTime]);
@@ -81,20 +81,24 @@ export default function Player(): VNode {
       case 'minus30':
         player.jump(-30);
         break;
+      case 'detail':
+        route(`/episode/${player.episode.id}`);
+        break;
     }
   }
 
   function getActionList(): MenuOption[] {
-    const options = [
-      player.playing
-        ? { id: 'pause', label: 'Pause' }
-        : { id: 'play', label: 'Play' },
-      { id: 'stop', label: 'Stop' },
-      { id: 'plus30', label: '+30 seconds' },
-      { id: 'minus30', label: '-30 seconds' },
-    ];
-
-    return options;
+    return player.episode
+      ? [
+          player.playing
+            ? { id: 'pause', label: 'Pause' }
+            : { id: 'play', label: 'Play' },
+          { id: 'stop', label: 'Stop' },
+          { id: 'plus30', label: '+30 seconds' },
+          { id: 'minus30', label: '-30 seconds' },
+          { id: 'detail', label: 'View episode detail' },
+        ]
+      : [];
   }
 
   function handleClick(itemId: string): void {
