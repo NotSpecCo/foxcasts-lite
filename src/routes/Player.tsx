@@ -65,32 +65,38 @@ export default function Player(): VNode {
       return;
     }
 
+    let newStatus;
+
     switch (action) {
       case 'play':
-        player.play();
+        newStatus = player.play();
         break;
       case 'pause':
-        player.pause();
+        newStatus = player.pause();
         break;
       case 'stop':
         player.stop();
         break;
       case 'plus30':
-        player.jump(30);
+        newStatus = player.jump(30);
         break;
       case 'minus30':
-        player.jump(-30);
+        newStatus = player.jump(-30);
         break;
       case 'detail':
         route(`/episode/${player.episode.id}`);
         break;
+    }
+
+    if (newStatus) {
+      setStatus(newStatus);
     }
   }
 
   function getActionList(): MenuOption[] {
     return player.episode
       ? [
-          player.playing
+          status.playing
             ? { id: 'pause', label: 'Pause' }
             : { id: 'play', label: 'Play' },
           { id: 'stop', label: 'Stop' },
@@ -117,13 +123,13 @@ export default function Player(): VNode {
 
   useNavKeys(
     {
-      ArrowLeft: () => player.jump(-30),
-      ArrowRight: () => player.jump(30),
+      ArrowLeft: () => handleAction('minus30'),
+      ArrowRight: () => handleAction('plus30'),
       Enter: () => {
         if (!player.episode) {
           return;
         }
-        status.playing ? player.pause() : player.play();
+        status.playing ? handleAction('pause') : handleAction('play');
       },
     },
     { disabled: browsingChapters }

@@ -14,29 +14,30 @@ export type PlaybackStatus = {
 
 type PlayerContextValue = {
   episode?: EpisodeExtended;
-  load: (episodeId: number, resume?: boolean) => void;
-  play: () => void;
-  pause: () => void;
+  load: (episodeId: number, resume?: boolean) => Promise<PlaybackStatus>;
+  play: () => PlaybackStatus;
+  pause: () => PlaybackStatus;
   stop: () => void;
-  jump: (seconds: number) => void;
-  goTo: (seconds: number) => void;
+  jump: (seconds: number) => PlaybackStatus;
+  goTo: (seconds: number) => PlaybackStatus;
   getStatus: () => PlaybackStatus;
   audioRef: HTMLAudioElement;
   playing: boolean;
 };
 
+const defaultStatus = {
+  playing: false,
+  currentTime: 0,
+  duration: 0,
+};
 const defaulValue: PlayerContextValue = {
-  load: () => console.log('load'),
-  play: () => console.log('play'),
-  pause: () => console.log('pause'),
+  load: () => Promise.resolve(defaultStatus),
+  play: () => defaultStatus,
+  pause: () => defaultStatus,
   stop: () => console.log('stop'),
-  jump: () => console.log('jump'),
-  goTo: () => console.log('goTo'),
-  getStatus: () => ({
-    playing: false,
-    currentTime: 0,
-    duration: 0,
-  }),
+  jump: () => defaultStatus,
+  goTo: () => defaultStatus,
+  getStatus: () => defaultStatus,
   audioRef: new Audio(),
   playing: false,
 };
@@ -47,10 +48,21 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   const [playing, setPlaying] = useState(false);
   const [audioRef] = useState<HTMLAudioElement>(new Audio());
 
-  async function load(episodeId: number, resume = false): Promise<void> {
+  function getStatus(): PlaybackStatus {
+    return {
+      playing: !audioRef.paused,
+      currentTime: Math.ceil(audioRef.currentTime),
+      duration: Math.ceil(audioRef.duration),
+    };
+  }
+
+  async function load(
+    episodeId: number,
+    resume = false
+  ): Promise<PlaybackStatus> {
     const data = await Core.getEpisodeById(episodeId);
 
-    if (!data) return;
+    if (!data) return defaultStatus;
 
     setEpisode(data);
 
@@ -59,16 +71,24 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     audioRef.currentTime = resume ? data.progress : 0;
     audioRef.play();
     setPlaying(true);
+
+    return {
+      playing: true,
+      currentTime: resume ? data.progress : 0,
+      duration: data.duration,
+    };
   }
 
-  function play(): void {
+  function play(): PlaybackStatus {
     audioRef.play();
     setPlaying(true);
+    return getStatus();
   }
 
-  function pause(): void {
+  function pause(): PlaybackStatus {
     audioRef.pause();
     setPlaying(false);
+    return getStatus();
   }
 
   function stop(): void {
@@ -78,21 +98,15 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     setPlaying(false);
   }
 
-  function jump(seconds: number): void {
+  function jump(seconds: number): PlaybackStatus {
     const newTime = audioRef.currentTime + seconds;
     audioRef.currentTime = newTime;
+    return getStatus();
   }
 
-  function goTo(seconds: number): void {
+  function goTo(seconds: number): PlaybackStatus {
     audioRef.currentTime = seconds;
-  }
-
-  function getStatus(): PlaybackStatus {
-    return {
-      playing: !audioRef.paused,
-      currentTime: Math.ceil(audioRef.currentTime),
-      duration: Math.ceil(audioRef.duration),
-    };
+    return getStatus();
   }
 
   return (

@@ -19,7 +19,7 @@ interface Options {
 }
 
 export function useNavKeys(
-  actions: { [key in NavKey]?: (ev: KeyboardEvent) => boolean | void },
+  actions: { [key in NavKey]?: (ev: KeyboardEvent) => any },
   options: Options = {}
 ): void {
   const keys = [
