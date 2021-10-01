@@ -163,28 +163,27 @@ export default function Player(): VNode {
               data-selectable-priority={SelectablePriority.Low}
               data-selectable-id="top"
             />
-            <div className={styles.gradient}>
-              <div className={styles.info}>
-                <div className={styles.author}>
-                  {player.episode?.podcastTitle}
-                </div>
-                <div className={styles.title}>{player.episode?.title}</div>
-                <div className={styles.times}>
-                  <span className={styles.currentTime}>
-                    {formatTime(status.currentTime)}
-                  </span>
-                  <ProgressBar
-                    className={styles.progressbar}
-                    position={(status.currentTime / status.duration) * 100 || 0}
-                  />
-                  <span className={styles.duration}>
-                    {`${formatTime(status.duration)}`}
-                  </span>
-                  <div className={styles.spacer} />
-                  {chapters && chapters.length > 0 ? (
-                    <div className={styles.chevronDown} />
-                  ) : null}
-                </div>
+            <div className={styles.gradient} />
+            <div className={styles.info}>
+              <div className={styles.author}>
+                {player.episode?.podcastTitle}
+              </div>
+              <div className={styles.title}>{player.episode?.title}</div>
+              <div className={styles.times}>
+                <span className={styles.currentTime}>
+                  {formatTime(status.currentTime)}
+                </span>
+                <ProgressBar
+                  className={styles.progressbar}
+                  position={(status.currentTime / status.duration) * 100 || 0}
+                />
+                <span className={styles.duration}>
+                  {`${formatTime(status.duration)}`}
+                </span>
+                <div className={styles.spacer} />
+                {chapters && chapters.length > 0 ? (
+                  <div className={styles.chevronDown} />
+                ) : null}
               </div>
             </div>
           </div>
