@@ -25,6 +25,10 @@ export default function EpisodeDetail({
   }, [episodeId]);
 
   function getActionList(): MenuOption[] {
+    if (episode?.fileType.startsWith('video')) {
+      return [];
+    }
+
     const options = [
       { id: 'stream', label: 'Stream' },
       // { id: 'markPlayed', label: 'Mark as Played' },
@@ -61,6 +65,11 @@ export default function EpisodeDetail({
       onAction={handleAction}
     >
       <div className={styles.details}>
+        {episode?.fileType.startsWith('video') && (
+          <div className={styles.accent}>
+            Sorry, Foxcasts does not support video podcasts yet.
+          </div>
+        )}
         <div className={styles.title}>{episode?.title}</div>
         <div className={styles.date}>
           {episode ? new Date(episode.date).toLocaleDateString() : null}

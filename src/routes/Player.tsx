@@ -2,7 +2,7 @@ import { Chapter, Podcast } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import ProgressBar from '../components/ProgressBar';
 import { PlaybackStatus, usePlayer } from '../contexts/playerContext';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
@@ -21,22 +21,8 @@ export default function Player(): VNode {
     currentTime: 0,
     duration: 0,
   });
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const player = usePlayer();
-
-  function syncVideoToAudio(): void {
-    if (player?.episode?.fileType.startsWith('video') && videoRef.current) {
-      if (videoRef.current.src !== player.episode.fileUrl) {
-        videoRef.current.src = player.episode.fileUrl;
-      }
-      const currentStatus = player.getStatus();
-      currentStatus.playing
-        ? videoRef.current.play()
-        : videoRef.current.pause();
-      videoRef.current.currentTime = currentStatus.currentTime;
-    }
-  }
 
   useEffect(() => {
     const episode = player.episode;
@@ -61,7 +47,6 @@ export default function Player(): VNode {
 
     const status = player.getStatus();
     setStatus(status);
-    syncVideoToAudio();
 
     const timer = setInterval(() => {
       const status = player.getStatus();
@@ -107,7 +92,6 @@ export default function Player(): VNode {
 
     if (newStatus) {
       setStatus(newStatus);
-      syncVideoToAudio();
     }
   }
 
@@ -180,16 +164,6 @@ export default function Player(): VNode {
               data-selectable-id="top"
             />
             <div className={styles.gradient}>
-              {player.episode?.fileType.startsWith('video') ? (
-                <div>
-                  <video
-                    ref={videoRef}
-                    className={styles.videoPlayer}
-                    muted={true}
-                    controls={false}
-                  />
-                </div>
-              ) : null}
               <div className={styles.info}>
                 <div className={styles.author}>
                   {player.episode?.podcastTitle}
