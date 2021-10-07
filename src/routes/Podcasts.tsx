@@ -7,9 +7,11 @@ import { useDpad } from '../hooks/useDpad';
 import { GridItem } from '../ui-components/GridItem';
 import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
-import { PodcastsLayout } from '../models';
+import { OpmlFeed, PodcastsLayout } from '../models';
 import { Podcast } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
+import { OPML } from '../services/opml';
+import { useToast } from '../contexts/ToastProvider';
 
 interface Props {
   selectedItemId?: string;
@@ -20,6 +22,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   const [seeding, setSeeding] = useState(false);
 
   const { settings } = useSettings();
+  const { showToast } = useToast();
 
   useEffect(() => {
     Core.getPodcasts().then((result) => {
@@ -72,6 +75,28 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
     setSeeding(false);
   }
 
+  async function exportFeeds(): Promise<void> {
+    if (!podcasts) return;
+
+    const { storageName } = (navigator as any).getDeviceStorage('sdcard');
+    const feeds: OpmlFeed[] = podcasts.map((a, i) => ({
+      id: i.toString(),
+      type: 'rss',
+      text: a.title,
+      xmlUrl: a.feedUrl,
+      description: null,
+      htmlUrl: null,
+      language: null,
+      title: null,
+      version: null,
+    }));
+    OPML.create(`/${storageName}/foxcasts_${new Date().valueOf()}.opml`, feeds)
+      .then((res) =>
+        showToast(`Successfully exported feeds to ${res.filePath}`)
+      )
+      .catch(() => showToast(`Failed to export feeds.`));
+  }
+
   async function handleAction(action: string): Promise<void> {
     switch (action) {
       case 'seed':
@@ -80,6 +105,9 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
       case 'import':
         route('/files');
         break;
+      case 'export':
+        exportFeeds();
+        break;
     }
   }
 
@@ -87,14 +115,18 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
     <View
       headerText="Podcasts"
       actions={[
-        {
-          id: 'seed',
-          label: seeding ? 'Seeding...' : 'Seed podcasts',
-          disabled: seeding,
-        },
+        // {
+        //   id: 'seed',
+        //   label: seeding ? 'Seeding...' : 'Seed podcasts',
+        //   disabled: seeding,
+        // },
         {
           id: 'import',
           label: 'Import OPML',
+        },
+        {
+          id: 'export',
+          label: 'Export as OPML',
         },
       ]}
       onAction={handleAction}

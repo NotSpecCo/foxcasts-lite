@@ -110,7 +110,10 @@ export class OPML {
     });
   }
 
-  static async create(filePathAndName?: string): Promise<OpmlFile> {
+  static async create(
+    filePathAndName?: string,
+    feeds: OpmlFeed[] = []
+  ): Promise<OpmlFile> {
     const { storageName } = (navigator as any).getDeviceStorage('sdcard');
     const defaultFilePath = `/${storageName}/feeds_${new Date().valueOf()}.opml`;
     const file = {
@@ -120,7 +123,7 @@ export class OPML {
       dateModified: new Date().toISOString(),
       ownerName: null,
       ownerEmail: null,
-      feeds: [],
+      feeds,
     };
     await this._saveFile(
       filePathAndName || defaultFilePath,
