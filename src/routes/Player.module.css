@@ -20,6 +20,8 @@
 }
 .author {
   font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-text-color);
 }
 .title {
   font-size: 17px;

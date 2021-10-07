@@ -3,6 +3,7 @@ import { formatTime } from 'foxcasts-core/lib/utils';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
+import Vibrant from 'node-vibrant';
 import ProgressBar from '../components/ProgressBar';
 import { PlaybackStatus, usePlayer } from '../contexts/playerContext';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
@@ -21,6 +22,7 @@ export default function Player(): VNode {
     currentTime: 0,
     duration: 0,
   });
+  const [accentColor, setAccentColor] = useState<string>();
 
   const player = usePlayer();
 
@@ -43,7 +45,17 @@ export default function Player(): VNode {
       ).then((res) => setChapters(res));
     }
 
-    Core.getPodcastById(episode.podcastId).then(setPodcast);
+    Core.getPodcastById(episode.podcastId)
+      .then((res) => {
+        setPodcast(res);
+        return Vibrant.from(res.artwork)
+          .getPalette()
+          .catch((err) => {
+            console.log('Failed to get color palette', err.message);
+            return null;
+          });
+      })
+      .then((res) => setAccentColor(res?.Vibrant?.getHex()));
 
     const status = player.getStatus();
     setStatus(status);
@@ -54,6 +66,7 @@ export default function Player(): VNode {
     }, 1000);
 
     return (): void => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player.episode]);
 
   useEffect(() => {
@@ -144,6 +157,7 @@ export default function Player(): VNode {
       centerMenuText={
         browsingChapters ? 'Select' : status.playing ? 'Pause' : 'Play'
       }
+      accentColor={accentColor}
       actions={getActionList()}
       onAction={handleAction}
       backgroundImageUrl={podcast?.artworkUrl}

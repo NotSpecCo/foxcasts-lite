@@ -13,6 +13,7 @@ type Props = ComponentBaseProps & {
   showHeader?: boolean;
   showMenubar?: boolean;
   backgroundImageUrl?: string;
+  accentColor?: string;
   headerText?: string;
   leftMenuText?: string;
   centerMenuText?: string;
@@ -64,11 +65,13 @@ export function View({
         styles.root,
         ifClass(!showHeader, styles.noHeader)
       )}
-      style={
-        props.backgroundImageUrl
-          ? { backgroundImage: `url(${props.backgroundImageUrl})` }
-          : {}
-      }
+      style={{
+        backgroundImage: props.backgroundImageUrl
+          ? `url(${props.backgroundImageUrl})`
+          : 'none',
+        '--app-accent-color': props.accentColor || 'inherit',
+        '--accent-text-color': props.accentColor || 'inherit',
+      }}
     >
       {showHeader && props.headerText && (
         <Header text={props.headerText} className={styles.header} />
