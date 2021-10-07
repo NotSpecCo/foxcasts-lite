@@ -1,0 +1,71 @@
+.root {
+  padding: 4px 0;
+}
+
+.block {
+  display: block;
+}
+.inline {
+  display: inline;
+  padding: 0;
+}
+
+.caption {
+  font-size: 12px;
+  font-weight: 400;
+}
+.body {
+  font-size: 14px;
+  font-weight: 400;
+}
+.bodyStrong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.bodyLarge {
+  font-size: 16px;
+  font-weight: 400;
+}
+.subtitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+.titleLarge {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.primary {
+  color: var(--primary-text-color);
+}
+.secondary {
+  color: var(--secondary-text-color);
+}
+.accent {
+  color: var(--accent-text-color);
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+
+.left {
+  text-align: left;
+}
+.center {
+  text-align: center;
+}
+.right {
+  text-align: right;
+}
