@@ -78,7 +78,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
         await seedData();
         break;
       case 'import':
-        route('/import');
+        route('/files');
         break;
     }
   }

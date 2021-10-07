@@ -15,6 +15,7 @@ import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
 import { DisplayDensity } from '../models';
 import { themes } from '../themes';
 import { Core } from '../services/core';
+import OpmlFiles from '../routes/OpmlFiles';
 
 export function AppWrapper(): VNode {
   return (
@@ -97,7 +98,8 @@ export default function App(): VNode {
       <Route path="/filter/:filterId" component={Filter} />
       <Route path="/player" component={Player} />
       <Route path="/settings" component={AppSettings} />
-      <Route path="/import" component={Import} />
+      <Route path="/files" component={OpmlFiles} />
+      <Route path="/import/:filePath" component={Import} />
       <Route path="/podcasts" component={Podcasts} default={true} />
     </Router>
   );
