@@ -1,4 +1,4 @@
-import { h, VNode } from 'preact';
+import { Fragment, h, VNode } from 'preact';
 import { route, Route, Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 import { PlayerProvider } from '../contexts/playerContext';
@@ -16,13 +16,17 @@ import { DisplayDensity } from '../models';
 import { themes } from '../themes';
 import { Core } from '../services/core';
 import OpmlFiles from '../routes/OpmlFiles';
+import { ToastProvider } from '../contexts/ToastProvider';
+import { Toast } from '../ui-components/Toast';
 
 export function AppWrapper(): VNode {
   return (
     <div id="preact_root">
       <SettingsProvider>
         <PlayerProvider>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </PlayerProvider>
       </SettingsProvider>
     </div>
@@ -90,17 +94,20 @@ export default function App(): VNode {
   }, [settings]);
 
   return (
-    <Router>
-      <Route path="/search" component={Search} />
-      <Route path="/podcast/preview" component={PodcastPreview} />
-      <Route path="/podcast/:podcastId" component={PodcastDetail} />
-      <Route path="/episode/:episodeId" component={EpisodeDetail} />
-      <Route path="/filter/:filterId" component={Filter} />
-      <Route path="/player" component={Player} />
-      <Route path="/settings" component={AppSettings} />
-      <Route path="/files" component={OpmlFiles} />
-      <Route path="/import/:filePath" component={Import} />
-      <Route path="/podcasts" component={Podcasts} default={true} />
-    </Router>
+    <Fragment>
+      <Router>
+        <Route path="/search" component={Search} />
+        <Route path="/podcast/preview" component={PodcastPreview} />
+        <Route path="/podcast/:podcastId" component={PodcastDetail} />
+        <Route path="/episode/:episodeId" component={EpisodeDetail} />
+        <Route path="/filter/:filterId" component={Filter} />
+        <Route path="/player" component={Player} />
+        <Route path="/settings" component={AppSettings} />
+        <Route path="/files" component={OpmlFiles} />
+        <Route path="/import/:filePath" component={Import} />
+        <Route path="/podcasts" component={Podcasts} default={true} />
+      </Router>
+      <Toast />
+    </Fragment>
   );
 }
