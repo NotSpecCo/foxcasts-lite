@@ -6,6 +6,7 @@ import { usePlayer } from '../contexts/playerContext';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { formatFileSize, formatTime } from 'foxcasts-core/lib/utils';
 import { Core } from '../services/core';
+import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 
 interface EpisodeDetailProps {
   episodeId: string;
@@ -17,6 +18,7 @@ export default function EpisodeDetail({
   const [episode, setEpisode] = useState<EpisodeExtended>();
 
   const player = usePlayer();
+  const { addToQueue } = useDownloadManager();
 
   useEffect(() => {
     Core.getEpisodeById(parseInt(episodeId, 10)).then((result) => {
@@ -30,13 +32,16 @@ export default function EpisodeDetail({
     }
 
     const options = [
-      { id: 'stream', label: 'Stream' },
+      episode?.isDownloaded
+        ? { id: 'stream', label: 'Play' }
+        : { id: 'stream', label: 'Stream' },
+      { id: 'download', label: 'Download' },
       // { id: 'markPlayed', label: 'Mark as Played' },
       // { id: 'markUnplayed', label: 'Mark as Unplayed' }
     ];
 
     if (episode && episode.progress > 0) {
-      options.push({
+      options.unshift({
         id: 'resume',
         label: `Resume at ${formatTime(episode.progress)}`,
       });
@@ -54,6 +59,9 @@ export default function EpisodeDetail({
         break;
       case 'resume':
         player.load(episode.id, true);
+        break;
+      case 'download':
+        addToQueue(episode.id);
         break;
     }
   }
@@ -86,6 +94,12 @@ export default function EpisodeDetail({
             {episode?.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'}
           </span>
         </div>
+        {episode?.isDownloaded && (
+          <div>
+            Downloaded:{' '}
+            <span className={styles.accent}>{episode?.localFileUrl}</span>
+          </div>
+        )}
         <p>{episode?.description}</p>
       </div>
     </View>

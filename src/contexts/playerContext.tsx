@@ -1,10 +1,10 @@
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { createContext, h, VNode } from 'preact';
 import { useContext, useState } from 'preact/hooks';
-// import { EpisodeExtended } from '../core/models';
-// import { getEpisodeById } from '../core/services/podcasts';
 import { Core } from '../services/core';
 import { ComponentBaseProps } from '../models';
+import { getFileAsUrl } from '../services/files';
+import { useToast } from './ToastProvider';
 
 export type PlaybackStatus = {
   playing: boolean;
@@ -48,6 +48,8 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   const [playing, setPlaying] = useState(false);
   const [audioRef] = useState<HTMLAudioElement>(new Audio());
 
+  const { showToast } = useToast();
+
   function getStatus(): PlaybackStatus {
     return {
       playing: !audioRef.paused,
@@ -67,7 +69,16 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     setEpisode(data);
 
     (audioRef as any).mozAudioChannelType = 'content';
-    audioRef.src = data.fileUrl;
+    if (data.isDownloaded && data.localFileUrl) {
+      await getFileAsUrl(data.localFileUrl)
+        .then((url) => (audioRef.src = url))
+        .catch(() => {
+          showToast('File missing! Streaming instead.');
+          audioRef.src = data.fileUrl;
+        });
+    } else {
+      audioRef.src = data.fileUrl;
+    }
     audioRef.currentTime = resume ? data.progress : 0;
     audioRef.play();
     setPlaying(true);
