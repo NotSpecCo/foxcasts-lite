@@ -1,7 +1,3 @@
-.root {
-  padding: 4px 0;
-}
-
 .block {
   display: block;
 }
@@ -68,4 +64,17 @@
 }
 .right {
   text-align: right;
+}
+
+.padding-vertical {
+  padding: 5px 0;
+}
+.padding-horizontal {
+  padding: 0 5px;
+}
+.padding-both {
+  padding: 5px;
+}
+.padding-none {
+  padding: 0;
 }

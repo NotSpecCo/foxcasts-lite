@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, VNode } from 'preact';
 import { ComponentBaseProps } from '../models';
 import { joinClasses } from '../utils/classes';
 import styles from './Typography.module.css';
@@ -17,6 +17,7 @@ type Props = ComponentBaseProps & {
   decoration?: 'none' | 'underline';
   transform?: 'none' | 'uppercase' | 'lowercase';
   align?: 'left' | 'center' | 'right';
+  padding?: 'vertical' | 'horizontal' | 'both' | 'none';
 };
 
 export function Typography({
@@ -26,8 +27,9 @@ export function Typography({
   decoration = 'none',
   transform = 'none',
   align = 'left',
+  padding = 'vertical',
   ...props
-}: Props) {
+}: Props): VNode {
   return (
     <div
       className={joinClasses(
@@ -38,6 +40,7 @@ export function Typography({
         styles[decoration],
         styles[transform],
         styles[align],
+        styles[`padding-${padding}`],
         props.className
       )}
     >
