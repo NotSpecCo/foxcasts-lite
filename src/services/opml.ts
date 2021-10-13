@@ -49,12 +49,12 @@ export class OPML {
     this.data = this.originalData;
   }
 
-  static async openFile(filePathAndName: string): Promise<OpmlFile> {
+  static async openFile(filePathAndName: string): Promise<OPML> {
     const file = await this._openFile(filePathAndName);
     const fileText = await this._readFileAsText(file);
     const xml = new DOMParser().parseFromString(fileText, 'text/xml');
 
-    return {
+    return new OPML({
       filePath: filePathAndName,
       title: xml.querySelector('head>title')?.textContent || null,
       dateCreated: xml.querySelector('head>dateCreated')?.textContent || null,
@@ -75,7 +75,7 @@ export class OPML {
             version: a.getAttribute('version'),
           } as OpmlFeed)
       ),
-    };
+    });
   }
 
   static listFiles(): Promise<StorageFile[]> {

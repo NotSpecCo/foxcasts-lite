@@ -25,10 +25,9 @@ export default function Import(props: Props): VNode {
   const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
-    OPML.openFile(props.filePath).then((file) => {
-      console.log('file', file);
+    OPML.openFile(props.filePath).then(({ data }) => {
       setFeeds(
-        file.feeds.map((feed, i) => ({
+        data.feeds.map((feed, i) => ({
           id: i,
           selected: true,
           title: feed.text,
