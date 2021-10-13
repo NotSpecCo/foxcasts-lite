@@ -2,7 +2,7 @@
 import { Subject } from 'rxjs';
 import { Dexie } from 'dexie';
 import 'dexie-observable';
-import { appendFile, deleteFile, saveFile } from './files';
+import { appendFile, deleteFile, getStorageName, saveFile } from './files';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { Download, DownloadStatus } from '../models';
 import { Core } from './core';
@@ -297,7 +297,11 @@ export class DownloadManager {
     const download = await this.db.getDownloadByEpisodeId(episode.id);
 
     if (!download) {
-      const filePath = `/sdcard1/foxcasts/episode_${episode.id}.mp3`;
+      const storageName = getStorageName();
+      if (!storageName) {
+        throw new Error('Failed to get storage name');
+      }
+      const filePath = `/${storageName}/foxcasts/episode_${episode.id}.mp3`;
       await this.db.addDownload({
         episodeId: episode.id,
         episodeTitle: episode.title,

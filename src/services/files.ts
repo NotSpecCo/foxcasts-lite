@@ -56,3 +56,7 @@ export function deleteFile(filePathAndName: string): Promise<void> {
     request.onerror = () => reject(request.error);
   });
 }
+
+export function getStorageName(): string | undefined {
+  return (navigator as any).getDeviceStorage('sdcard')?.storageName;
+}
