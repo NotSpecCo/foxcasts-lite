@@ -13,6 +13,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
     { id: 'player', label: 'Player' },
     { id: 'mostRecent', label: 'Most Recent' },
     { id: 'inProgress', label: 'In Progress' },
+    { id: 'downloads', label: 'Downloads' },
     { id: 'settings', label: 'Settings' },
   ];
 
@@ -34,6 +35,9 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
         break;
       case 'inProgress':
         pageRoute = '/filter/inProgress';
+        break;
+      case 'downloads':
+        pageRoute = '/downloads';
         break;
       case 'settings':
         pageRoute = '/settings';

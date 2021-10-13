@@ -1,0 +1,11 @@
+.progressContainer {
+  padding: 0 5px;
+}
+.progress {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progressBar {
+  margin: 0;
+}

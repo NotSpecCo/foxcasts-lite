@@ -18,16 +18,20 @@ import { Core } from '../services/core';
 import OpmlFiles from '../routes/OpmlFiles';
 import { ToastProvider } from '../contexts/ToastProvider';
 import { Toast } from '../ui-components/Toast';
+import Downloads from '../routes/Downloads';
+import { DownloadManagerProvider } from '../contexts/DownloadManagerProvider';
 
 export function AppWrapper(): VNode {
   return (
     <div id="preact_root">
       <SettingsProvider>
-        <PlayerProvider>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
-        </PlayerProvider>
+        <ToastProvider>
+          <DownloadManagerProvider>
+            <PlayerProvider>
+              <App />
+            </PlayerProvider>
+          </DownloadManagerProvider>
+        </ToastProvider>
       </SettingsProvider>
     </div>
   );
@@ -105,6 +109,7 @@ export default function App(): VNode {
         <Route path="/settings" component={AppSettings} />
         <Route path="/files" component={OpmlFiles} />
         <Route path="/import/:filePath" component={Import} />
+        <Route path="/downloads" component={Downloads} />
         <Route path="/podcasts" component={Podcasts} default={true} />
       </Router>
       <Toast />

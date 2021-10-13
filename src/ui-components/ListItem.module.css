@@ -52,6 +52,7 @@ body[data-compact-layout] .root {
 
 .accent {
   color: var(--accent-text-color);
+  font-size: 0.9rem;
 }
 
 [data-selected].root .primary {
