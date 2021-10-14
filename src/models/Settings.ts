@@ -15,10 +15,22 @@ export enum DisplayDensity {
   Compact = 'compact',
 }
 
+export enum NotificationType {
+  None = 'none',
+  EpisodeInfo = 'episodeInfo',
+}
+
+export enum NotificationAction {
+  ViewPlayer = 'viewPlayer',
+  PlayPause = 'playpause',
+}
+
 export type Settings = {
   displayDensity: DisplayDensity;
   podcastsLayout: PodcastsLayout;
   fullScreen: boolean;
   theme: Theme;
   accentColor: string;
+  notificationType: NotificationType;
+  notificationAction: NotificationAction;
 };

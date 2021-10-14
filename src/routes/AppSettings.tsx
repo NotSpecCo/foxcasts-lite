@@ -2,10 +2,18 @@ import { h, VNode } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority, useDpad } from '../hooks/useDpad';
-import { DisplayDensity, Settings, Theme } from '../models';
+import {
+  DisplayDensity,
+  NotificationAction,
+  NotificationType,
+  Settings,
+  Theme,
+} from '../models';
 import { ThemeConfig, themes } from '../themes';
 import { Menu, MenuOption, View } from '../ui-components';
+import { ScrollAnchor } from '../ui-components/ScrollAnchor';
 import { SelectableRow } from '../ui-components/SelectableRow';
+import { Typography } from '../ui-components/Typography';
 import styles from './AppSettings.module.css';
 
 type SelectMenu = {
@@ -26,7 +34,7 @@ export default function AppSettings(): VNode {
     });
   }
 
-  function handleClick(id: string): void {
+  function handleClick(id: keyof Settings): void {
     switch (id) {
       case 'theme':
         setSelectMenu({
@@ -60,6 +68,26 @@ export default function AppSettings(): VNode {
           ],
         });
         break;
+      case 'notificationType':
+        setSelectMenu({
+          settingsKey: 'notificationType',
+          title: 'Notification Type',
+          options: [
+            { id: NotificationType.None, label: 'None' },
+            { id: NotificationType.EpisodeInfo, label: 'Episode Info' },
+          ],
+        });
+        break;
+      case 'notificationAction':
+        setSelectMenu({
+          settingsKey: 'notificationAction',
+          title: 'Notification Action',
+          options: [
+            { id: NotificationAction.ViewPlayer, label: 'View Player' },
+            { id: NotificationAction.PlayPause, label: 'Play/Pause' },
+          ],
+        });
+        break;
       case 'accentColor':
         saveSetting('accentColor', accentColorRef.current?.value);
         break;
@@ -68,7 +96,7 @@ export default function AppSettings(): VNode {
 
   useDpad({
     priority: SelectablePriority.Low,
-    onEnter: handleClick,
+    onEnter: (itemId) => handleClick(itemId as keyof Settings),
     onChange: (itemId) => {
       if (itemId === 'accentColor') {
         accentColorRef.current?.focus();
@@ -97,7 +125,8 @@ export default function AppSettings(): VNode {
   return (
     <View headerText="Settings">
       <div className={styles.container}>
-        <div className={styles.heading}>Appearance</div>
+        <ScrollAnchor />
+        <Typography type="titleSmall">Appearance</Typography>
         <SelectableRow selectableId="displayDensity">
           Display Density
           <span className={styles.selectValue}>{settings.displayDensity}</span>
@@ -119,6 +148,19 @@ export default function AppSettings(): VNode {
             size={6}
             maxLength={6}
           />
+        </SelectableRow>
+        <Typography type="titleSmall">Behavior</Typography>
+        <SelectableRow selectableId="notificationType">
+          Notification Type
+          <span className={styles.selectValue}>
+            {settings.notificationType}
+          </span>
+        </SelectableRow>
+        <SelectableRow selectableId="notificationAction">
+          Notification Action
+          <span className={styles.selectValue}>
+            {settings.notificationAction}
+          </span>
         </SelectableRow>
       </div>
       {selectMenu ? (

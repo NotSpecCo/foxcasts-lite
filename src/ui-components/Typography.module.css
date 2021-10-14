@@ -16,18 +16,22 @@
 }
 .bodyStrong {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
 }
 .bodyLarge {
   font-size: 16px;
   font-weight: 400;
 }
+.titleSmall {
+  font-size: 14px;
+  font-weight: 600;
+}
 .subtitle {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 .titleLarge {

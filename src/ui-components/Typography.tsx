@@ -10,6 +10,7 @@ type Props = ComponentBaseProps & {
     | 'body'
     | 'bodyStrong'
     | 'bodyLarge'
+    | 'titleSmall'
     | 'subtitle'
     | 'title'
     | 'titleLarge';
@@ -27,7 +28,7 @@ export function Typography({
   decoration = 'none',
   transform = 'none',
   align = 'left',
-  padding = 'vertical',
+  padding = 'both',
   ...props
 }: Props): VNode {
   return (

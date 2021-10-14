@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import {
   ComponentBaseProps,
   DisplayDensity,
+  NotificationAction,
+  NotificationType,
   PodcastsLayout,
   Settings,
   Theme,
@@ -19,6 +21,8 @@ const defaultSettings: Settings = {
   fullScreen: false,
   theme: Theme.Light,
   accentColor: 'ec5817',
+  notificationType: NotificationType.EpisodeInfo,
+  notificationAction: NotificationAction.ViewPlayer,
 };
 
 type SettingsContextValue = {

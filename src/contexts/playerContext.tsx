@@ -2,9 +2,17 @@ import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { createContext, h, VNode } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 import { Core } from '../services/core';
-import { ComponentBaseProps } from '../models';
+import {
+  ComponentBaseProps,
+  NotificationAction,
+  NotificationType,
+} from '../models';
 import { getFileAsUrl } from '../services/files';
 import { useToast } from './ToastProvider';
+import { useEffect } from 'react';
+import { useSettings } from './SettingsProvider';
+import { route } from 'preact-router';
+import { KaiOS } from '../services/kaios';
 
 export type PlaybackStatus = {
   playing: boolean;
@@ -47,8 +55,10 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   const [episode, setEpisode] = useState<EpisodeExtended>();
   const [playing, setPlaying] = useState(false);
   const [audioRef] = useState<HTMLAudioElement>(new Audio());
+  const [notification, setNotification] = useState<Notification | null>(null);
 
   const { showToast } = useToast();
+  const { settings } = useSettings();
 
   function getStatus(): PlaybackStatus {
     return {
@@ -63,10 +73,9 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     resume = false
   ): Promise<PlaybackStatus> {
     const data = await Core.getEpisodeById(episodeId);
+    const podcast = await Core.getPodcastById(data.podcastId);
 
     if (!data) return defaultStatus;
-
-    setEpisode(data);
 
     (audioRef as any).mozAudioChannelType = 'content';
     if (data.isDownloaded && data.localFileUrl) {
@@ -81,6 +90,23 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     }
     audioRef.currentTime = resume ? data.progress : 0;
     audioRef.play();
+
+    if (settings.notificationType === NotificationType.EpisodeInfo) {
+      setNotification(
+        new Notification(data.podcastTitle, {
+          tag: 'playback',
+          body: data.title,
+          icon: podcast.artwork,
+          silent: true,
+          renotify: false,
+        })
+      );
+    } else {
+      notification?.close();
+      setNotification(null);
+    }
+
+    setEpisode(data);
     setPlaying(true);
 
     return {
@@ -107,6 +133,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     audioRef.src = '';
     audioRef.currentTime = 0;
     setPlaying(false);
+    notification?.close();
   }
 
   function jump(seconds: number): PlaybackStatus {
@@ -119,6 +146,38 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     audioRef.currentTime = seconds;
     return getStatus();
   }
+
+  useEffect(() => {
+    const onClick = (): void => {
+      if (settings.notificationAction === NotificationAction.ViewPlayer) {
+        KaiOS.getSelfApp().then((app) => {
+          app.launch();
+          setTimeout(() => {
+            route('/player');
+          }, 300);
+        });
+      } else if (
+        settings.notificationAction === NotificationAction.PlayPause &&
+        playing
+      ) {
+        audioRef.pause();
+        setPlaying(false);
+      } else if (
+        settings.notificationAction === NotificationAction.PlayPause &&
+        !playing
+      ) {
+        audioRef.play();
+        setPlaying(true);
+      }
+    };
+
+    notification?.addEventListener('click', onClick);
+
+    return (): void => {
+      notification?.removeEventListener('click', onClick);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notification, playing, settings.notificationAction]);
 
   return (
     <PlayerContext.Provider
