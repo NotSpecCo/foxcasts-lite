@@ -23,16 +23,9 @@ type SelectMenu = {
 };
 
 export default function AppSettings(): VNode {
-  const { settings, setSettings } = useSettings();
+  const { settings, setSettings, setSetting } = useSettings();
   const [selectMenu, setSelectMenu] = useState<SelectMenu>();
   const accentColorRef = useRef<HTMLInputElement>(null);
-
-  function saveSetting(key: keyof Settings, value: any): void {
-    setSettings({
-      ...settings,
-      [key]: value,
-    });
-  }
 
   function handleClick(id: keyof Settings): void {
     switch (id) {
@@ -89,7 +82,7 @@ export default function AppSettings(): VNode {
         });
         break;
       case 'accentColor':
-        saveSetting('accentColor', accentColorRef.current?.value);
+        setSetting('accentColor', accentColorRef.current?.value || '');
         break;
     }
   }
@@ -106,7 +99,10 @@ export default function AppSettings(): VNode {
     },
   });
 
-  function handleSettingSelect(key: keyof Settings, value: string): void {
+  function handleSettingSelect<T extends keyof Settings>(
+    key: T,
+    value: Settings[T]
+  ): void {
     if (key === 'theme') {
       // We want to use the theme's original accent color
       const theme = themes.find((a) => a.id === value) as ThemeConfig;
@@ -116,7 +112,7 @@ export default function AppSettings(): VNode {
         accentColor: theme.values.appAccentColor.value.slice(1),
       });
     } else {
-      saveSetting(key, value);
+      setSetting(key, value);
     }
 
     setSelectMenu(undefined);

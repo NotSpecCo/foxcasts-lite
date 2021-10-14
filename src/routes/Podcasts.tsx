@@ -50,6 +50,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
         route(`/podcasts/`, true);
       }
     },
+    options: { mode: 'updownleftright' },
   });
 
   async function seedData(): Promise<void> {

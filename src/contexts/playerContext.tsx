@@ -59,6 +59,11 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   const { showToast } = useToast();
   const { settings } = useSettings();
 
+  useEffect(() => {
+    audioRef.playbackRate = settings.playbackSpeed;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.playbackSpeed]);
+
   function getStatus(): PlaybackStatus {
     return {
       playing: !audioRef.paused,

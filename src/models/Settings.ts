@@ -33,4 +33,5 @@ export type Settings = {
   accentColor: string;
   notificationType: NotificationType;
   notificationAction: NotificationAction;
+  playbackSpeed: number;
 };

@@ -33,7 +33,7 @@ export function useDpad<T>({
     stopPropagation: true,
     scrollIntoView: true,
     disabled: false,
-    mode: 'updownleftright',
+    mode: 'updown',
     ...options,
   };
 
@@ -89,6 +89,7 @@ export function useDpad<T>({
 
     if (options.stopPropagation) {
       ev.stopPropagation();
+      ev.stopImmediatePropagation();
       ev.preventDefault();
     }
 

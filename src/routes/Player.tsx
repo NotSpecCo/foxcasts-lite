@@ -12,11 +12,14 @@ import { Core } from '../services/core';
 import { ListItem, MenuOption, View } from '../ui-components';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
+import { useSettings } from '../contexts/SettingsProvider';
+import { clamp } from '../utils/clamp';
 
 export default function Player(): VNode {
   const [chapters, setChapters] = useState<Chapter[] | null>(null);
   const [podcast, setPodcast] = useState<Podcast | null>(null);
   const [browsingChapters, setBrowsingChapters] = useState(false);
+  const [changingSpeed, setChangingSpeed] = useState(false);
   const [status, setStatus] = useState<PlaybackStatus>({
     playing: false,
     currentTime: 0,
@@ -25,6 +28,7 @@ export default function Player(): VNode {
   const [accentColor, setAccentColor] = useState<string>();
 
   const player = usePlayer();
+  const { settings, setSetting } = useSettings();
 
   useEffect(() => {
     const episode = player.episode;
@@ -98,6 +102,18 @@ export default function Player(): VNode {
       case 'minus30':
         newStatus = player.jump(-30);
         break;
+      case 'speedDown':
+        setSetting(
+          'playbackSpeed',
+          clamp(Math.round((settings.playbackSpeed - 0.2) * 100) / 100, 0.6, 4)
+        );
+        break;
+      case 'speedUp':
+        setSetting(
+          'playbackSpeed',
+          clamp(Math.round((settings.playbackSpeed + 0.2) * 100) / 100, 0.6, 4)
+        );
+        break;
       case 'detail':
         route(`/episode/${player.episode.id}`);
         break;
@@ -115,8 +131,6 @@ export default function Player(): VNode {
             ? { id: 'pause', label: 'Pause' }
             : { id: 'play', label: 'Play' },
           { id: 'stop', label: 'Stop' },
-          { id: 'plus30', label: '+30 seconds' },
-          { id: 'minus30', label: '-30 seconds' },
           { id: 'detail', label: 'View episode detail' },
         ]
       : [];
@@ -132,14 +146,19 @@ export default function Player(): VNode {
   useDpad({
     priority: SelectablePriority.Low,
     onEnter: handleClick,
-    onChange: (itemId) => setBrowsingChapters(!!itemId?.startsWith('chapter')),
-    options: { mode: 'updown' },
+    onChange: (itemId) => {
+      setChangingSpeed(itemId === 'speed');
+      setBrowsingChapters(!!itemId?.startsWith('chapter'));
+    },
+    options: { stopPropagation: false },
   });
 
   useNavKeys(
     {
-      ArrowLeft: () => handleAction('minus30'),
-      ArrowRight: () => handleAction('plus30'),
+      ArrowLeft: () =>
+        changingSpeed ? handleAction('speedDown') : handleAction('minus30'),
+      ArrowRight: () =>
+        changingSpeed ? handleAction('speedUp') : handleAction('plus30'),
       Enter: () => {
         if (!player.episode) {
           return;
@@ -195,6 +214,11 @@ export default function Player(): VNode {
                   {`${formatTime(status.duration)}`}
                 </span>
                 <div className={styles.spacer} />
+                <span
+                  className={styles.speed}
+                  data-selectable-priority={SelectablePriority.Low}
+                  data-selectable-id="speed"
+                >{`${settings.playbackSpeed}x`}</span>
                 {chapters && chapters.length > 0 ? (
                   <div className={styles.chevronDown} />
                 ) : null}

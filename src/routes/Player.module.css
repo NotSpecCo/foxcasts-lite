@@ -59,6 +59,14 @@
   flex: 1;
 }
 
+.speed {
+  padding: 0 5px;
+  font-weight: 600;
+}
+.speed[data-selected] {
+  color: var(--accent-text-color);
+}
+
 .chevronDown {
   border-right: 2px solid;
   border-bottom: 2px solid;
