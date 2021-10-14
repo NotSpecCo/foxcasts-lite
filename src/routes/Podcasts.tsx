@@ -12,6 +12,7 @@ import { Podcast } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
 import { OPML } from '../services/opml';
 import { useToast } from '../contexts/ToastProvider';
+import { KaiOS } from '../services/kaios';
 
 interface Props {
   selectedItemId?: string;
@@ -78,7 +79,7 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   async function exportFeeds(): Promise<void> {
     if (!podcasts) return;
 
-    const { storageName } = (navigator as any).getDeviceStorage('sdcard');
+    const storageName = KaiOS.storage.getActualStorageName('sdcard');
     const feeds: OpmlFeed[] = podcasts.map((a, i) => ({
       id: i.toString(),
       type: 'rss',

@@ -2,10 +2,10 @@
 import { Subject } from 'rxjs';
 import { Dexie } from 'dexie';
 import 'dexie-observable';
-import { appendFile, deleteFile, getStorageName, saveFile } from './files';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { Download, DownloadStatus } from '../models';
 import { Core } from './core';
+import { KaiOS } from './kaios';
 
 type Chunk = {
   downloadId: number;
@@ -297,7 +297,7 @@ export class DownloadManager {
     const download = await this.db.getDownloadByEpisodeId(episode.id);
 
     if (!download) {
-      const storageName = getStorageName();
+      const storageName = KaiOS.storage.getActualStorageName('sdcard');
       if (!storageName) {
         throw new Error('Failed to get storage name');
       }
@@ -367,11 +367,15 @@ export class DownloadManager {
     }
 
     if (chunk.part === 1) {
-      await deleteFile(download.localFileUrl);
-      await saveFile(download.localFileUrl, new Blob());
+      await KaiOS.storage.delete('sdcard', download.localFileUrl);
+      await KaiOS.storage.addNamed('sdcard', new Blob(), download.localFileUrl);
     }
 
-    await appendFile(download.localFileUrl, new Blob([chunk.data]));
+    await KaiOS.storage.appendNamed(
+      'sdcard',
+      new Blob([chunk.data]),
+      download.localFileUrl
+    );
 
     const data: Partial<Download> = {
       currentBytes: chunk.startBytes + chunk.bytes,

@@ -7,7 +7,6 @@ import {
   NotificationAction,
   NotificationType,
 } from '../models';
-import { getFileAsUrl } from '../services/files';
 import { useToast } from './ToastProvider';
 import { useEffect } from 'react';
 import { useSettings } from './SettingsProvider';
@@ -79,7 +78,8 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
 
     (audioRef as any).mozAudioChannelType = 'content';
     if (data.isDownloaded && data.localFileUrl) {
-      await getFileAsUrl(data.localFileUrl)
+      await KaiOS.storage
+        .getAsFileUrl('sdcard', data.localFileUrl)
         .then((url) => (audioRef.src = url))
         .catch(() => {
           showToast('File missing! Streaming instead.');
@@ -150,7 +150,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   useEffect(() => {
     const onClick = (): void => {
       if (settings.notificationAction === NotificationAction.ViewPlayer) {
-        KaiOS.getSelfApp().then((app) => {
+        KaiOS.app.getSelf().then((app) => {
           app.launch();
           setTimeout(() => {
             route('/player');
