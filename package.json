@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "foxcasts-lite",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "license": "MIT",
   "scripts": {
     "build": "preact build --no-prerender --no-sw --no-esm",
@@ -10,7 +10,7 @@
     "build:analyze": "preact build --no-prerender --no-esm --json",
     "build:package": "node build.mjs",
     "build:deploy": " node build.mjs --deploy",
-    "dev": "preact watch",
+    "dev": "HTTPS=true preact watch --https --no-sw",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "test": "jest ./tests"
   },
