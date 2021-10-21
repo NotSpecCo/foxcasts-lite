@@ -88,10 +88,10 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
         .then((url) => (audioRef.src = url))
         .catch(() => {
           showToast('File missing! Streaming instead.');
-          audioRef.src = data.fileUrl;
+          audioRef.src = data.remoteFileUrl;
         });
     } else {
-      audioRef.src = data.fileUrl;
+      audioRef.src = data.remoteFileUrl;
     }
     audioRef.currentTime = resume ? data.progress : 0;
     audioRef.play();
@@ -101,7 +101,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
         new Notification(data.podcastTitle, {
           tag: 'playback',
           body: data.title,
-          icon: podcast.artwork,
+          // icon: podcast.artwork,
           silent: true,
           renotify: false,
         })

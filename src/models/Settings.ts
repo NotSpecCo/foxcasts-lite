@@ -1,18 +1,25 @@
 export enum Theme {
   Light = 'light',
   Dark = 'dark',
-  Cobalt = 'cobalt',
-  Simple = 'simple',
 }
 
-export enum PodcastsLayout {
+export enum ListLayout {
   List = 'list',
   Grid = 'grid',
 }
 
-export enum DisplayDensity {
-  Normal = 'normal',
+export enum TextSize {
+  Smallest = 'smallest',
+  Small = 'small',
+  Medium = 'medium',
+  Large = 'large',
+  Largest = 'largest',
+}
+
+export enum AppBarSize {
+  Hidden = 'hidden',
   Compact = 'compact',
+  Normal = 'normal',
 }
 
 export enum NotificationType {
@@ -26,11 +33,14 @@ export enum NotificationAction {
 }
 
 export type Settings = {
-  displayDensity: DisplayDensity;
-  podcastsLayout: PodcastsLayout;
-  fullScreen: boolean;
   theme: Theme;
   accentColor: string;
+
+  podcastsLayout: ListLayout;
+  homeMenuLayout: ListLayout;
+  textSize: TextSize;
+  appBarSize: AppBarSize;
+
   notificationType: NotificationType;
   notificationAction: NotificationAction;
   playbackSpeed: number;

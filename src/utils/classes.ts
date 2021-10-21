@@ -15,7 +15,7 @@ export function joinClasses(...classes: (string | undefined)[]): string {
  * @param falseClass - Class to return if condition is false
  */
 export function ifClass(
-  condition: boolean,
+  condition: boolean | undefined | null,
   trueClass: string,
   falseClass = ''
 ): string {

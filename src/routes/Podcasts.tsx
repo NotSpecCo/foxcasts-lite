@@ -1,56 +1,61 @@
-import { Fragment, h, VNode } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
-import { ListItem, View } from '../ui-components';
-import { setSelected } from '../utils/navigation';
-import { useDpad } from '../hooks/useDpad';
-import { GridItem } from '../ui-components/GridItem';
+import { SelectablePriority } from '../hooks/useDpad';
 import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
-import { OpmlFeed, PodcastsLayout } from '../models';
-import { Podcast } from 'foxcasts-core/lib/types';
+import { ListLayout, OpmlFeed } from '../models';
+import { Podcast, PodcastExtended } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
 import { OPML } from '../services/opml';
 import { useToast } from '../contexts/ToastProvider';
 import { KaiOS } from '../services/kaios';
+import { useListNav } from '../hooks/useListNav';
+import { GridItem } from '../ui-components2/GridItem';
+import { View, ViewContent, ViewHeader } from '../ui-components2/view';
+import { AppBar } from '../ui-components2/appbar';
+import { List, ListItem } from '../ui-components2/list';
 
 interface Props {
   selectedItemId?: string;
 }
 
-export default function Podcasts({ selectedItemId }: Props): VNode {
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+export default function Podcasts(props: Props): VNode {
+  const [podcasts, setPodcasts] = useState<PodcastExtended[]>();
   const [seeding, setSeeding] = useState(false);
 
   const { settings } = useSettings();
   const { showToast } = useToast();
 
   useEffect(() => {
-    Core.getPodcasts().then((result) => {
-      setPodcasts(result);
-    });
+    Core.getPodcasts().then(setPodcasts);
   }, []);
 
-  /// Restore scroll position
-  useEffect(() => {
-    if (!selectedItemId) return;
-    setSelected(selectedItemId, true);
-  }, [selectedItemId, podcasts]);
+  // /// Restore scroll position
+  // useEffect(() => {
+  //   if (!selectedItemId) return;
+  //   setSelected(selectedItemId, true);
+  // }, [selectedItemId, podcasts]);
 
-  function viewPodcast(podcastId: string | number): void {
-    route(`/podcast/${podcastId}`);
-  }
+  // function viewPodcast(podcastId: string | number): void {
+  //   route(`/podcast/${podcastId}`);
+  // }
 
-  useDpad({
-    onEnter: (itemId) => viewPodcast(itemId),
-    onChange: (itemId) => {
-      if (itemId) {
-        route(`/podcasts/?selectedItemId=${itemId}`, true);
-      } else {
-        route(`/podcasts/`, true);
-      }
-    },
-    options: { mode: 'updownleftright' },
+  // useDpad({
+  //   onEnter: (itemId) => viewPodcast(itemId),
+  //   onChange: (itemId) => {
+  //     if (itemId) {
+  //       route(`/podcasts/?selectedItemId=${itemId}`, true);
+  //     } else {
+  //       route(`/podcasts/`, true);
+  //     }
+  //   },
+  //   options: { mode: 'updownleftright' },
+  // });
+  const { selectedId } = useListNav({
+    initialSelectedId: podcasts ? props.selectedItemId : undefined,
+    priority: SelectablePriority.Low,
+    onSelect: (id) => route(`/podcast/${id}/episodes`),
   });
 
   async function seedData(): Promise<void> {
@@ -114,52 +119,60 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
   }
 
   return (
-    <View
-      headerText="Podcasts"
-      actions={[
-        // {
-        //   id: 'seed',
-        //   label: seeding ? 'Seeding...' : 'Seed podcasts',
-        //   disabled: seeding,
-        // },
-        {
-          id: 'import',
-          label: 'Import OPML',
-        },
-        {
-          id: 'export',
-          label: 'Export as OPML',
-        },
-      ]}
-      onAction={handleAction}
-    >
-      {settings.podcastsLayout === PodcastsLayout.List ? (
-        <Fragment>
-          {podcasts.map((podcast, i) => (
-            <ListItem
-              key={podcast.id}
-              itemId={podcast.id}
-              imageUrl={podcast.artwork}
-              primaryText={podcast.title}
-              shortcutKey={i <= 8 ? i + 1 : undefined}
-              onClick={(): void => viewPodcast(podcast.id)}
-            />
-          ))}
-        </Fragment>
-      ) : (
-        <div className={styles.grid}>
-          {podcasts.map((podcast, i) => (
-            <GridItem
-              key={podcast.id}
-              itemId={podcast.id}
-              dimIfUnselected={!!selectedItemId}
-              imageUrl={podcast.artwork}
-              shortcutKey={i + 1}
-              onClick={(): void => viewPodcast(podcast.id)}
-            />
-          ))}
-        </div>
-      )}
+    <View>
+      <ViewHeader>Podcasts</ViewHeader>
+      <ViewContent>
+        {settings.podcastsLayout === ListLayout.List ? (
+          <List>
+            {podcasts?.map((podcast, i) => (
+              <ListItem
+                key={podcast.id}
+                imageUrl={podcast.artwork?.image}
+                primaryText={podcast.title}
+                selectable={{
+                  id: podcast.id,
+                  shortcut: i <= 8 ? i + 1 : undefined,
+                  selected: podcast.id.toString() === selectedId,
+                }}
+              />
+            ))}
+          </List>
+        ) : (
+          <div className={styles.grid}>
+            {podcasts?.map((podcast, i) => (
+              <GridItem
+                key={podcast.id}
+                dimIfUnselected={!!selectedId}
+                imageUrl={podcast.artwork?.image || podcast.artworkUrl}
+                selectable={{
+                  id: podcast.id,
+                  shortcut: i <= 8 ? i + 1 : undefined,
+                  selected: podcast.id.toString() === selectedId,
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </ViewContent>
+      <AppBar
+        centerText="Select"
+        actions={[
+          {
+            id: 'seed',
+            label: seeding ? 'Seeding...' : 'Seed podcasts',
+            disabled: seeding,
+          },
+          {
+            id: 'import',
+            label: 'Import OPML',
+          },
+          {
+            id: 'export',
+            label: 'Export as OPML',
+          },
+        ]}
+        onAction={handleAction}
+      />
     </View>
   );
 }

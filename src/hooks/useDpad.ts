@@ -10,15 +10,15 @@ interface Options {
 }
 
 export enum SelectablePriority {
-  High = 'high',
-  Medium = 'medium',
-  Low = 'low',
+  Low,
+  Medium,
+  High,
 }
 
 type Props<T> = {
   priority?: SelectablePriority;
   onChange?: (itemId: string | undefined) => void;
-  onEnter: (itemId: string) => void;
+  onEnter?: (itemId: string) => void;
   options?: Options;
 };
 
@@ -97,7 +97,7 @@ export function useDpad<T>({
       const selected = getSelectedElement(priority);
       if (selected) {
         const id = selected.getAttribute('data-selectable-id') as string;
-        props.onEnter(id);
+        props.onEnter?.(id);
       }
       return;
     }
@@ -107,7 +107,7 @@ export function useDpad<T>({
       const selected = elements[parseInt(ev.key, 10) - 1];
       if (selected) {
         const id = selected.getAttribute('data-selectable-id') as string;
-        props.onEnter(id);
+        props.onEnter?.(id);
       }
       return;
     }

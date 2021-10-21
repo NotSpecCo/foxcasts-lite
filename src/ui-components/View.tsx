@@ -6,7 +6,6 @@ import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
 import { Header } from './Header';
 import { Menu, MenuOption } from './Menu';
-import { MenuBar } from './MenuBar';
 import styles from './View.module.css';
 
 type Props = ComponentBaseProps & {
@@ -77,14 +76,16 @@ export function View({
         <Header text={props.headerText} className={styles.header} />
       )}
       <div className={styles.content}>{props.children}</div>
-      {showMenubar && (
-        <MenuBar
+      {/* {showMenubar && (
+        <AppBar
           className={styles.menubar}
-          leftText={leftMenuText}
+          // leftText={leftMenuText}
+          leftIcon="grid"
           centerText={centerMenuText}
-          rightText={actions.length > 0 ? rightMenuText || 'Actions' : ''}
+          rightIcon="chevronUp"
+          // rightText={actions.length > 0 ? rightMenuText || 'Actions' : ''}
         />
-      )}
+      )} */}
       {appMenuOpen && <AppMenu onClose={(): void => setAppMenuOpen(false)} />}
       {actionsMenuOpen && actions && (
         <Menu

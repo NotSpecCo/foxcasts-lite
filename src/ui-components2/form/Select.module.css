@@ -1,0 +1,16 @@
+.root {
+  padding: 5px;
+}
+.root[data-selected] {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+.label {
+  font-size: 1.4rem;
+}
+
+.value {
+  font-size: 1.4rem;
+  color: var(--secondary-text-color);
+}

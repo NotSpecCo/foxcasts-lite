@@ -1,4 +1,5 @@
 export * from './ComponentBaseProps';
+export * from './SelectableProps';
 export * from './Settings';
 export * from './Option';
 export * from './OpmlFeed';

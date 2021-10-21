@@ -45,7 +45,7 @@ export default function Player(): VNode {
       Core.getEpisodeChapters(
         episode.id,
         episode.podexId,
-        episode.fileUrl
+        episode.remoteFileUrl
       ).then((res) => setChapters(res));
     }
 

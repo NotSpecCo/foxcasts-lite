@@ -29,14 +29,23 @@ export const ListItem = forwardRef(
         data-selectable-priority={SelectablePriority.Low}
         data-selectable-id={props.itemId}
       >
-        {props.shortcutKey ? (
+        {/* {props.shortcutKey ? (
           <div className={styles.shortcut}>{props.shortcutKey}</div>
-        ) : null}
+        ) : null} */}
         {props.imageUrl ? <img src={props.imageUrl} /> : null}
         <div className={styles.text}>
-          <div className={styles.primary}>{props.primaryText}</div>
-          <div className={styles.secondary}>{props.secondaryText}</div>
-          <div className={styles.accent}>{props.accentText}</div>
+          <div className={styles.primary}>
+            {props.shortcutKey ? (
+              <span className={styles.shortcut}>{props.shortcutKey}</span>
+            ) : null}
+            {props.primaryText}
+          </div>
+          {props.secondaryText ? (
+            <div className={styles.secondary}>{props.secondaryText}</div>
+          ) : null}
+          {props.accentText ? (
+            <div className={styles.accent}>{props.accentText}</div>
+          ) : null}
         </div>
       </div>
     );

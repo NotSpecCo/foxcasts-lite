@@ -4,7 +4,7 @@ import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Menu.module.css';
-import { MenuBar } from './MenuBar';
+// import { AppBar } from './AppBar';
 
 export type MenuOption = {
   id: string;
@@ -63,11 +63,11 @@ export function Menu({
           </div>
         ))}
       </div>
-      <MenuBar
+      {/* <AppBar
         leftText={closeSide === 'left' ? 'Close' : ''}
         centerText="Select"
         rightText={closeSide === 'right' ? 'Close' : ''}
-      />
+      /> */}
     </div>
   );
 }

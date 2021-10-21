@@ -292,7 +292,10 @@ export class DownloadManager {
   }
 
   public async addToQueue(
-    episode: Pick<EpisodeExtended, 'id' | 'title' | 'fileUrl' | 'podcastTitle'>
+    episode: Pick<
+      EpisodeExtended,
+      'id' | 'title' | 'remoteFileUrl' | 'podcastTitle'
+    >
   ): Promise<void> {
     const download = await this.db.getDownloadByEpisodeId(episode.id);
 
@@ -306,7 +309,7 @@ export class DownloadManager {
         episodeId: episode.id,
         episodeTitle: episode.title,
         podcastTitle: episode.podcastTitle,
-        remoteFileUrl: episode.fileUrl,
+        remoteFileUrl: episode.remoteFileUrl,
         localFileUrl: filePath,
       });
       await Core.updateEpisode(episode.id, {
