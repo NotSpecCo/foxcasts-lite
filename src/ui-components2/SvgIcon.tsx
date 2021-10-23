@@ -12,6 +12,10 @@ import Search from './icons/search.svg';
 import Settings from './icons/settings.svg';
 import ChevronUp from './icons/chevron_up.svg';
 import ChevronDown from './icons/chevron_down.svg';
+import ChevronLeft from './icons/chevron_left.svg';
+import ChevronRight from './icons/chevron_right.svg';
+import { joinClasses } from '../utils/classes';
+import styles from './SvgIcon.module.css';
 
 export type IconName =
   | 'cancel'
@@ -25,13 +29,18 @@ export type IconName =
   | 'search'
   | 'settings'
   | 'chevronUp'
-  | 'chevronDown';
+  | 'chevronDown'
+  | 'chevronLeft'
+  | 'chevronRight';
+
+export type IconSize = 'small' | 'medium' | 'large';
 
 type Props = ComponentBaseProps & {
   icon: IconName;
+  size?: IconSize;
 };
 
-export function SvgIcon({ icon, ...props }: Props): VNode {
+export function SvgIcon({ icon, size = 'medium', ...props }: Props): VNode {
   function getIcon() {
     switch (icon) {
       case 'cancel':
@@ -58,7 +67,16 @@ export function SvgIcon({ icon, ...props }: Props): VNode {
         return ChevronUp;
       case 'chevronDown':
         return ChevronDown;
+      case 'chevronLeft':
+        return ChevronLeft;
+      case 'chevronRight':
+        return ChevronRight;
     }
   }
-  return <img className={props.className} src={getIcon()} />;
+  return (
+    <img
+      className={joinClasses(styles[size], props.className)}
+      src={getIcon()}
+    />
+  );
 }

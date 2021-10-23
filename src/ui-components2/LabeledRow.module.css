@@ -1,0 +1,12 @@
+.root {
+  padding: 5px;
+}
+
+.label {
+  font-size: 1.2rem;
+}
+
+.text {
+  font-size: 1.4rem;
+  color: var(--accent-text-color);
+}

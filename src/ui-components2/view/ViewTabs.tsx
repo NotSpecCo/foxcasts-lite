@@ -1,4 +1,5 @@
 import { h, VNode } from 'preact';
+import { useView } from '../../contexts/ViewProvider';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
@@ -16,6 +17,7 @@ type Props = ComponentBaseProps & {
 };
 
 export function ViewTabs({ tabs, selectedId, ...props }: Props): VNode<Props> {
+  const { appbarOpen } = useView();
   function changeTab(change: number): void {
     const currentIndex = tabs.findIndex((a) => a.id === selectedId);
     let newIndex = currentIndex + change;
@@ -26,8 +28,8 @@ export function ViewTabs({ tabs, selectedId, ...props }: Props): VNode<Props> {
   }
 
   useNavKeys({
-    ArrowLeft: () => changeTab(-1),
-    ArrowRight: () => changeTab(1),
+    ArrowLeft: () => !appbarOpen && changeTab(-1),
+    ArrowRight: () => !appbarOpen && changeTab(1),
   });
 
   function orderTabs(): Tab[] {

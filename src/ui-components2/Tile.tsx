@@ -17,7 +17,7 @@ export const Tile = withSelectable<Props>((props: Props): h.JSX.Element => {
       <div className={styles.content}>
         <div className={styles.back}>{props.backText}</div>
         <div className={styles.front}>
-          <SvgIcon className={styles.icon} icon={props.icon} />
+          <SvgIcon className={styles.icon} icon={props.icon} size="large" />
         </div>
       </div>
     </SelectableBase>

@@ -1,12 +1,13 @@
 import { h } from 'preact';
 import { ComponentBaseProps } from '../models';
-import styles from './Row.module.css';
+import styles from './LabeledRow.module.css';
 
 type Props = ComponentBaseProps & {
-  layout: 'vertical' | 'horizontal';
+  label: string;
+  text?: string | null;
 };
 
-export function Row(props: Props): h.JSX.Element {
+export function LabeledRow(props: Props): h.JSX.Element {
   return (
     <div className={styles.root}>
       <div className={styles.label}>{props.label}</div>

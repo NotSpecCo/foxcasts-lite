@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import { Fragment, h, options } from 'preact';
 import { useState } from 'preact/hooks';
 import { AppMenu } from '../../components/AppMenu';
 import { SelectablePriority } from '../../hooks/useDpad';
@@ -10,8 +10,9 @@ import { delay } from '../../utils/delay';
 import styles from './AppBar.module.css';
 import { MenuOption } from '../Menu';
 import { IconName, SvgIcon } from '../SvgIcon';
-import { AppBarListItem } from '.';
+import { AppBarListItem, AppBarListOption, AppBarOption } from '.';
 import { useView } from '../../contexts/ViewProvider';
+import { Typography } from '../Typography';
 
 export type AppBarItem = {
   id: string;
@@ -28,6 +29,8 @@ type Props = ComponentBaseProps & {
   rightIcon?: IconName | null;
   actions?: MenuOption[];
   onAction?: (id: string) => void;
+  options?: AppBarOption[];
+  onOptionChange?: (id: string, value: string) => void;
 };
 
 enum MenuState {
@@ -39,6 +42,7 @@ enum MenuState {
 
 export function AppBar({
   leftIcon = 'grid',
+  options = [],
   actions = [],
   ...props
 }: Props): h.JSX.Element {
@@ -69,7 +73,9 @@ export function AppBar({
     priority: SelectablePriority.Medium,
     updateRouteOnChange: false,
     onSelect: (itemId) => {
-      if (itemId) {
+      console.log('onSelect', itemId);
+
+      if (itemId && itemId.startsWith('action')) {
         props.onAction?.(itemId);
         closeMenu();
       }
@@ -115,17 +121,44 @@ export function AppBar({
           ) : null}
         </div>
         {openState > MenuState.Closed ? (
-          <div className={styles.actions}>
-            {actions.map((action, i) => (
-              <AppBarListItem
-                key={action.id}
-                text={action.label}
-                selectableId={action.id}
-                selectablePriority={SelectablePriority.Medium}
-                selectableShortcut={i + 1}
-                selected={selectedId === action.id}
-              />
-            ))}
+          <div className={styles.content}>
+            {options.length > 0 ? (
+              <Fragment>
+                <Typography type="caption">Options</Typography>
+                {options.map((option) => (
+                  <AppBarListOption
+                    key={option.id}
+                    label={option.label}
+                    optionId={option.id}
+                    options={option.options}
+                    selectedOptionId={option.currentValue}
+                    onChange={props.onOptionChange}
+                    selectable={{
+                      priority: SelectablePriority.Medium,
+                      id: `option_${option.id}`,
+                      selected: selectedId === `option_${option.id}`,
+                    }}
+                  />
+                ))}
+              </Fragment>
+            ) : null}
+            {actions.length > 0 ? (
+              <Fragment>
+                <Typography type="caption">Actions</Typography>
+                {actions.map((action, i) => (
+                  <AppBarListItem
+                    key={action.id}
+                    text={action.label}
+                    selectable={{
+                      priority: SelectablePriority.Medium,
+                      id: `action_${action.id}`,
+                      shortcut: i + 1,
+                      selected: selectedId === `action_${action.id}`,
+                    }}
+                  />
+                ))}
+              </Fragment>
+            ) : null}
           </div>
         ) : null}
       </div>
