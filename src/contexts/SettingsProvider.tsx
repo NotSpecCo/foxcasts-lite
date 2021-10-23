@@ -6,6 +6,7 @@ import {
   ListLayout,
   NotificationAction,
   NotificationType,
+  PlayerLayout,
   Settings,
   TextSize,
   Theme,
@@ -19,13 +20,23 @@ import {
 const defaultSettings: Settings = {
   theme: Theme.Dark,
   accentColor: 'ec5817',
+  dynamicThemeColor: true,
+  dynamicBackgrounds: true,
+
   podcastsLayout: ListLayout.Grid,
   homeMenuLayout: ListLayout.Grid,
   appBarSize: AppBarSize.Normal,
   textSize: TextSize.Small,
+
+  playerLayout: PlayerLayout.Fancy,
   notificationType: NotificationType.EpisodeInfo,
   notificationAction: NotificationAction.ViewPlayer,
   playbackSpeed: 1,
+  playbackSkipBack: 10,
+  playbackSkipForward: 30,
+  autoDeleteDownload: false,
+
+  podcastSettings: {},
 };
 
 type SettingsContextValue = {
