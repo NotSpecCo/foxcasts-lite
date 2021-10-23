@@ -13,7 +13,7 @@ type Return = {
   setSetting: (id: string, value: string) => void;
 };
 
-export function usePodcastSettings(podcastId: number | string | null): Return {
+export function usePodcastSettings(podcastId?: number | string | null): Return {
   const appSettings = useSettings();
 
   const settings = podcastId

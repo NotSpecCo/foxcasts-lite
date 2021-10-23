@@ -17,7 +17,7 @@ type Return = {
 };
 
 export function useArtwork(
-  podcastId: number | string | null,
+  podcastId: number | string | null | undefined,
   { size, blur, greyscale }: Options
 ): Return {
   const [artwork, setArtwork] = useState<Artwork>();

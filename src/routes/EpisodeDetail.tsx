@@ -11,8 +11,14 @@ import { View, ViewContent } from '../ui-components2/view';
 import { AppBar } from '../ui-components2/appbar';
 import { useBodyScroller } from '../hooks/useBodyScroller';
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
-import { Row } from '../ui-components2/Row';
+import { LabeledRow } from '../ui-components2/LabeledRow';
 import { Typography } from '../ui-components2/Typography';
+import { useArtwork } from '../hooks/useArtwork';
+import { useSettings } from '../contexts/SettingsProvider';
+import { ArtworkBlur } from '../enums/artworkBlur';
+import { ArtworkSize } from '../enums/artworkSize';
+import { usePodcastSettings } from '../hooks/usePodcastSettings';
+import format from 'date-fns/format';
 
 interface EpisodeDetailProps {
   episodeId: string;
@@ -26,6 +32,12 @@ export default function EpisodeDetail({
 
   const player = usePlayer();
   const { addToQueue } = useDownloadManager();
+
+  const { artwork } = useArtwork(episode?.podcastId, {
+    size: ArtworkSize.Large,
+    blur: ArtworkBlur.Some,
+  });
+  const { settings: podcastSettings } = usePodcastSettings(episode?.podcastId);
 
   useEffect(() => {
     Core.getEpisodeById(parseInt(episodeId, 10)).then((result) => {
@@ -88,7 +100,11 @@ export default function EpisodeDetail({
   }
 
   return (
-    <View>
+    <View
+      backgroundImageUrl={artwork?.image}
+      accentColor={artwork?.palette?.[podcastSettings.accentColor]}
+      enableCustomColor={true}
+    >
       <ViewContent>
         {episode?.fileType.startsWith('video') && (
           <div className={styles.accent}>
@@ -98,25 +114,30 @@ export default function EpisodeDetail({
         <Typography type="subtitle">{episode?.title}</Typography>
         {episode ? (
           <Fragment>
-            <Row
+            <LabeledRow
               label="Published"
               text={
-                episode ? new Date(episode.date).toLocaleDateString() : null
+                episode
+                  ? format(new Date(episode.date), 'ccc, MMMM do p')
+                  : null
               }
             />
-            <Row
+            <LabeledRow
               label="Progress"
               text={`${formatTime(episode.progress)} of ${
                 formatTime(episode.duration) || 'Unknown'
               }`}
             />
-            <Row
+            <LabeledRow
               label="File Size"
               text={
                 episode.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'
               }
             />
-            <Row label="Downloaded" text={episode.localFileUrl || 'No'} />
+            <LabeledRow
+              label="Downloaded"
+              text={episode.localFileUrl || 'No'}
+            />
           </Fragment>
         ) : null}
 
