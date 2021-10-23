@@ -13,16 +13,26 @@ import {
 } from '../ui-components2/view';
 import { AppBar } from '../ui-components2/appbar';
 import styles from './PodcastInfo.module.css';
+import { useArtwork } from '../hooks/useArtwork';
+import { ArtworkSize } from '../enums/artworkSize';
+import { ArtworkBlur } from '../enums/artworkBlur';
+import { usePodcastSettings } from '../hooks/usePodcastSettings';
+import { useSettings } from '../contexts/SettingsProvider';
 
 interface PodcastDetailProps {
   podcastId: string;
 }
 
 export default function PodcastInfo({ podcastId }: PodcastDetailProps): VNode {
-  console.log('podinfo render', podcastId);
-
   const [podcast, setPodcast] = useState<Podcast>();
-  console.log(podcast);
+
+  const { artwork } = useArtwork(podcastId, {
+    size: ArtworkSize.Large,
+    blur: ArtworkBlur.Some,
+  });
+  const { settings } = useSettings();
+  const { settings: podcastSettings, setSetting } =
+    usePodcastSettings(podcastId);
 
   useEffect(() => {
     Core.getPodcastById(parseInt(podcastId, 10)).then((result) =>
@@ -41,7 +51,11 @@ export default function PodcastInfo({ podcastId }: PodcastDetailProps): VNode {
   }
 
   return (
-    <View backgroundImageUrl={podcast?.artwork}>
+    <View
+      backgroundImageUrl={artwork?.image}
+      accentColor={artwork?.palette?.[podcastSettings.accentColor]}
+      enableCustomColor={true}
+    >
       <ViewHeader>{podcast?.title}</ViewHeader>
       <ViewTabs
         tabs={[
@@ -54,23 +68,38 @@ export default function PodcastInfo({ podcastId }: PodcastDetailProps): VNode {
         }
       />
       <ViewContent>
-        <div className={styles.titleContainer}>
-          <img src={podcast?.artwork} alt="" />
-          <div>
-            <Typography type="title" padding="none">
-              {podcast?.title}
-            </Typography>
-            <Typography padding="none" color="accent">
-              {podcast?.author}
-            </Typography>
-          </div>
-        </div>
+        <Typography type="title" padding="horizontal">
+          {podcast?.title}
+        </Typography>
+        <Typography padding="horizontal" color="accent">
+          {podcast?.author}
+        </Typography>
         <Typography>{podcast?.description}</Typography>
       </ViewContent>
       <AppBar
         centerText="Select"
+        options={
+          settings.dynamicThemeColor
+            ? [
+                {
+                  id: 'accentColor',
+                  label: 'Accent Color',
+                  currentValue: podcastSettings.accentColor,
+                  options: [
+                    { id: 'darkMuted', label: 'Dark Muted' },
+                    { id: 'darkVibrant', label: 'Dark Vibrant' },
+                    { id: 'lightMuted', label: 'Light Muted' },
+                    { id: 'lightVibrant', label: 'Light Vibrant' },
+                    { id: 'muted', label: 'Muted' },
+                    { id: 'vibrant', label: 'Vibrant' },
+                  ],
+                },
+              ]
+            : []
+        }
         actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
         onAction={handleAction}
+        onOptionChange={setSetting}
       />
     </View>
   );

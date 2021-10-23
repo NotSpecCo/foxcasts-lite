@@ -33,9 +33,10 @@ export function ViewBase(props: Props): VNode {
       <div
         className={joinClasses(styles.root)}
         style={{
-          backgroundImage: props.backgroundImageUrl
-            ? `url(${props.backgroundImageUrl})`
-            : 'none',
+          backgroundImage:
+            settings.dynamicBackgrounds && props.backgroundImageUrl
+              ? `url(${props.backgroundImageUrl})`
+              : 'none',
           backgroundPositionX:
             props.backgroundShift !== undefined
               ? `${props.backgroundShift}%`

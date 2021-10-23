@@ -3,7 +3,7 @@ import { route } from 'preact-router';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'preact/hooks';
 import { SelectablePriority } from '../hooks/useDpad';
-import { Artwork, Episode, Podcast } from 'foxcasts-core/lib/types';
+import { Episode, Podcast } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
 import { AppBar } from '../ui-components2/appbar';
 import { List, ListItem } from '../ui-components2/list';
@@ -14,6 +14,11 @@ import {
   ViewHeader,
 } from '../ui-components2/view';
 import { useListNav } from '../hooks/useListNav';
+import { useArtwork } from '../hooks/useArtwork';
+import { ArtworkSize } from '../enums/artworkSize';
+import { ArtworkBlur } from '../enums/artworkBlur';
+import { usePodcastSettings } from '../hooks/usePodcastSettings';
+import { useSettings } from '../contexts/SettingsProvider';
 
 interface PodcastDetailProps {
   podcastId: string;
@@ -26,16 +31,14 @@ export default function PodcastEpisodes({
 }: PodcastDetailProps): VNode {
   const [podcast, setPodcast] = useState<Podcast>();
   const [episodes, setEpisodes] = useState<Episode[]>();
-  const [artwork, setArtwork] = useState<Artwork>();
 
-  useEffect(() => {
-    console.time('get artwork');
-    Core.getArtwork(podcastId, { size: 320, blur: 5 }).then((res) => {
-      console.log('res', res);
-      console.timeEnd('get artwork');
-      setArtwork(res);
-    });
-  }, []);
+  const { artwork } = useArtwork(podcastId, {
+    size: ArtworkSize.Large,
+    blur: ArtworkBlur.Some,
+  });
+  const { settings } = useSettings();
+  const { settings: podcastSettings, setSetting } =
+    usePodcastSettings(podcastId);
 
   useEffect(() => {
     Core.getEpisodesByPodcastId(parseInt(podcastId, 10)).then((result) => {
@@ -64,7 +67,8 @@ export default function PodcastEpisodes({
   return (
     <View
       backgroundImageUrl={artwork?.image}
-      accentColor={artwork?.palette?.vibrant}
+      accentColor={artwork?.palette?.[podcastSettings.accentColor]}
+      enableCustomColor={true}
     >
       <ViewHeader>{podcast?.title}</ViewHeader>
       <ViewTabs
@@ -88,15 +92,35 @@ export default function PodcastEpisodes({
                 selected: episode.id.toString() === selectedItemId,
               }}
               primaryText={episode.title}
-              secondaryText={format(new Date(episode.date), 'cccc, MMMM co')}
+              secondaryText={format(new Date(episode.date), 'cccc, MMMM do')}
             />
           ))}
         </List>
       </ViewContent>
       <AppBar
         centerText="Select"
+        options={
+          settings.dynamicThemeColor
+            ? [
+                {
+                  id: 'accentColor',
+                  label: 'Accent Color',
+                  currentValue: podcastSettings.accentColor,
+                  options: [
+                    { id: 'darkMuted', label: 'Dark Muted' },
+                    { id: 'darkVibrant', label: 'Dark Vibrant' },
+                    { id: 'lightMuted', label: 'Light Muted' },
+                    { id: 'lightVibrant', label: 'Light Vibrant' },
+                    { id: 'muted', label: 'Muted' },
+                    { id: 'vibrant', label: 'Vibrant' },
+                  ],
+                },
+              ]
+            : []
+        }
         actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
         onAction={handleAction}
+        onOptionChange={setSetting}
       />
     </View>
   );
