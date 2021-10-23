@@ -12,16 +12,14 @@ type Props = ComponentBaseProps &
   SelectableProps & {
     label?: string;
     type?: 'text' | 'number';
-    value: string;
+    value?: string;
+    placeholder?: string;
     size?: number;
     onChange?: (value: string) => void;
+    onEnter?: (value: string) => void;
   };
 
-export function Input({
-  type = 'text',
-  size = 10,
-  ...props
-}: Props): h.JSX.Element {
+export function Input({ type = 'text', ...props }: Props): h.JSX.Element {
   const ref = useRef<HTMLInputElement>(null);
 
   const view = useView();
@@ -35,7 +33,7 @@ export function Input({
   useNavKeys(
     {
       Enter: () => {
-        props.onChange?.(ref.current?.value || '');
+        props.onEnter?.(ref.current?.value || '');
       },
     },
     {
@@ -45,18 +43,15 @@ export function Input({
   );
 
   function calculateWidth(): string {
-    // const result = `${ref.current?.value.length * 10}px`;
-    // console.log(result);
-
-    // return result;
-    return `${size * 10}px`;
+    return props.size ? `${props.size * 10}px` : '100%';
   }
 
   return (
     <SelectableBase
       className={joinClasses(
         styles.root,
-        ifClass(props.selectable?.selected, styles.selected)
+        ifClass(props.selectable?.selected, styles.selected),
+        props.className
       )}
       {...props.selectable}
     >
@@ -68,8 +63,10 @@ export function Input({
         type={type}
         value={props.value}
         ref={ref}
-        size={size}
-        maxLength={size}
+        size={props.size}
+        maxLength={props.size}
+        placeholder={props.placeholder}
+        onChange={(ev): void => props.onChange?.(ev.currentTarget.value)}
       />
     </SelectableBase>
   );

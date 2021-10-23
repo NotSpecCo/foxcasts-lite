@@ -15,5 +15,4 @@ input {
   color: var(--primary-text-color);
   border-bottom: 1px solid var(--primary-text-color);
   background: none;
-  text-align: right;
 }

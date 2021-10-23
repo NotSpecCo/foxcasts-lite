@@ -1,12 +1,14 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useEffect, useRef, useState } from 'preact/hooks';
-import { ListItem, View } from '../ui-components';
-import { setSelected } from '../utils/navigation';
-import { SelectablePriority, useDpad } from '../hooks/useDpad';
+import { useEffect, useState } from 'preact/hooks';
 import styles from './Search.module.css';
 import { SearchResult } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
+import { View, ViewContent } from '../ui-components2/view';
+import { ListItem } from '../ui-components2/list';
+import { useListNav } from '../hooks/useListNav';
+import { Input } from '../ui-components2/form';
+import { AppBar } from '../ui-components2/appbar';
 
 interface SearchProps {
   q?: string;
@@ -19,10 +21,8 @@ export default function Search({
 }: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const searchbox = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    searchbox.current?.focus();
     setResults([]);
     if (!queryParam) return;
 
@@ -33,11 +33,6 @@ export default function Search({
       .catch((err) => console.error(err));
   }, [queryParam]);
 
-  // Restore scroll position
-  useEffect(() => {
-    setSelected(selectedItemId || 'search', true);
-  }, [selectedItemId, results]);
-
   function viewPodcast(podcastStoreId: string | number): void {
     const podcast = results.find((a) => a.podexId == podcastStoreId);
     if (podcast?.feedUrl) {
@@ -45,46 +40,22 @@ export default function Search({
     }
   }
 
-  function setQueryParam(): void {
-    route(query ? `/search?q=${query}` : '/search');
-  }
-
-  useDpad({
-    onEnter: (itemId) => {
-      if (itemId === 'search') {
-        // searchbox.current?.blur();
-        setQueryParam();
+  const { selectedId } = useListNav({
+    initialSelectedId: results.length > 0 ? selectedItemId : undefined,
+    updateRouteOnChange: true,
+    onSelect: (itemId) => {
+      if (!itemId) {
         return;
-      }
-      viewPodcast(itemId);
-    },
-    onChange: (itemId) => {
-      if (itemId === 'search') {
-        searchbox.current?.focus();
+      } else if (itemId === 'search') {
+        route(query ? `/search?q=${query}` : '/search', true);
       } else {
-        searchbox.current?.blur();
+        viewPodcast(itemId);
       }
-
-      const params = [];
-      if (queryParam) {
-        params.push(`q=${queryParam}`);
-      }
-      if (itemId) {
-        params.push(`selectedItemId=${itemId}`);
-      }
-
-      route(`/search?${params.join('&')}`, true);
     },
   });
 
-  function handleQueryChange(ev: any): void {
-    if (ev.target.value !== query) {
-      setQuery(ev.target.value);
-    }
-  }
-
   function getCenterText(): string {
-    if (document.activeElement === searchbox.current) {
+    if (selectedId === 'search') {
       return 'Search';
     }
 
@@ -95,34 +66,45 @@ export default function Search({
     return '';
   }
 
+  async function handleAction(action: string): Promise<void> {
+    if (action === 'clear') {
+      setQuery('');
+      route('/search?selectedItemId=search', true);
+    }
+  }
+
   return (
-    <View
-      headerText="Search"
-      centerMenuText={getCenterText()}
-      rightMenuText="Search"
-    >
-      <input
-        id="search"
-        type="text"
+    <View>
+      <Input
         className={styles.searchBox}
-        placeholder="Search..."
         value={query}
-        ref={searchbox}
-        onChange={handleQueryChange}
-        onInput={handleQueryChange}
-        data-selectable-priority={SelectablePriority.Low}
-        data-selectable-id="search"
+        placeholder="Search..."
+        selectable={{
+          id: 'search',
+          selected: selectedId === 'search',
+        }}
+        onChange={(value): void => setQuery(value)}
       />
-      {results.map((result) => (
-        <ListItem
-          key={result.podexId}
-          itemId={result.podexId}
-          imageUrl={result.artworkUrl}
-          primaryText={result.title}
-          secondaryText={result.author}
-          onClick={(): void => viewPodcast(result.podexId)}
-        />
-      ))}
+      <ViewContent>
+        {results.map((result, i) => (
+          <ListItem
+            key={result.podexId}
+            imageUrl={result.artworkUrl}
+            primaryText={result.title}
+            secondaryText={result.author}
+            selectable={{
+              id: result.podexId,
+              shortcut: i + 1 <= 9 ? i + 1 : undefined,
+              selected: result.podexId.toString() === selectedId,
+            }}
+          />
+        ))}
+      </ViewContent>
+      <AppBar
+        centerText={getCenterText()}
+        actions={[{ id: 'clear', label: 'Clear Search' }]}
+        onAction={handleAction}
+      />
     </View>
   );
 }

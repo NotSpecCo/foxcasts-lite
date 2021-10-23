@@ -143,9 +143,7 @@ export default function AppSettings(): VNode {
               id: 'accentColor',
               selected: selectedId === 'accentColor',
             }}
-            onChange={(value): void =>
-              handleSettingSelect('accentColor', value)
-            }
+            onEnter={(value): void => handleSettingSelect('accentColor', value)}
           />
           <ToggleRow
             label="App Bar Accent"
