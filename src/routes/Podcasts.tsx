@@ -15,45 +15,22 @@ import { GridItem } from '../ui-components2/GridItem';
 import { View, ViewContent, ViewHeader } from '../ui-components2/view';
 import { AppBar } from '../ui-components2/appbar';
 import { List, ListItem } from '../ui-components2/list';
+import { usePodcasts } from '../hooks/usePodcasts';
+import { Typography } from '../ui-components2/Typography';
 
 interface Props {
   selectedItemId?: string;
 }
 
 export default function Podcasts(props: Props): VNode {
-  const [podcasts, setPodcasts] = useState<PodcastExtended[]>();
   const [seeding, setSeeding] = useState(false);
+  const { podcasts, loading } = usePodcasts();
 
   const { settings } = useSettings();
   const { showToast } = useToast();
 
-  useEffect(() => {
-    Core.getPodcasts().then(setPodcasts);
-  }, []);
-
-  // /// Restore scroll position
-  // useEffect(() => {
-  //   if (!selectedItemId) return;
-  //   setSelected(selectedItemId, true);
-  // }, [selectedItemId, podcasts]);
-
-  // function viewPodcast(podcastId: string | number): void {
-  //   route(`/podcast/${podcastId}`);
-  // }
-
-  // useDpad({
-  //   onEnter: (itemId) => viewPodcast(itemId),
-  //   onChange: (itemId) => {
-  //     if (itemId) {
-  //       route(`/podcasts/?selectedItemId=${itemId}`, true);
-  //     } else {
-  //       route(`/podcasts/`, true);
-  //     }
-  //   },
-  //   options: { mode: 'updownleftright' },
-  // });
   const { selectedId } = useListNav({
-    initialSelectedId: podcasts ? props.selectedItemId : undefined,
+    initialSelectedId: podcasts.length > 0 ? props.selectedItemId : undefined,
     priority: SelectablePriority.Low,
     onSelect: (id) => route(`/podcast/${id}/episodes`),
   });
@@ -74,10 +51,6 @@ export default function Podcasts(props: Props): VNode {
     } catch (err) {
       console.error('Failed to seed data', err);
     }
-
-    Core.getPodcasts().then((result) => {
-      setPodcasts(result);
-    });
 
     setSeeding(false);
   }
@@ -122,6 +95,7 @@ export default function Podcasts(props: Props): VNode {
     <View>
       <ViewHeader>Podcasts</ViewHeader>
       <ViewContent>
+        {loading && <Typography>Loading...</Typography>}
         {settings.podcastsLayout === ListLayout.List ? (
           <List>
             {podcasts?.map((podcast, i) => (
