@@ -74,9 +74,9 @@ export function AppBar({
   const { selectedId } = useListNav({
     priority: SelectablePriority.Medium,
     updateRouteOnChange: false,
-    onSelect: (itemId) => {
+    onSelect: async (itemId) => {
       if (itemId && itemId.startsWith('action')) {
-        props.onAction?.(itemId.split('_')[1]);
+        await props.onAction?.(itemId.split('_')[1]);
         closeMenu();
       }
     },

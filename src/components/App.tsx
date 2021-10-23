@@ -107,7 +107,7 @@ export default function App(): VNode {
     <Fragment>
       <Router>
         <Route path="/search" component={Search} />
-        {/* <Route path="/podcast/preview" component={PodcastPreview} /> */}
+        <Route path="/podcast/preview" component={PodcastPreview} />
         <Route
           path="/podcast/:podcastId/episodes"
           component={PodcastEpisodes}

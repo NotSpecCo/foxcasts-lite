@@ -1,8 +1,13 @@
 import { ApiEpisode, ApiPodcast } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { ArtworkBlur } from '../enums/artworkBlur';
+import { ArtworkSize } from '../enums/artworkSize';
+import { useBodyScroller } from '../hooks/useBodyScroller';
 import { Core } from '../services/core';
-import { ListItem, View } from '../ui-components';
+import { AppBar } from '../ui-components2/appbar';
+import { ListItem } from '../ui-components2/list';
+import { View, ViewContent } from '../ui-components2/view';
 import styles from './PodcastPreview.module.css';
 
 interface PodcastPreviewProps {
@@ -42,24 +47,30 @@ export default function PodcastPreview({
     }
   }, [podexId, feedUrl]);
 
+  useBodyScroller({});
+
   async function subscribeToPodcast(): Promise<void> {
     if (subscribing) {
       return;
     }
     setSubscribing(true);
 
-    if (podexId) {
-      await Core.subscribeByPodexId(parseInt(podexId, 10))
-        .then(() => setSubscribed(true))
-        .catch((err) =>
-          console.error('Failed to subscribe to podcast', err.message)
-        );
-    } else if (feedUrl) {
-      await Core.subscribeByFeedUrl(feedUrl)
-        .then(() => setSubscribed(true))
-        .catch((err) =>
-          console.error('Failed to subscribe to podcast', err.message)
-        );
+    const id = podexId
+      ? await Core.subscribeByPodexId(podexId)
+      : feedUrl
+      ? await Core.subscribeByFeedUrl(feedUrl)
+      : null;
+
+    if (id) {
+      await Core.getArtwork(id, { size: ArtworkSize.Medium }).catch(() => {
+        console.log('Failed to get artwork');
+      });
+      await Core.getArtwork(id, {
+        size: ArtworkSize.Medium,
+        blur: ArtworkBlur.Some,
+      }).catch(() => {
+        console.log('Failed to get artwork');
+      });
     }
 
     setSubscribing(false);
@@ -88,47 +99,47 @@ export default function PodcastPreview({
     setSubscribing(false);
   }
 
-  function handleAction(action: string): void {
+  async function handleAction(action: string): Promise<void> {
     switch (action) {
       case 'subscribe':
-        subscribeToPodcast();
+        await subscribeToPodcast();
         break;
       case 'unsubscribe':
-        unsubscribeFromPodcast();
+        await unsubscribeFromPodcast();
         break;
     }
   }
 
   return (
-    <View
-      headerText="Feed Preview"
-      centerMenuText=""
-      actions={[
-        {
-          id: subscribed ? 'unsubscribe' : 'subscribe',
-          label: subscribing
-            ? 'Working...'
-            : subscribed
-            ? 'Unsubscribe'
-            : 'Subscribe',
-        },
-      ]}
-      onAction={handleAction}
-    >
-      <div className={styles.details}>
-        <div className={styles.title}>{podcast?.title}</div>
-        <div className={styles.author}>{podcast?.author}</div>
-        <div>{podcast?.description}</div>
-      </div>
-      {loading ? <div className={styles.message}>Loading feed...</div> : null}
-      {episodes.map((episode) => (
-        <ListItem
-          key={episode.fileUrl}
-          itemId={episode.fileUrl}
-          primaryText={episode.title}
-          secondaryText={new Date(episode.date).toLocaleDateString()}
-        />
-      ))}
+    <View>
+      <ViewContent>
+        <div className={styles.details}>
+          <div className={styles.title}>{podcast?.title}</div>
+          <div className={styles.author}>{podcast?.author}</div>
+          <div>{podcast?.description}</div>
+        </div>
+        {loading ? <div className={styles.message}>Loading feed...</div> : null}
+        {episodes.map((episode) => (
+          <ListItem
+            key={episode.fileUrl}
+            primaryText={episode.title}
+            secondaryText={new Date(episode.date).toLocaleDateString()}
+          />
+        ))}
+      </ViewContent>
+      <AppBar
+        actions={[
+          {
+            id: subscribed ? 'unsubscribe' : 'subscribe',
+            label: subscribing
+              ? 'Working...'
+              : subscribed
+              ? 'Unsubscribe'
+              : 'Subscribe',
+          },
+        ]}
+        onAction={handleAction}
+      />
     </View>
   );
 }
