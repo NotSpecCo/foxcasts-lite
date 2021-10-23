@@ -1,11 +1,9 @@
 import { h } from 'preact';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../../models';
-import { getIndexWrap } from '../../utils/array';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { SelectableBase } from '../hoc';
 import { SvgIcon } from '../SvgIcon';
-import { Typography } from '../Typography';
 import styles from './RangeRow.module.css';
 
 export type AppBarOption = {
@@ -34,7 +32,7 @@ type Props = ComponentBaseProps &
 
 export function RangeRow(props: Props): h.JSX.Element {
   function change(change: number): void {
-    let nextValue = props.value + change;
+    let nextValue = Math.round((props.value + change) * 100) / 100;
     if (nextValue < props.min) {
       nextValue = props.min;
     } else if (nextValue > props.max) {
