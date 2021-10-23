@@ -11,11 +11,17 @@ import styles from './Input.module.css';
 type Props = ComponentBaseProps &
   SelectableProps & {
     label?: string;
+    type?: 'text' | 'number';
     value: string;
+    size?: number;
     onChange?: (value: string) => void;
   };
 
-export function Input(props: Props): h.JSX.Element {
+export function Input({
+  type = 'text',
+  size = 10,
+  ...props
+}: Props): h.JSX.Element {
   const ref = useRef<HTMLInputElement>(null);
 
   const view = useView();
@@ -38,6 +44,14 @@ export function Input(props: Props): h.JSX.Element {
     }
   );
 
+  function calculateWidth(): string {
+    // const result = `${ref.current?.value.length * 10}px`;
+    // console.log(result);
+
+    // return result;
+    return `${size * 10}px`;
+  }
+
   return (
     <SelectableBase
       className={joinClasses(
@@ -47,7 +61,16 @@ export function Input(props: Props): h.JSX.Element {
       {...props.selectable}
     >
       <div>{props.label}</div>
-      <input type="text" value={props.value} ref={ref} />
+      <input
+        style={{
+          width: calculateWidth(),
+        }}
+        type={type}
+        value={props.value}
+        ref={ref}
+        size={size}
+        maxLength={size}
+      />
     </SelectableBase>
   );
 }

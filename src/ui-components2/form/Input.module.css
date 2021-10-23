@@ -1,5 +1,8 @@
 .root {
-  padding: 5px;
+  padding: 7px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .root.selected {
   background-color: var(--highlight-bg-color);
@@ -12,4 +15,5 @@ input {
   color: var(--primary-text-color);
   border-bottom: 1px solid var(--primary-text-color);
   background: none;
+  text-align: right;
 }

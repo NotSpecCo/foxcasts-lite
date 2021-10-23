@@ -1,8 +1,5 @@
 .root {
-  padding: 7px 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 5px;
 }
 .root[data-selected] {
   background-color: var(--highlight-bg-color);
