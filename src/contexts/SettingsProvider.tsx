@@ -20,6 +20,7 @@ import {
 const defaultSettings: Settings = {
   theme: Theme.Dark,
   accentColor: 'ec5817',
+  appBarAccent: true,
   dynamicThemeColor: true,
   dynamicBackgrounds: true,
 

@@ -46,6 +46,7 @@ export enum PlayerLayout {
 export type Settings = {
   theme: Theme;
   accentColor: string;
+  appBarAccent: boolean;
   dynamicThemeColor: boolean;
   dynamicBackgrounds: boolean;
 

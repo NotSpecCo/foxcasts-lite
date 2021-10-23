@@ -148,6 +148,17 @@ export default function AppSettings(): VNode {
             }
           />
           <ToggleRow
+            label="App Bar Accent"
+            value={settings.appBarAccent}
+            selectable={{
+              id: 'appBarAccent',
+              selected: selectedId === 'appBarAccent',
+            }}
+            onChange={(value): void =>
+              handleSettingSelect('appBarAccent', value)
+            }
+          />
+          <ToggleRow
             label="Dynamic Colors"
             value={settings.dynamicThemeColor}
             selectable={{

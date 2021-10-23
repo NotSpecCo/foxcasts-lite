@@ -13,6 +13,7 @@ import { IconName, SvgIcon } from '../SvgIcon';
 import { AppBarListItem, AppBarListOption, AppBarOption } from '.';
 import { useView } from '../../contexts/ViewProvider';
 import { Typography } from '../Typography';
+import { useSettings } from '../../contexts/SettingsProvider';
 
 export type AppBarItem = {
   id: string;
@@ -50,6 +51,7 @@ export function AppBar({
   const [openState, setOpenState] = useState(MenuState.Closed);
 
   const view = useView();
+  const { settings } = useSettings();
 
   async function openMenu(): Promise<void> {
     if (openState !== MenuState.Closed || actions.length === 0) return;
@@ -73,10 +75,8 @@ export function AppBar({
     priority: SelectablePriority.Medium,
     updateRouteOnChange: false,
     onSelect: (itemId) => {
-      console.log('onSelect', itemId);
-
       if (itemId && itemId.startsWith('action')) {
-        props.onAction?.(itemId);
+        props.onAction?.(itemId.split('_')[1]);
         closeMenu();
       }
     },
@@ -106,7 +106,12 @@ export function AppBar({
           ifClass(openState >= MenuState.Opening, styles.open)
         )}
       >
-        <div className={styles.bar}>
+        <div
+          className={joinClasses(
+            styles.bar,
+            ifClass(settings.appBarAccent, styles.accent)
+          )}
+        >
           {leftIcon ? <SvgIcon icon={leftIcon} /> : null}
           {props.leftText ? (
             <div className={styles.left}>{props.leftText}</div>
@@ -144,7 +149,9 @@ export function AppBar({
             ) : null}
             {actions.length > 0 ? (
               <Fragment>
-                <Typography type="caption">Actions</Typography>
+                {options.length > 0 && (
+                  <Typography type="caption">Actions</Typography>
+                )}
                 {actions.map((action, i) => (
                   <AppBarListItem
                     key={action.id}
