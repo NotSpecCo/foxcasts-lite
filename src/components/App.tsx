@@ -3,7 +3,7 @@ import { route, Route, Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 import { PlayerProvider } from '../contexts/playerContext';
 import EpisodeDetail from '../routes/EpisodeDetail';
-import Filter from '../routes/Filter';
+import Lists from '../routes/Lists';
 import Player from '../routes/Player';
 import PodcastEpisodes from '../routes/PodcastEpisodes';
 import PodcastPreview from '../routes/PodcastPreview';
@@ -114,7 +114,7 @@ export default function App(): VNode {
         />
         <Route path="/podcast/:podcastId/info" component={PodcastInfo} />
         <Route path="/episode/:episodeId" component={EpisodeDetail} />
-        <Route path="/filter/:filterId" component={Filter} />
+        <Route path="/lists/:listId" component={Lists} />
         <Route path="/player" component={Player} />
         <Route path="/settings" component={AppSettings} />
         <Route path="/files" component={OpmlFiles} />
