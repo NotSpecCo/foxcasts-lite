@@ -1,12 +1,11 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState, useEffect } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { SelectablePriority } from '../hooks/useDpad';
 import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
 import { ListLayout, OpmlFeed } from '../models';
-import { Podcast, PodcastExtended } from 'foxcasts-core/lib/types';
-import { Core } from '../services/core';
+import { subscribeByFeed } from '../services/core';
 import { OPML } from '../services/opml';
 import { useToast } from '../contexts/ToastProvider';
 import { KaiOS } from '../services/kaios';
@@ -37,15 +36,14 @@ export default function Podcasts(props: Props): VNode {
 
   async function seedData(): Promise<void> {
     setSeeding(true);
+
     try {
       // Need to do one at a time so KaiOS can handle it
-      await Core.subscribeByFeedUrl('https://feed.syntax.fm/rss');
-      await Core.subscribeByFeedUrl('https://shoptalkshow.com/feed/podcast');
-      await Core.subscribeByFeedUrl('https://feeds.simplecast.com/JoR28o79'); // React Podcast
-      await Core.subscribeByFeedUrl(
-        'https://feeds.feedwrench.com/js-jabber.rss'
-      );
-      await Core.subscribeByFeedUrl('https://feeds.megaphone.fm/vergecast');
+      await subscribeByFeed('https://feed.syntax.fm/rss');
+      await subscribeByFeed('https://shoptalkshow.com/feed/podcast');
+      await subscribeByFeed('https://feeds.simplecast.com/JoR28o79'); // React Podcast
+      await subscribeByFeed('https://feeds.feedwrench.com/js-jabber.rss');
+      await subscribeByFeed('https://feeds.megaphone.fm/vergecast');
 
       console.log('seed success');
     } catch (err) {
@@ -101,7 +99,7 @@ export default function Podcasts(props: Props): VNode {
             {podcasts?.map((podcast, i) => (
               <ListItem
                 key={podcast.id}
-                imageUrl={podcast.artwork?.image}
+                imageUrl={podcast.artwork}
                 primaryText={podcast.title}
                 selectable={{
                   id: podcast.id,
@@ -117,7 +115,7 @@ export default function Podcasts(props: Props): VNode {
               <GridItem
                 key={podcast.id}
                 dimIfUnselected={!!selectedId}
-                imageUrl={podcast.artwork?.image || podcast.artworkUrl}
+                imageUrl={podcast.artwork || podcast.artworkUrl}
                 selectable={{
                   id: podcast.id,
                   shortcut: i <= 8 ? i + 1 : undefined,

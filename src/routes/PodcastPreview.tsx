@@ -1,10 +1,8 @@
 import { ApiEpisode, ApiPodcast } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { ArtworkBlur } from '../enums/artworkBlur';
-import { ArtworkSize } from '../enums/artworkSize';
 import { useBodyScroller } from '../hooks/useBodyScroller';
-import { Core } from '../services/core';
+import { Core, subscribeByFeed, subscribeByPodexId } from '../services/core';
 import { AppBar } from '../ui-components2/appbar';
 import { ListItem } from '../ui-components2/list';
 import { View, ViewContent } from '../ui-components2/view';
@@ -55,23 +53,11 @@ export default function PodcastPreview({
     }
     setSubscribing(true);
 
-    const id = podexId
-      ? await Core.subscribeByPodexId(podexId)
+    podexId
+      ? await subscribeByPodexId(podexId)
       : feedUrl
-      ? await Core.subscribeByFeedUrl(feedUrl)
+      ? await subscribeByFeed(feedUrl)
       : null;
-
-    if (id) {
-      await Core.getArtwork(id, { size: ArtworkSize.Medium }).catch(() => {
-        console.log('Failed to get artwork');
-      });
-      await Core.getArtwork(id, {
-        size: ArtworkSize.Medium,
-        blur: ArtworkBlur.Some,
-      }).catch(() => {
-        console.log('Failed to get artwork');
-      });
-    }
 
     setSubscribing(false);
   }
