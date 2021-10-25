@@ -2,7 +2,7 @@ import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { Podcast } from 'foxcasts-core/lib/types';
-import { Core } from '../services/core';
+import { Core, refreshArtwork } from '../services/core';
 import { Typography } from '../ui-components2/Typography';
 import { useBodyScroller } from '../hooks/useBodyScroller';
 import {
@@ -97,8 +97,19 @@ export default function PodcastInfo({ podcastId }: PodcastDetailProps): VNode {
               ]
             : []
         }
-        actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
-        onAction={handleAction}
+        actions={[
+          {
+            id: 'unsubscribe',
+            label: 'Unsubscribe',
+            actionFn: (): Promise<boolean> =>
+              Core.unsubscribe(podcastId).then(() => route('/podcasts', true)),
+          },
+          {
+            id: 'refreshArtwork',
+            label: 'Refresh Artwork',
+            actionFn: (): Promise<void> => refreshArtwork(podcastId),
+          },
+        ]}
         onOptionChange={setSetting}
       />
     </View>

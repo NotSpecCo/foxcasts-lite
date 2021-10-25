@@ -22,7 +22,15 @@
     ],
     "ignorePatterns": [
       "build/"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": [
+        "warning",
+        {
+          "allowExpressions": true
+        }
+      ]
+    }
   },
   "dependencies": {
     "browser-image-compression": "^1.0.15",

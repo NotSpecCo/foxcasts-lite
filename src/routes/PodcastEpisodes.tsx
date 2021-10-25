@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { useEffect, useState } from 'preact/hooks';
 import { SelectablePriority } from '../hooks/useDpad';
 import { Episode, Podcast } from 'foxcasts-core/lib/types';
-import { Core } from '../services/core';
+import { Core, refreshArtwork } from '../services/core';
 import { AppBar } from '../ui-components2/appbar';
 import { List, ListItem } from '../ui-components2/list';
 import {
@@ -41,9 +41,11 @@ export default function PodcastEpisodes({
     usePodcastSettings(podcastId);
 
   useEffect(() => {
-    Core.getEpisodesByPodcastId(parseInt(podcastId, 10)).then((result) => {
-      setEpisodes(result);
-    });
+    Core.getEpisodesByPodcastId(podcastId, { page: 0, numItems: 30 }).then(
+      (result) => {
+        setEpisodes(result);
+      }
+    );
     Core.getPodcastById(parseInt(podcastId, 10)).then((result) =>
       setPodcast(result)
     );
@@ -56,14 +58,6 @@ export default function PodcastEpisodes({
     onSelect: (id) => route(`/episode/${id}`),
   });
 
-  async function handleAction(action: string): Promise<void> {
-    if (action === 'unsubscribe' && podcast) {
-      await Core.unsubscribe(podcast.id)
-        .then(() => route('/podcasts', true))
-        .catch((err) => console.error('Failed to unsubscribe', err));
-    }
-  }
-
   return (
     <View
       backgroundImageUrl={artwork?.image}
@@ -75,6 +69,7 @@ export default function PodcastEpisodes({
         tabs={[
           { id: 'episodes', label: 'episodes' },
           { id: 'info', label: 'podcast' },
+          { id: 'settings', label: 'settings' },
         ]}
         selectedId="episodes"
         onChange={(tabId): boolean =>
@@ -118,8 +113,19 @@ export default function PodcastEpisodes({
               ]
             : []
         }
-        actions={[{ id: 'unsubscribe', label: 'Unsubscribe' }]}
-        onAction={handleAction}
+        actions={[
+          {
+            id: 'unsubscribe',
+            label: 'Unsubscribe',
+            actionFn: (): Promise<boolean> =>
+              Core.unsubscribe(podcastId).then(() => route('/podcasts', true)),
+          },
+          {
+            id: 'refreshArtwork',
+            label: 'Refresh Artwork',
+            actionFn: (): Promise<void> => refreshArtwork(podcastId),
+          },
+        ]}
         onOptionChange={setSetting}
       />
     </View>

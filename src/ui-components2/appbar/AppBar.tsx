@@ -1,5 +1,5 @@
-import { Fragment, h, options } from 'preact';
-import { useState } from 'preact/hooks';
+import { Fragment, h } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import { AppMenu } from '../../components/AppMenu';
 import { SelectablePriority } from '../../hooks/useDpad';
 import { useListNav } from '../../hooks/useListNav';
@@ -8,17 +8,23 @@ import { ComponentBaseProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { delay } from '../../utils/delay';
 import styles from './AppBar.module.css';
-import { MenuOption } from '../Menu';
 import { IconName, SvgIcon } from '../SvgIcon';
 import { AppBarListItem, AppBarListOption, AppBarOption } from '.';
 import { useView } from '../../contexts/ViewProvider';
 import { Typography } from '../Typography';
-import { useSettings } from '../../contexts/SettingsProvider';
 
 export type AppBarItem = {
   id: string;
   label: string;
   disabled?: boolean;
+};
+
+export type AppBarAction = {
+  id: string;
+  label: string;
+  disabled?: boolean;
+  inProgress?: boolean;
+  actionFn: () => Promise<unknown> | void;
 };
 
 type Props = ComponentBaseProps & {
@@ -28,8 +34,7 @@ type Props = ComponentBaseProps & {
   leftIcon?: IconName | null;
   centerIcon?: IconName | null;
   rightIcon?: IconName | null;
-  actions?: MenuOption[];
-  onAction?: (id: string) => void;
+  actions?: AppBarAction[];
   options?: AppBarOption[];
   onOptionChange?: (id: string, value: string) => void;
 };
@@ -44,14 +49,19 @@ enum MenuState {
 export function AppBar({
   leftIcon = 'grid',
   options = [],
-  actions = [],
   ...props
 }: Props): h.JSX.Element {
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [openState, setOpenState] = useState(MenuState.Closed);
+  const [actions, setActions] = useState<AppBarAction[]>(props.actions || []);
+
+  useEffect(() => {
+    if (props.actions) {
+      setActions(props.actions);
+    }
+  }, [props.actions]);
 
   const view = useView();
-  const { settings } = useSettings();
 
   async function openMenu(): Promise<void> {
     if (openState !== MenuState.Closed || actions.length === 0) return;
@@ -75,10 +85,24 @@ export function AppBar({
     priority: SelectablePriority.Medium,
     updateRouteOnChange: false,
     onSelect: async (itemId) => {
-      if (itemId && itemId.startsWith('action')) {
-        await props.onAction?.(itemId.split('_')[1]);
-        closeMenu();
-      }
+      const action = actions.find((a) => a.id === itemId?.split('_')?.[1]);
+      if (!action || actions.some((a) => a.inProgress)) return;
+
+      setActions((prevActions) =>
+        prevActions.map((a) =>
+          a.id === action.id ? { ...a, inProgress: true } : a
+        )
+      );
+
+      await action.actionFn();
+      // TODO: Toast when error? Success?
+
+      setActions((prevActions) =>
+        prevActions.map((a) =>
+          a.id === action.id ? { ...a, inProgress: false } : a
+        )
+      );
+      closeMenu();
     },
   });
 
@@ -106,12 +130,7 @@ export function AppBar({
           ifClass(openState >= MenuState.Opening, styles.open)
         )}
       >
-        <div
-          className={joinClasses(
-            styles.bar,
-            ifClass(settings.appBarAccent, styles.accent)
-          )}
-        >
+        <div className={styles.bar}>
           {leftIcon ? <SvgIcon icon={leftIcon} /> : null}
           {props.leftText ? (
             <div className={styles.left}>{props.leftText}</div>
@@ -155,7 +174,7 @@ export function AppBar({
                 {actions.map((action, i) => (
                   <AppBarListItem
                     key={action.id}
-                    text={action.label}
+                    text={`${action.label}${action.inProgress ? '...' : ''}`}
                     selectable={{
                       priority: SelectablePriority.Medium,
                       id: `action_${action.id}`,

@@ -19,7 +19,6 @@ export default function PodcastPreview({
   const [podcast, setPodcast] = useState<ApiPodcast>();
   const [episodes, setEpisodes] = useState<ApiEpisode[]>([]);
   const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,26 +47,18 @@ export default function PodcastPreview({
   useBodyScroller({});
 
   async function subscribeToPodcast(): Promise<void> {
-    if (subscribing) {
-      return;
-    }
-    setSubscribing(true);
-
-    podexId
+    const id = podexId
       ? await subscribeByPodexId(podexId)
       : feedUrl
       ? await subscribeByFeed(feedUrl)
       : null;
 
-    setSubscribing(false);
+    if (id) {
+      setSubscribed(true);
+    }
   }
 
   async function unsubscribeFromPodcast(): Promise<void> {
-    if (subscribing) {
-      return;
-    }
-    setSubscribing(true);
-
     if (podexId) {
       await Core.unsubscribeByPodexId(parseInt(podexId, 10))
         .then(() => setSubscribed(false))
@@ -80,19 +71,6 @@ export default function PodcastPreview({
         .catch((err) =>
           console.error('Failed to unsubscribe from podcast', err.message)
         );
-    }
-
-    setSubscribing(false);
-  }
-
-  async function handleAction(action: string): Promise<void> {
-    switch (action) {
-      case 'subscribe':
-        await subscribeToPodcast();
-        break;
-      case 'unsubscribe':
-        await unsubscribeFromPodcast();
-        break;
     }
   }
 
@@ -116,15 +94,11 @@ export default function PodcastPreview({
       <AppBar
         actions={[
           {
-            id: subscribed ? 'unsubscribe' : 'subscribe',
-            label: subscribing
-              ? 'Working...'
-              : subscribed
-              ? 'Unsubscribe'
-              : 'Subscribe',
+            id: 'toggleSubscribe',
+            label: subscribed ? 'Unsubscribe' : 'Subscribe',
+            actionFn: subscribed ? unsubscribeFromPodcast : subscribeToPodcast,
           },
         ]}
-        onAction={handleAction}
       />
     </View>
   );

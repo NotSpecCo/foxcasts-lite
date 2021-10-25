@@ -66,13 +66,6 @@ export default function Search({
     return '';
   }
 
-  async function handleAction(action: string): Promise<void> {
-    if (action === 'clear') {
-      setQuery('');
-      route('/search?selectedItemId=search', true);
-    }
-  }
-
   return (
     <View>
       <Input
@@ -102,8 +95,16 @@ export default function Search({
       </ViewContent>
       <AppBar
         centerText={getCenterText()}
-        actions={[{ id: 'clear', label: 'Clear Search' }]}
-        onAction={handleAction}
+        actions={[
+          {
+            id: 'clear',
+            label: 'Clear Search',
+            actionFn: (): void => {
+              setQuery('');
+              route('/search?selectedItemId=search', true);
+            },
+          },
+        ]}
       />
     </View>
   );

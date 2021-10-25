@@ -1,6 +1,5 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState } from 'preact/hooks';
 import { SelectablePriority } from '../hooks/useDpad';
 import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
@@ -22,7 +21,6 @@ interface Props {
 }
 
 export default function Podcasts(props: Props): VNode {
-  const [seeding, setSeeding] = useState(false);
   const { podcasts, loading } = usePodcasts();
 
   const { settings } = useSettings();
@@ -35,8 +33,6 @@ export default function Podcasts(props: Props): VNode {
   });
 
   async function seedData(): Promise<void> {
-    setSeeding(true);
-
     try {
       // Need to do one at a time so KaiOS can handle it
       await subscribeByFeed('https://feed.syntax.fm/rss');
@@ -49,8 +45,6 @@ export default function Podcasts(props: Props): VNode {
     } catch (err) {
       console.error('Failed to seed data', err);
     }
-
-    setSeeding(false);
   }
 
   async function exportFeeds(): Promise<void> {
@@ -73,20 +67,6 @@ export default function Podcasts(props: Props): VNode {
         showToast(`Successfully exported feeds to ${res.filePath}`)
       )
       .catch(() => showToast(`Failed to export feeds.`));
-  }
-
-  async function handleAction(action: string): Promise<void> {
-    switch (action) {
-      case 'seed':
-        await seedData();
-        break;
-      case 'import':
-        route('/files');
-        break;
-      case 'export':
-        exportFeeds();
-        break;
-    }
   }
 
   return (
@@ -131,19 +111,22 @@ export default function Podcasts(props: Props): VNode {
         actions={[
           {
             id: 'seed',
-            label: seeding ? 'Seeding...' : 'Seed podcasts',
-            disabled: seeding,
+            label: 'Seed podcasts',
+            actionFn: seedData,
           },
           {
             id: 'import',
             label: 'Import OPML',
+            actionFn: (): void => {
+              route('/files');
+            },
           },
           {
             id: 'export',
             label: 'Export as OPML',
+            actionFn: exportFeeds,
           },
         ]}
-        onAction={handleAction}
       />
     </View>
   );
