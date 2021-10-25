@@ -19,13 +19,9 @@ export function ViewBase(props: Props): VNode {
   const { settings } = useSettings();
 
   function getAccentColor(): string {
-    if (!settings.dynamicThemeColor || !props.enableCustomColor) {
-      return 'inherit';
-    } else if (!props.accentColor) {
-      return 'var(--menubar-bg-color)';
-    }
-
-    return props.accentColor;
+    return settings.dynamicThemeColor && props.accentColor
+      ? props.accentColor
+      : 'inherit';
   }
 
   return (
@@ -45,6 +41,7 @@ export function ViewBase(props: Props): VNode {
           '--app-accent-color': getAccentColor(),
           '--accent-text-color': getAccentColor(),
           '--highlight-bg-color': getAccentColor(),
+          '--menubar-bar-color': getAccentColor(),
         }}
       >
         <div className={styles.backdrop}>{props.children}</div>

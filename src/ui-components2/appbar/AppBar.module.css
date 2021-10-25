@@ -19,9 +19,7 @@
   padding: 0 5px;
   height: 28px;
   font-weight: bold;
-}
-.bar.accent {
-  background-color: var(--app-accent-color);
+  background-color: var(--menubar-bar-color);
 }
 
 .content {

@@ -54,6 +54,7 @@ export const themes: ThemeConfig[] = [
         menuBgColor: { variable: 'menu-bg-color', value: '#ffffff' },
         menuTextColor: { variable: 'menu-text-color', value: 'rgba(0, 0, 0, 0.88)' },
         menubarBgColor: { variable: 'menubar-bg-color', value: '#000000' },
+        menubarBarColor: { variable: 'menubar-bar-color', value: '#000000' },
         menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(255, 255, 255, 0.88)' },
         inputBorderColor: { variable: 'input-border-color', value: '#aaaaaa' },
     }
@@ -62,7 +63,7 @@ export const themes: ThemeConfig[] = [
     id: Theme.Dark,
     settings: {
         accentHeader: false,
-        accentHighlight: true,
+        accentHighlight: false,
         accentText: true,
     },
     values: {
@@ -78,11 +79,37 @@ export const themes: ThemeConfig[] = [
         headerTextColor: { variable: 'header-text-color', value: 'rgba(255, 255, 255, 0.88)' },
         menuBgColor: { variable: 'menu-bg-color', value: '#000000' },
         menuTextColor: { variable: 'menu-text-color', value: 'rgba(255, 255, 255, 0.88)' },
-        menubarBgColor: { variable: 'menubar-bg-color', value: '#181818' },
+        menubarBgColor: { variable: 'menubar-bg-color', value: '#242424' },
+        menubarBarColor: { variable: 'menubar-bar-color', value: '#242424' },
         menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(255, 255, 255, 0.88)' },
         inputBorderColor: { variable: 'input-border-color', value: '#aaaaaa' },
     }
 },
+// {
+//     id: Theme.Dark,
+//     settings: {
+//         accentHeader: false,
+//         accentHighlight: true,
+//         accentText: true,
+//     },
+//     values: {
+//         appBgColor: { variable: 'app-bg-color', value: '#000000' },
+//         appAccentColor: { variable: 'app-accent-color', value: '#ec5817' },
+//         primaryTextColor: { variable: 'primary-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+//         secondaryTextColor: { variable: 'secondary-text-color', value: 'rgba(255, 255, 255, 0.5)' },
+//         accentTextColor: { variable: 'accent-text-color', value: '#ec5817' },
+//         dividerColor: { variable: 'divider-color', value: 'rgba(255, 255, 255, 0.1)' },
+//         highlightBgColor: { variable: 'highlight-bg-color', value: '#ec5817' },
+//         highlightTextColor: { variable: 'highlight-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+//         headerBgColor: { variable: 'header-bg-color', value: '#000000' },
+//         headerTextColor: { variable: 'header-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+//         menuBgColor: { variable: 'menu-bg-color', value: '#000000' },
+//         menuTextColor: { variable: 'menu-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+//         menubarBgColor: { variable: 'menubar-bg-color', value: '#181818' },
+//         menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+//         inputBorderColor: { variable: 'input-border-color', value: '#aaaaaa' },
+//     }
+// },
 // {
 //     id: Theme.Simple,
 //     settings: {

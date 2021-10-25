@@ -18,6 +18,7 @@
   --menu-text-color: var(--primary-text-color);
 
   --menubar-bg-color: #000;
+  --menubar-bar-color: #000;
   --menubar-text-color: rgba(255, 255, 255, 0.88);
 
   --input-border-color: #aaa;
