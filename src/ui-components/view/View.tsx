@@ -1,6 +1,7 @@
 import { Palette } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { useSettings } from '../../contexts/SettingsProvider';
+import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
 import styles from './View.module.css';
@@ -23,6 +24,19 @@ export function View({ enableBackdrop = true, ...props }: Props): VNode {
       ? props.accentColor
       : 'inherit';
   }
+
+  useNavKeys(
+    {
+      Backspace: () => {
+        // If on the main screen, let KaiOS minimize the app
+        if (window.location.pathname.includes('/podcasts')) {
+          return false;
+        }
+        window.history.back();
+      },
+    },
+    { stopPropagation: true }
+  );
 
   return (
     <div
