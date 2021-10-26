@@ -4,70 +4,54 @@ import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Menu.module.css';
-// import { AppBar } from './AppBar';
+import { useListNav } from '../hooks/useListNav';
+import { SvgIcon } from './SvgIcon';
+import { Typography } from './Typography';
+import { SelectableBase } from './hoc';
 
 export type MenuOption = {
   id: string;
   label: string;
   disabled?: boolean;
-  keepMenuOpen?: boolean;
 };
 type Props = ComponentBaseProps & {
   options: MenuOption[];
   title?: string;
-  closeSide?: 'left' | 'right';
-  onSelect: (menuOptionId: string) => void;
-  onClose: () => void;
+  onSelect?: (menuOptionId: any) => void;
 };
 
-export function Menu({
-  closeSide = 'left',
-  options = [],
-  ...props
-}: Props): VNode {
-  useDpad({
+export function Menu({ options = [], ...props }: Props): VNode {
+  const { selectedId } = useListNav({
     priority: SelectablePriority.Medium,
-    onEnter: (itemId) => {
-      const option = options.find((a) => a.id === itemId) as MenuOption;
-      props.onSelect(option.id);
-      if (!option.keepMenuOpen) {
-        props.onClose();
-      }
+    onSelect: (itemId) => {
+      if (itemId) props.onSelect?.(itemId);
     },
   });
 
-  useNavKeys(
-    {
-      SoftLeft: () => closeSide === 'left' && props.onClose(),
-      SoftRight: () => closeSide === 'right' && props.onClose(),
-    },
-    { stopPropagation: true, capture: true }
-  );
-
   return (
     <div className={styles.root}>
-      <div className={styles.content}>
-        {props.title ? <div className={styles.title}>{props.title}</div> : null}
+      <Typography type="bodyStrong">{props.title}</Typography>
+      <div className={styles.options}>
         {options.map((option, i) => (
-          <div
+          <SelectableBase
             key={option.id}
             className={joinClasses(
               styles.option,
               ifClass(!!option.disabled, styles.disabled)
             )}
-            data-selectable-priority={SelectablePriority.Medium}
-            data-selectable-id={option.id}
+            priority={SelectablePriority.Medium}
+            id={option.id}
+            shortcut={i + 1 <= 9 ? i + 1 : undefined}
+            selected={selectedId === option.id}
           >
             <div className={styles.shortcut}>{i + 1}</div>
             {option.label}
-          </div>
+          </SelectableBase>
         ))}
       </div>
-      {/* <AppBar
-        leftText={closeSide === 'left' ? 'Close' : ''}
-        centerText="Select"
-        rightText={closeSide === 'right' ? 'Close' : ''}
-      /> */}
+      <div className={styles.bar}>
+        <SvgIcon icon="cancel" />
+      </div>
     </div>
   );
 }

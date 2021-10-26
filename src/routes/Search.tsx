@@ -4,11 +4,11 @@ import { useEffect, useState } from 'preact/hooks';
 import styles from './Search.module.css';
 import { SearchResult } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
-import { View, ViewContent } from '../ui-components2/view';
-import { ListItem } from '../ui-components2/list';
+import { View, ViewContent } from '../ui-components/view';
+import { ListItem } from '../ui-components/list';
 import { useListNav } from '../hooks/useListNav';
-import { Input } from '../ui-components2/form';
-import { AppBar } from '../ui-components2/appbar';
+import { Input } from '../ui-components/form';
+import { AppBar } from '../ui-components/appbar';
 
 interface SearchProps {
   q?: string;

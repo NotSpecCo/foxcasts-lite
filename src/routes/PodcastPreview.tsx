@@ -3,9 +3,9 @@ import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { useBodyScroller } from '../hooks/useBodyScroller';
 import { Core, subscribeByFeed, subscribeByPodexId } from '../services/core';
-import { AppBar } from '../ui-components2/appbar';
-import { ListItem } from '../ui-components2/list';
-import { View, ViewContent } from '../ui-components2/view';
+import { AppBar } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
+import { View, ViewContent } from '../ui-components/view';
 import styles from './PodcastPreview.module.css';
 
 interface PodcastPreviewProps {

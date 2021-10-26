@@ -3,15 +3,10 @@ import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { Podcast } from 'foxcasts-core/lib/types';
 import { Core, refreshArtwork } from '../services/core';
-import { Typography } from '../ui-components2/Typography';
+import { Typography } from '../ui-components/Typography';
 import { useBodyScroller } from '../hooks/useBodyScroller';
-import {
-  View,
-  ViewTabs,
-  ViewContent,
-  ViewHeader,
-} from '../ui-components2/view';
-import { AppBar } from '../ui-components2/appbar';
+import { View, ViewTabs, ViewContent, ViewHeader } from '../ui-components/view';
+import { AppBar } from '../ui-components/appbar';
 import styles from './PodcastInfo.module.css';
 import { useArtwork } from '../hooks/useArtwork';
 import { ArtworkSize } from '../enums/artworkSize';

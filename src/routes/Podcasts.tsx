@@ -9,12 +9,12 @@ import { OPML } from '../services/opml';
 import { useToast } from '../contexts/ToastProvider';
 import { KaiOS } from '../services/kaios';
 import { useListNav } from '../hooks/useListNav';
-import { GridItem } from '../ui-components2/GridItem';
-import { View, ViewContent, ViewHeader } from '../ui-components2/view';
-import { AppBar } from '../ui-components2/appbar';
-import { List, ListItem } from '../ui-components2/list';
+import { GridItem } from '../ui-components/GridItem';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import { AppBar } from '../ui-components/appbar';
+import { List, ListItem } from '../ui-components/list';
 import { usePodcasts } from '../hooks/usePodcasts';
-import { Typography } from '../ui-components2/Typography';
+import { Typography } from '../ui-components/Typography';
 
 interface Props {
   selectedItemId?: string;

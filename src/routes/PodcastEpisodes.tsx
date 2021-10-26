@@ -5,14 +5,9 @@ import { useEffect, useState } from 'preact/hooks';
 import { SelectablePriority } from '../hooks/useDpad';
 import { Episode, Podcast } from 'foxcasts-core/lib/types';
 import { Core, refreshArtwork } from '../services/core';
-import { AppBar } from '../ui-components2/appbar';
-import { List, ListItem } from '../ui-components2/list';
-import {
-  View,
-  ViewTabs,
-  ViewContent,
-  ViewHeader,
-} from '../ui-components2/view';
+import { AppBar } from '../ui-components/appbar';
+import { List, ListItem } from '../ui-components/list';
+import { View, ViewTabs, ViewContent, ViewHeader } from '../ui-components/view';
 import { useListNav } from '../hooks/useListNav';
 import { useArtwork } from '../hooks/useArtwork';
 import { ArtworkSize } from '../enums/artworkSize';

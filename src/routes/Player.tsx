@@ -16,10 +16,10 @@ import { useArtwork } from '../hooks/useArtwork';
 import { ArtworkSize } from '../enums/artworkSize';
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { useListNav } from '../hooks/useListNav';
-import { View, ViewContent } from '../ui-components2/view';
-import { AppBar, AppBarAction } from '../ui-components2/appbar';
-import { Typography } from '../ui-components2/Typography';
-import { ListItem } from '../ui-components2/list';
+import { View, ViewContent } from '../ui-components/view';
+import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { Typography } from '../ui-components/Typography';
+import { ListItem } from '../ui-components/list';
 import { Settings } from '../models';
 import { useView } from '../contexts/ViewProvider';
 

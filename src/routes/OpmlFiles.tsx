@@ -3,10 +3,10 @@ import { useEffect, useState } from 'preact/hooks';
 import { OPML } from '../services/opml';
 import { StorageFile } from '../models';
 import { route } from 'preact-router';
-import { View, ViewContent, ViewHeader } from '../ui-components2/view';
-import { AppBar } from '../ui-components2/appbar';
-import { ListItem } from '../ui-components2/list';
-import { Typography } from '../ui-components2/Typography';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import { AppBar } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
+import { Typography } from '../ui-components/Typography';
 import { useListNav } from '../hooks/useListNav';
 
 export default function OpmlFiles(): VNode {

@@ -6,10 +6,10 @@ import ProgressBar from '../components/ProgressBar';
 import { formatFileSize } from 'foxcasts-core/lib/utils';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 import styles from './Downloads.module.css';
-import { AppBar, AppBarAction } from '../ui-components2/appbar';
-import { View, ViewContent, ViewHeader } from '../ui-components2/view';
-import { Typography } from '../ui-components2/Typography';
-import { ListItem } from '../ui-components2/list';
+import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import { Typography } from '../ui-components/Typography';
+import { ListItem } from '../ui-components/list';
 import { useListNav } from '../hooks/useListNav';
 
 interface Props {

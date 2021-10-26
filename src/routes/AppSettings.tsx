@@ -13,14 +13,9 @@ import {
   Theme,
 } from '../models';
 import { ThemeConfig, themes } from '../themes';
-import { AppBar } from '../ui-components2/appbar';
-import { Input, RangeRow, Select, ToggleRow } from '../ui-components2/form';
-import {
-  View,
-  ViewContent,
-  ViewHeader,
-  ViewTabs,
-} from '../ui-components2/view';
+import { AppBar } from '../ui-components/appbar';
+import { Input, RangeRow, Select, ToggleRow } from '../ui-components/form';
+import { View, ViewContent, ViewHeader, ViewTabs } from '../ui-components/view';
 
 export default function AppSettings(): VNode {
   const [tab, setTab] = useState<string>('display');

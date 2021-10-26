@@ -1,63 +1,54 @@
 import { h } from 'preact';
 import { useNavKeys } from '../../hooks/useNavKeys';
-import { ComponentBaseProps, SelectableProps } from '../../models';
+import { ComponentBaseProps, SelectableProps, Option } from '../../models';
 import { getIndexWrap } from '../../utils/array';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { SelectableBase } from '../hoc';
 import { SvgIcon } from '../SvgIcon';
 import { Typography } from '../Typography';
-import styles from './InlineSelect.module.css';
+import styles from './AppBarListOption.module.css';
 
 export type AppBarOption = {
   id: string;
   label: string;
   disabled?: boolean;
   options: Option[];
-  currentValue: string;
-};
-
-export type Option = {
-  id: string;
-  label: string;
+  currentValue: string | number;
 };
 
 type Props = ComponentBaseProps &
   SelectableProps & {
     label: string;
+    optionId: string;
     options: Option[];
-    value: string;
-    onChange?: (value: string) => void;
+    selectedOptionId: string | number;
+    onChange?: (id: string, value: string | number) => void;
   };
 
-export function InlineSelect(props: Props): h.JSX.Element {
+export function AppBarListOption(props: Props): h.JSX.Element {
   function change(change: 1 | -1): void {
     const nextIndex = getIndexWrap(
       props.options,
-      props.options.findIndex((a) => a.id === props.value),
+      props.options.findIndex((a) => a.id === props.selectedOptionId),
       change
     );
-    props.onChange?.(props.options[nextIndex].id);
+    props.onChange?.(props.optionId, props.options[nextIndex].id);
   }
 
-  useNavKeys(
-    {
-      ArrowLeft: () => {
-        if (props.selectable?.selected) {
-          change(-1);
-          return true;
-        }
-        return false;
-      },
-      ArrowRight: () => {
-        if (props.selectable?.selected) {
-          change(1);
-          return true;
-        }
-        return false;
-      },
+  useNavKeys({
+    ArrowLeft: () => {
+      if (props.selectable?.selected) {
+        change(-1);
+        return true;
+      }
     },
-    { stopPropagation: true, capture: true }
-  );
+    ArrowRight: () => {
+      if (props.selectable?.selected) {
+        change(1);
+        return true;
+      }
+    },
+  });
 
   return (
     <SelectableBase
@@ -71,9 +62,10 @@ export function InlineSelect(props: Props): h.JSX.Element {
       <div className={styles.flex} />
       <SvgIcon icon="chevronLeft" size="small" />
       <div className={styles.label}>
-        {props.options.find((a) => a.id === props.value)?.label}
+        {props.options.find((a) => a.id === props.selectedOptionId)?.label}
       </div>
       <SvgIcon icon="chevronRight" size="small" />
+      {/* </div> */}
     </SelectableBase>
   );
 }

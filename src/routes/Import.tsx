@@ -5,11 +5,11 @@ import { Core } from '../services/core';
 import { OPML } from '../services/opml';
 import { route } from 'preact-router';
 import { useListNav } from '../hooks/useListNav';
-import { View, ViewContent, ViewHeader } from '../ui-components2/view';
-import { AppBar } from '../ui-components2/appbar';
-import { Typography } from '../ui-components2/Typography';
-import { SelectableBase } from '../ui-components2/hoc';
-import { Button } from '../ui-components2/buttons';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import { AppBar } from '../ui-components/appbar';
+import { Typography } from '../ui-components/Typography';
+import { SelectableBase } from '../ui-components/hoc';
+import { Button } from '../ui-components/buttons';
 import { SelectablePriority } from '../hooks/useDpad';
 
 type Feed = {

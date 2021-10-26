@@ -15,12 +15,12 @@ import { themes } from '../themes';
 import { Core } from '../services/core';
 import OpmlFiles from '../routes/OpmlFiles';
 import { ToastProvider } from '../contexts/ToastProvider';
-import { Toast } from '../ui-components/Toast';
 import Downloads from '../routes/Downloads';
 import { DownloadManagerProvider } from '../contexts/DownloadManagerProvider';
 import PodcastInfo from '../routes/PodcastInfo';
 import Player from '../routes/Player';
 import { ViewProvider } from '../contexts/ViewProvider';
+import { Toast } from '../ui-components/Toast';
 
 export function AppWrapper(): VNode {
   return (

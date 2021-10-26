@@ -5,9 +5,9 @@ import styles from './Lists.module.css';
 import { EpisodeExtended, EpisodeFilterId } from 'foxcasts-core/lib/types';
 import { Core } from '../services/core';
 import { useListNav } from '../hooks/useListNav';
-import { View, ViewContent, ViewTabs } from '../ui-components2/view';
-import { AppBar } from '../ui-components2/appbar';
-import { ListItem } from '../ui-components2/list';
+import { View, ViewContent, ViewTabs } from '../ui-components/view';
+import { AppBar } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
 import { format } from 'date-fns';
 
 interface Props {
