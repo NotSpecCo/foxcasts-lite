@@ -13,7 +13,7 @@ import { useSettings } from './SettingsProvider';
 import { route } from 'preact-router';
 import { KaiOS } from '../services/kaios';
 
-export type PlaybackStatus = {
+export type PlaybackProgress = {
   playing: boolean;
   currentTime: number;
   duration: number;
@@ -21,13 +21,13 @@ export type PlaybackStatus = {
 
 type PlayerContextValue = {
   episode?: EpisodeExtended;
-  load: (episodeId: number, resume?: boolean) => Promise<PlaybackStatus>;
-  play: () => PlaybackStatus;
-  pause: () => PlaybackStatus;
+  load: (episodeId: number, resume?: boolean) => Promise<PlaybackProgress>;
+  play: () => PlaybackProgress;
+  pause: () => PlaybackProgress;
   stop: () => void;
-  jump: (seconds: number) => PlaybackStatus;
-  goTo: (seconds: number) => PlaybackStatus;
-  getStatus: () => PlaybackStatus;
+  jump: (seconds: number) => PlaybackProgress;
+  goTo: (seconds: number) => PlaybackProgress;
+  getStatus: () => PlaybackProgress;
   audioRef: HTMLAudioElement;
   playing: boolean;
 };
@@ -64,7 +64,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.playbackSpeed]);
 
-  function getStatus(): PlaybackStatus {
+  function getStatus(): PlaybackProgress {
     return {
       playing: !audioRef.paused,
       currentTime: Math.ceil(audioRef.currentTime),
@@ -75,7 +75,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   async function load(
     episodeId: number,
     resume = false
-  ): Promise<PlaybackStatus> {
+  ): Promise<PlaybackProgress> {
     const data = await Core.getEpisodeById(episodeId);
     const podcast = await Core.getPodcastById(data.podcastId);
 
@@ -121,13 +121,13 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     };
   }
 
-  function play(): PlaybackStatus {
+  function play(): PlaybackProgress {
     audioRef.play();
     setPlaying(true);
     return getStatus();
   }
 
-  function pause(): PlaybackStatus {
+  function pause(): PlaybackProgress {
     audioRef.pause();
     setPlaying(false);
     return getStatus();
@@ -141,13 +141,13 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     notification?.close();
   }
 
-  function jump(seconds: number): PlaybackStatus {
+  function jump(seconds: number): PlaybackProgress {
     const newTime = audioRef.currentTime + seconds;
     audioRef.currentTime = newTime;
     return getStatus();
   }
 
-  function goTo(seconds: number): PlaybackStatus {
+  function goTo(seconds: number): PlaybackProgress {
     audioRef.currentTime = seconds;
     return getStatus();
   }

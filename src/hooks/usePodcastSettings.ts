@@ -10,7 +10,7 @@ type Return = {
   settings: {
     accentColor: keyof Palette;
   };
-  setSetting: (id: string, value: string) => void;
+  setSetting: (id: string, value: string | number) => void;
 };
 
 export function usePodcastSettings(podcastId?: number | string | null): Return {
@@ -23,7 +23,7 @@ export function usePodcastSettings(podcastId?: number | string | null): Return {
       }
     : { ...defaultSettings };
 
-  function setSetting(id: string, value: string): void {
+  function setSetting(id: string, value: string | number): void {
     if (!podcastId) return;
 
     const podcastSettings = {

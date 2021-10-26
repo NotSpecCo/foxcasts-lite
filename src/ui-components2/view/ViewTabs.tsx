@@ -43,7 +43,7 @@ export function ViewTabs({ tabs, selectedId, ...props }: Props): VNode<Props> {
     return newTabs;
   }
   return (
-    <div className={styles.root}>
+    <div className={joinClasses(styles.root, props.className)}>
       {orderTabs().map((tab) => (
         <div
           key={tab.id}

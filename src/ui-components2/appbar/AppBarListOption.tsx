@@ -13,11 +13,11 @@ export type AppBarOption = {
   label: string;
   disabled?: boolean;
   options: Option[];
-  currentValue: string;
+  currentValue: string | number;
 };
 
 export type Option = {
-  id: string;
+  id: string | number;
   label: string;
 };
 
@@ -26,8 +26,8 @@ type Props = ComponentBaseProps &
     label: string;
     optionId: string;
     options: Option[];
-    selectedOptionId: string;
-    onChange?: (id: string, value: string) => void;
+    selectedOptionId: string | number;
+    onChange?: (id: string, value: string | number) => void;
   };
 
 export function AppBarListOption(props: Props): h.JSX.Element {

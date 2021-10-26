@@ -4,7 +4,6 @@ import { useEffect } from 'preact/hooks';
 import { PlayerProvider } from '../contexts/playerContext';
 import EpisodeDetail from '../routes/EpisodeDetail';
 import Lists from '../routes/Lists';
-import Player from '../routes/Player';
 import PodcastEpisodes from '../routes/PodcastEpisodes';
 import PodcastPreview from '../routes/PodcastPreview';
 import Search from '../routes/Search';
@@ -20,6 +19,8 @@ import { Toast } from '../ui-components/Toast';
 import Downloads from '../routes/Downloads';
 import { DownloadManagerProvider } from '../contexts/DownloadManagerProvider';
 import PodcastInfo from '../routes/PodcastInfo';
+import Player from '../routes/Player';
+import { ViewProvider } from '../contexts/ViewProvider';
 
 export function AppWrapper(): VNode {
   return (
@@ -28,7 +29,9 @@ export function AppWrapper(): VNode {
         <ToastProvider>
           <DownloadManagerProvider>
             <PlayerProvider>
-              <App />
+              <ViewProvider>
+                <App />
+              </ViewProvider>
             </PlayerProvider>
           </DownloadManagerProvider>
         </ToastProvider>

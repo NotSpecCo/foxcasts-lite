@@ -1,41 +1,49 @@
-import { Chapter, Podcast } from 'foxcasts-core/lib/types';
+import { Chapter } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
-import { Fragment, h, VNode } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useEffect, useState } from 'preact/hooks';
-import Vibrant from 'node-vibrant';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import ProgressBar from '../components/ProgressBar';
-import { PlaybackStatus, usePlayer } from '../contexts/playerContext';
-import { SelectablePriority, useDpad } from '../hooks/useDpad';
+import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
+import { SelectablePriority } from '../hooks/useDpad';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { Core } from '../services/core';
-import { ListItem, MenuOption, View } from '../ui-components';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
 import { clamp } from '../utils/clamp';
+import { useArtwork } from '../hooks/useArtwork';
+import { ArtworkSize } from '../enums/artworkSize';
+import { PlaybackStatus } from 'foxcasts-core/lib/enums';
+import { useListNav } from '../hooks/useListNav';
+import { View, ViewContent } from '../ui-components2/view';
+import { AppBar, AppBarAction } from '../ui-components2/appbar';
+import { Typography } from '../ui-components2/Typography';
+import { ListItem } from '../ui-components2/list';
+import { Settings } from '../models';
+import { useView } from '../contexts/ViewProvider';
 
 export default function Player(): VNode {
   const [chapters, setChapters] = useState<Chapter[] | null>(null);
-  const [podcast, setPodcast] = useState<Podcast | null>(null);
-  const [browsingChapters, setBrowsingChapters] = useState(false);
-  const [changingSpeed, setChangingSpeed] = useState(false);
-  const [status, setStatus] = useState<PlaybackStatus>({
+  const [status, setStatus] = useState<PlaybackProgress>({
     playing: false,
     currentTime: 0,
     duration: 0,
   });
-  const [accentColor, setAccentColor] = useState<string>();
 
   const player = usePlayer();
   const { settings, setSetting } = useSettings();
+  const view = useView();
+
+  const { artwork } = useArtwork(player.episode?.podcastId, {
+    size: ArtworkSize.Large,
+  });
 
   useEffect(() => {
     const episode = player.episode;
 
     if (!episode) {
       setChapters(null);
-      setPodcast(null);
       return;
     }
 
@@ -48,18 +56,6 @@ export default function Player(): VNode {
         episode.remoteFileUrl
       ).then((res) => setChapters(res));
     }
-
-    Core.getPodcastById(episode.podcastId)
-      .then((res) => {
-        setPodcast(res);
-        return Vibrant.from(res.artwork)
-          .getPalette()
-          .catch((err) => {
-            console.log('Failed to get color palette', err.message);
-            return null;
-          });
-      })
-      .then((res) => setAccentColor(res?.Vibrant?.getHex()));
 
     const status = player.getStatus();
     setStatus(status);
@@ -75,176 +71,165 @@ export default function Player(): VNode {
 
   useEffect(() => {
     if (player.episode) {
-      Core.updateEpisode(player.episode.id, { progress: status.currentTime });
+      Core.updateEpisode(player.episode.id, {
+        progress: status.currentTime,
+        duration: status.duration,
+        playbackStatus:
+          status.currentTime > 0 && status.currentTime === status.duration
+            ? PlaybackStatus.Played
+            : PlaybackStatus.InProgress,
+      });
     }
   }, [player.episode, status.currentTime]);
 
-  function handleAction(action: string): void {
+  const actionList: AppBarAction[] = useMemo(() => {
     if (!player.episode) {
-      return;
+      return [];
     }
 
-    let newStatus;
+    return [
+      status.playing
+        ? {
+            id: 'pause',
+            label: 'Pause',
+            actionFn: () => setStatus(player.pause()),
+          }
+        : {
+            id: 'play',
+            label: 'Play',
+            actionFn: () => setStatus(player.play()),
+          },
+      { id: 'stop', label: 'Stop', actionFn: () => player.stop() },
+      {
+        id: 'episode',
+        label: 'View episode',
+        actionFn: () => route(`/episode/${player.episode!.id}`),
+      },
+      {
+        id: 'podcast',
+        label: 'View podcast',
+        actionFn: () => route(`/podcast/${player.episode!.podcastId}/info`),
+      },
+    ];
+  }, [player.episode, status.playing]);
 
-    switch (action) {
-      case 'play':
-        newStatus = player.play();
-        break;
-      case 'pause':
-        newStatus = player.pause();
-        break;
-      case 'stop':
-        player.stop();
-        break;
-      case 'plus30':
-        newStatus = player.jump(30);
-        break;
-      case 'minus30':
-        newStatus = player.jump(-30);
-        break;
-      case 'speedDown':
-        setSetting(
-          'playbackSpeed',
-          clamp(Math.round((settings.playbackSpeed - 0.2) * 100) / 100, 0.6, 4)
-        );
-        break;
-      case 'speedUp':
-        setSetting(
-          'playbackSpeed',
-          clamp(Math.round((settings.playbackSpeed + 0.2) * 100) / 100, 0.6, 4)
-        );
-        break;
-      case 'detail':
-        route(`/episode/${player.episode.id}`);
-        break;
-    }
-
-    if (newStatus) {
-      setStatus(newStatus);
-    }
-  }
-
-  function getActionList(): MenuOption[] {
-    return player.episode
-      ? [
-          status.playing
-            ? { id: 'pause', label: 'Pause' }
-            : { id: 'play', label: 'Play' },
-          { id: 'stop', label: 'Stop' },
-          { id: 'detail', label: 'View episode detail' },
-        ]
-      : [];
-  }
-
-  function handleClick(itemId: string): void {
-    if (itemId.startsWith('chapter') && chapters) {
-      const index = parseInt(itemId.split('_')[1], 10);
-      player.goTo(Math.floor(chapters[index].startTime / 1000));
-    }
-  }
-
-  useDpad({
+  const { selectedId } = useListNav({
     priority: SelectablePriority.Low,
-    onEnter: handleClick,
-    onChange: (itemId) => {
-      setChangingSpeed(itemId === 'speed');
-      setBrowsingChapters(!!itemId?.startsWith('chapter'));
+    onSelect: (itemId) => {
+      if (itemId.startsWith('chapter') && chapters) {
+        const index = parseInt(itemId.split('_')[1], 10);
+        player.goTo(Math.floor(chapters[index].startTime / 1000));
+        setStatus(player.getStatus());
+      }
     },
-    options: { stopPropagation: false },
   });
 
   useNavKeys(
     {
-      ArrowLeft: () =>
-        changingSpeed ? handleAction('speedDown') : handleAction('minus30'),
-      ArrowRight: () =>
-        changingSpeed ? handleAction('speedUp') : handleAction('plus30'),
+      ArrowLeft: () => setStatus(player.jump(-settings.playbackSkipBack)),
+      ArrowRight: () => setStatus(player.jump(settings.playbackSkipForward)),
       Enter: () => {
         if (!player.episode) {
           return;
         }
-        status.playing ? handleAction('pause') : handleAction('play');
+        status.playing ? setStatus(player.pause()) : setStatus(player.play());
       },
     },
-    { disabled: browsingChapters }
+    { disabled: selectedId !== undefined || view.appbarOpen }
   );
+
+  const playbackOptions = useMemo(() => {
+    let current = 0.5;
+    const options = [];
+    while (current <= 4) {
+      options.push({ id: current, label: current.toString() });
+      current = Math.round((current + 0.1) * 100) / 100;
+    }
+    return options;
+  }, []);
+
+  if (!player.episode) {
+    return (
+      <View>
+        <ViewContent>
+          <Typography>Nothing playing</Typography>
+        </ViewContent>
+        <AppBar />
+      </View>
+    );
+  }
 
   return (
     <View
-      showHeader={false}
-      headerText={player.episode?.podcastTitle || 'Player'}
-      centerMenuText={
-        browsingChapters ? 'Select' : status.playing ? 'Pause' : 'Play'
-      }
-      accentColor={accentColor}
-      actions={getActionList()}
-      onAction={handleAction}
-      backgroundImageUrl={podcast?.artworkUrl}
+      accentColor={player.episode.accentColor}
+      backgroundImageUrl={artwork?.image}
+      enableBackdrop={false}
     >
-      {player.episode ? (
-        <Fragment>
-          <div
-            className={joinClasses(
-              styles.player,
-              ifClass(
-                player?.episode?.fileType.startsWith('video'),
-                styles.video
-              )
-            )}
-          >
-            <div
-              data-selectable-priority={SelectablePriority.Low}
-              data-selectable-id="top"
-            />
-            <div className={styles.gradient} />
-            <div className={styles.info}>
-              <div className={styles.author}>
-                {player.episode?.podcastTitle}
-              </div>
-              <div className={styles.title}>{player.episode?.title}</div>
-              <div className={styles.times}>
-                <span className={styles.currentTime}>
-                  {formatTime(status.currentTime)}
-                </span>
-                <ProgressBar
-                  className={styles.progressbar}
-                  position={(status.currentTime / status.duration) * 100 || 0}
-                />
-                <span className={styles.duration}>
-                  {`${formatTime(status.duration)}`}
-                </span>
-                <div className={styles.spacer} />
-                <span
-                  className={styles.speed}
-                  data-selectable-priority={SelectablePriority.Low}
-                  data-selectable-id="speed"
-                >{`${settings.playbackSpeed}x`}</span>
-                {chapters && chapters.length > 0 ? (
-                  <div className={styles.chevronDown} />
-                ) : null}
-              </div>
+      <ViewContent>
+        <div
+          className={joinClasses(
+            styles.player,
+            ifClass(player?.episode?.fileType.startsWith('video'), styles.video)
+          )}
+        >
+          <div className={styles.gradient} />
+          <div className={styles.info}>
+            <div className={styles.author}>{player.episode?.podcastTitle}</div>
+            <div className={styles.title}>{player.episode?.title}</div>
+            <div className={styles.times}>
+              <span className={styles.currentTime}>
+                {formatTime(status.currentTime)}
+              </span>
+              <ProgressBar
+                className={styles.progressbar}
+                position={(status.currentTime / status.duration) * 100 || 0}
+              />
+              <span className={styles.duration}>
+                {`${formatTime(status.duration)}`}
+              </span>
+              <div className={styles.spacer} />
+              <span
+                className={styles.speed}
+              >{`${settings.playbackSpeed}x`}</span>
+              {chapters && chapters.length > 0 ? (
+                <div className={styles.chevronDown} />
+              ) : null}
             </div>
           </div>
-          <div className={styles.chapters}>
-            {chapters?.map((chapter, i) => {
-              let text = formatTime(chapter.startTime / 1000);
-              if (chapter.endTime) {
-                text = `${text} - ${formatTime(chapter.endTime / 1000)}`;
-              }
-              return (
-                <ListItem
-                  key={chapter.startTime}
-                  itemId={`chapter_${i}`}
-                  primaryText={chapter.title}
-                  accentText={text}
-                />
-              );
-            })}
-          </div>
-        </Fragment>
-      ) : (
-        <div className={styles.message}>Nothing is playing.</div>
-      )}
+        </div>
+        <div className={styles.chapters}>
+          {chapters?.map((chapter, i) => {
+            let text = formatTime(chapter.startTime / 1000);
+            if (chapter.endTime) {
+              text = `${text} - ${formatTime(chapter.endTime / 1000)}`;
+            }
+            return (
+              <ListItem
+                key={chapter.startTime}
+                primaryText={chapter.title}
+                accentText={text}
+                selectable={{
+                  id: `chapter_${i}`,
+                  selected: selectedId === `chapter_${i}`,
+                }}
+              />
+            );
+          })}
+        </div>
+      </ViewContent>
+      <AppBar
+        centerText={selectedId ? 'Select' : status.playing ? 'Pause' : 'Play'}
+        actions={actionList}
+        options={[
+          {
+            id: 'playbackSpeed',
+            label: 'Playback Rate',
+            currentValue: settings.playbackSpeed,
+            options: playbackOptions,
+          },
+        ]}
+        onOptionChange={(id, val) => setSetting(id as keyof Settings, val)}
+      />
     </View>
   );
 }

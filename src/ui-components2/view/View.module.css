@@ -7,11 +7,13 @@
 }
 
 .backdrop {
-  background-color: rgba(0, 0, 0, 0.7);
   /* backdrop-filter: blur(5px); */
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+.scrim {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .root.noHeader,

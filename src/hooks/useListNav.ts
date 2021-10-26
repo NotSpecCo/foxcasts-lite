@@ -13,8 +13,8 @@ type Props = {
   initialSelectedId?: string;
   capture?: boolean;
   updateRouteOnChange?: boolean;
-  onChange?: (selectedId?: string) => void;
-  onSelect?: (selectedId?: string) => void;
+  onChange?: (selectedId: string) => void;
+  onSelect?: (selectedId: string) => void;
 };
 
 type Return = {
@@ -54,7 +54,7 @@ export function useListNav({
         priority: SelectablePriority.High,
         results: Array.from(highElements).map((element) => ({
           element,
-          id: element.getAttribute('data-selectable-id') || undefined,
+          id: element.getAttribute('data-selectable-id') || '',
           shortcut:
             element.getAttribute('data-selectable-shortcut') || undefined,
         })),
@@ -68,7 +68,7 @@ export function useListNav({
         priority: SelectablePriority.Medium,
         results: Array.from(mediumElements).map((element) => ({
           element,
-          id: element.getAttribute('data-selectable-id') || undefined,
+          id: element.getAttribute('data-selectable-id') || '',
           shortcut:
             element.getAttribute('data-selectable-shortcut') || undefined,
         })),
@@ -82,7 +82,7 @@ export function useListNav({
         priority: SelectablePriority.Low,
         results: Array.from(lowElements).map((element) => ({
           element,
-          id: element.getAttribute('data-selectable-id') || undefined,
+          id: element.getAttribute('data-selectable-id') || '',
           shortcut:
             element.getAttribute('data-selectable-shortcut') || undefined,
         })),

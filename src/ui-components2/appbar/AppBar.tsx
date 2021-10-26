@@ -36,7 +36,7 @@ type Props = ComponentBaseProps & {
   rightIcon?: IconName | null;
   actions?: AppBarAction[];
   options?: AppBarOption[];
-  onOptionChange?: (id: string, value: string) => void;
+  onOptionChange?: (id: string, value: string | number) => void;
 };
 
 enum MenuState {
@@ -56,9 +56,7 @@ export function AppBar({
   const [actions, setActions] = useState<AppBarAction[]>(props.actions || []);
 
   useEffect(() => {
-    if (props.actions) {
-      setActions(props.actions);
-    }
+    setActions(props.actions || []);
   }, [props.actions]);
 
   const view = useView();
