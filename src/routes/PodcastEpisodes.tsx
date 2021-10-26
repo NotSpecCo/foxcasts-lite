@@ -69,12 +69,9 @@ export default function PodcastEpisodes({
         tabs={[
           { id: 'episodes', label: 'episodes' },
           { id: 'info', label: 'podcast' },
-          { id: 'settings', label: 'settings' },
         ]}
         selectedId="episodes"
-        onChange={(tabId): boolean =>
-          route(`/podcast/${podcastId}/${tabId}`, true)
-        }
+        onChange={(tabId) => route(`/podcast/${podcastId}/${tabId}`, true)}
       />
       <ViewContent>
         <List>

@@ -42,14 +42,6 @@ export default function PodcastInfo({ podcastId }: PodcastDetailProps): VNode {
 
   useBodyScroller({});
 
-  async function handleAction(action: string): Promise<void> {
-    if (action === 'unsubscribe' && podcast) {
-      await Core.unsubscribe(podcast.id)
-        .then(() => route('/podcasts', true))
-        .catch((err) => console.error('Failed to unsubscribe', err));
-    }
-  }
-
   return (
     <View
       backgroundImageUrl={artwork?.image}
