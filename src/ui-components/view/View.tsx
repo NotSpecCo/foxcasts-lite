@@ -1,9 +1,9 @@
-import { h, VNode } from 'preact';
 import { Palette } from 'foxcasts-core/lib/types';
-import { ifClass, joinClasses } from '../../utils/classes';
-import { ComponentBaseProps } from '../../models';
-import styles from './View.module.css';
+import { h, VNode } from 'preact';
 import { useSettings } from '../../contexts/SettingsProvider';
+import { ComponentBaseProps } from '../../models';
+import { ifClass, joinClasses } from '../../utils/classes';
+import styles from './View.module.css';
 
 type Props = ComponentBaseProps & {
   backgroundImageUrl?: string;

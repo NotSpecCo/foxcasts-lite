@@ -1,9 +1,0 @@
-.titleContainer {
-  display: flex;
-  padding: 5px 0 10px 0;
-}
-.titleContainer > img {
-  width: 64px;
-  height: 64px;
-  margin: 0 5px;
-}

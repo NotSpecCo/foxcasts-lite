@@ -1,20 +1,20 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { SelectablePriority } from '../hooks/useDpad';
-import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
+import { useToast } from '../contexts/ToastProvider';
+import { SelectablePriority } from '../hooks/useDpad';
+import { useListNav } from '../hooks/useListNav';
+import { usePodcasts } from '../hooks/usePodcasts';
 import { ListLayout, OpmlFeed } from '../models';
 import { subscribeByFeed } from '../services/core';
-import { OPML } from '../services/opml';
-import { useToast } from '../contexts/ToastProvider';
 import { KaiOS } from '../services/kaios';
-import { useListNav } from '../hooks/useListNav';
-import { GridItem } from '../ui-components/GridItem';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import { OPML } from '../services/opml';
 import { AppBar } from '../ui-components/appbar';
+import { GridItem } from '../ui-components/GridItem';
 import { List, ListItem } from '../ui-components/list';
-import { usePodcasts } from '../hooks/usePodcasts';
 import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import styles from './Podcasts.module.css';
 
 interface Props {
   selectedItemId?: string;

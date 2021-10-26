@@ -1,18 +1,17 @@
+import { Podcast } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import { Podcast } from 'foxcasts-core/lib/types';
-import { Core, refreshArtwork } from '../services/core';
-import { Typography } from '../ui-components/Typography';
-import { useBodyScroller } from '../hooks/useBodyScroller';
-import { View, ViewTabs, ViewContent, ViewHeader } from '../ui-components/view';
-import { AppBar } from '../ui-components/appbar';
-import styles from './PodcastInfo.module.css';
-import { useArtwork } from '../hooks/useArtwork';
-import { ArtworkSize } from '../enums/artworkSize';
-import { ArtworkBlur } from '../enums/artworkBlur';
-import { usePodcastSettings } from '../hooks/usePodcastSettings';
 import { useSettings } from '../contexts/SettingsProvider';
+import { ArtworkBlur } from '../enums/artworkBlur';
+import { ArtworkSize } from '../enums/artworkSize';
+import { useArtwork } from '../hooks/useArtwork';
+import { useBodyScroller } from '../hooks/useBodyScroller';
+import { usePodcastSettings } from '../hooks/usePodcastSettings';
+import { Core, refreshArtwork } from '../services/core';
+import { AppBar } from '../ui-components/appbar';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewHeader, ViewTabs } from '../ui-components/view';
 
 interface PodcastDetailProps {
   podcastId: string;

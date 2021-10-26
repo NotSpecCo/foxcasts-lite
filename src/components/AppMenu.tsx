@@ -1,15 +1,15 @@
 import { h } from 'preact';
 import { route } from 'preact-router';
-import styles from './AppMenu.module.css';
-import { Tile } from '../ui-components/Tile';
-import { SelectablePriority } from '../hooks/useDpad';
-import { AppBar } from '../ui-components/appbar';
-import { useListNav } from '../hooks/useListNav';
 import { useSettings } from '../contexts/SettingsProvider';
+import { SelectablePriority } from '../hooks/useDpad';
+import { useListNav } from '../hooks/useListNav';
 import { ListLayout } from '../models';
+import { AppBar } from '../ui-components/appbar';
 import { SelectableBase } from '../ui-components/hoc';
 import { SvgIcon } from '../ui-components/SvgIcon';
+import { Tile } from '../ui-components/Tile';
 import { Typography } from '../ui-components/Typography';
+import styles from './AppMenu.module.css';
 
 interface AppMenuProps {
   onClose: () => void;

@@ -1,13 +1,10 @@
 .root {
-  /* padding: 28px 0; */
   background-size: 120vh;
   background-repeat: no-repeat;
-  /* background-position: top center; */
   background-attachment: fixed;
 }
 
 .backdrop {
-  /* backdrop-filter: blur(5px); */
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -31,7 +28,6 @@ body[data-compact-layout] .root.noHeader {
 .content {
   overflow-x: hidden;
   background: rgba(0, 0, 0, 0.75);
-  /* backdrop-filter: blur(5px); */
 }
 
 .menubar {

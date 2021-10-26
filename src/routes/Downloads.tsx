@@ -1,16 +1,16 @@
-import { Fragment, h, VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import { Download, DownloadStatus } from '../models';
-import { route } from 'preact-router';
-import ProgressBar from '../components/ProgressBar';
 import { formatFileSize } from 'foxcasts-core/lib/utils';
+import { Fragment, h, VNode } from 'preact';
+import { route } from 'preact-router';
+import { useEffect, useState } from 'preact/hooks';
+import ProgressBar from '../components/ProgressBar';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
-import styles from './Downloads.module.css';
-import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
-import { Typography } from '../ui-components/Typography';
-import { ListItem } from '../ui-components/list';
 import { useListNav } from '../hooks/useListNav';
+import { Download, DownloadStatus } from '../models';
+import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import styles from './Downloads.module.css';
 
 interface Props {
   selectedItemId?: string;

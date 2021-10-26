@@ -12,10 +12,6 @@
   justify-content: space-between;
   padding: 5px;
 }
-[data-selected].row {
-  background-color: var(--highlight-bg-color);
-  color: var(--highlight-text-color);
-}
 
 .actions {
   padding: 5px;

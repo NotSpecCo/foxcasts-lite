@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
 import { useView } from '../../contexts/ViewProvider';
-import { SelectablePriority } from '../../hooks/useDpad';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';

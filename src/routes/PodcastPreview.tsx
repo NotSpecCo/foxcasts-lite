@@ -5,8 +5,8 @@ import { useBodyScroller } from '../hooks/useBodyScroller';
 import { Core, subscribeByFeed, subscribeByPodexId } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { ListItem } from '../ui-components/list';
+import { Typography } from '../ui-components/Typography';
 import { View, ViewContent } from '../ui-components/view';
-import styles from './PodcastPreview.module.css';
 
 interface PodcastPreviewProps {
   podexId?: string;
@@ -77,12 +77,12 @@ export default function PodcastPreview({
   return (
     <View>
       <ViewContent>
-        <div className={styles.details}>
-          <div className={styles.title}>{podcast?.title}</div>
-          <div className={styles.author}>{podcast?.author}</div>
-          <div>{podcast?.description}</div>
-        </div>
-        {loading ? <div className={styles.message}>Loading feed...</div> : null}
+        {loading ? <Typography>Loading feed...</Typography> : null}
+        <Typography type="title">{podcast?.title}</Typography>
+        <Typography color="accent" padding="horizontal">
+          {podcast?.author}
+        </Typography>
+        <Typography>{podcast?.description}</Typography>
         {episodes.map((episode) => (
           <ListItem
             key={episode.fileUrl}

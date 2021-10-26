@@ -1,13 +1,12 @@
 import { h, VNode } from 'preact';
-import { SelectablePriority, useDpad } from '../hooks/useDpad';
-import { useNavKeys } from '../hooks/useNavKeys';
+import { SelectablePriority } from '../hooks/useDpad';
+import { useListNav } from '../hooks/useListNav';
 import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
+import { SelectableBase } from './hoc';
 import styles from './Menu.module.css';
-import { useListNav } from '../hooks/useListNav';
 import { SvgIcon } from './SvgIcon';
 import { Typography } from './Typography';
-import { SelectableBase } from './hoc';
 
 export type MenuOption = {
   id: string;

@@ -1,19 +1,19 @@
+import { format } from 'date-fns';
+import { Episode, Podcast } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { format } from 'date-fns';
 import { useEffect, useState } from 'preact/hooks';
+import { useSettings } from '../contexts/SettingsProvider';
+import { ArtworkBlur } from '../enums/artworkBlur';
+import { ArtworkSize } from '../enums/artworkSize';
+import { useArtwork } from '../hooks/useArtwork';
 import { SelectablePriority } from '../hooks/useDpad';
-import { Episode, Podcast } from 'foxcasts-core/lib/types';
+import { useListNav } from '../hooks/useListNav';
+import { usePodcastSettings } from '../hooks/usePodcastSettings';
 import { Core, refreshArtwork } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { List, ListItem } from '../ui-components/list';
-import { View, ViewTabs, ViewContent, ViewHeader } from '../ui-components/view';
-import { useListNav } from '../hooks/useListNav';
-import { useArtwork } from '../hooks/useArtwork';
-import { ArtworkSize } from '../enums/artworkSize';
-import { ArtworkBlur } from '../enums/artworkBlur';
-import { usePodcastSettings } from '../hooks/usePodcastSettings';
-import { useSettings } from '../contexts/SettingsProvider';
+import { View, ViewContent, ViewHeader, ViewTabs } from '../ui-components/view';
 
 interface PodcastDetailProps {
   podcastId: string;

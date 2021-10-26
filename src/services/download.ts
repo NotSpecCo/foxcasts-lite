@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Subject } from 'rxjs';
 import { Dexie } from 'dexie';
 import 'dexie-observable';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
+import { Subject } from 'rxjs';
 import { Download, DownloadStatus } from '../models';
 import { Core } from './core';
 import { KaiOS } from './kaios';

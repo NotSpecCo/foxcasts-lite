@@ -1,17 +1,17 @@
 import { Fragment, h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { AppBarListItem, AppBarListOption, AppBarOption } from '.';
 import { AppMenu } from '../../components/AppMenu';
+import { useView } from '../../contexts/ViewProvider';
 import { SelectablePriority } from '../../hooks/useDpad';
 import { useListNav } from '../../hooks/useListNav';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { delay } from '../../utils/delay';
-import styles from './AppBar.module.css';
 import { IconName, SvgIcon } from '../SvgIcon';
-import { AppBarListItem, AppBarListOption, AppBarOption } from '.';
-import { useView } from '../../contexts/ViewProvider';
 import { Typography } from '../Typography';
+import styles from './AppBar.module.css';
 
 export type AppBarItem = {
   id: string;

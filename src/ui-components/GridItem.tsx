@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
-import { SelectablePriority } from '../hooks/useDpad';
 import { ComponentBaseProps, SelectableProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './GridItem.module.css';

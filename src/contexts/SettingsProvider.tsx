@@ -1,4 +1,4 @@
-import { h, createContext, VNode } from 'preact';
+import { createContext, h, VNode } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import {
   AppBarSize,

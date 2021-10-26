@@ -1,13 +1,13 @@
 import { h, VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import { OPML } from '../services/opml';
-import { StorageFile } from '../models';
 import { route } from 'preact-router';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import { useEffect, useState } from 'preact/hooks';
+import { useListNav } from '../hooks/useListNav';
+import { StorageFile } from '../models';
+import { OPML } from '../services/opml';
 import { AppBar } from '../ui-components/appbar';
 import { ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
-import { useListNav } from '../hooks/useListNav';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 export default function OpmlFiles(): VNode {
   const [files, setFiles] = useState<StorageFile[] | null>(null);

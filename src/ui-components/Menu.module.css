@@ -11,25 +11,7 @@
   z-index: 9;
   background-color: var(--menu-bg-color);
   color: var(--menu-text-color);
-  /* border-top: 2px solid var(--accent-text-color); */
 }
-
-/* .title {
-  background-color: var(--header-bg-color);
-  color: var(--header-text-color);
-  padding: 0 5px 3px 5px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-bottom: 1px solid var(--divider-color);
-} */
-
-/* .content {
-  background-color: var(--menu-bg-color);
-  color: var(--menu-text-color);
-  border-top: 2px solid var(--accent-text-color);
-  overflow-y: auto;
-  overflow-x: hidden;
-} */
 
 .options {
   flex: 1;

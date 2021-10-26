@@ -1,8 +1,8 @@
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import { scrollIntoView, setSelected } from '../utils/navigation';
+import { scrollIntoView } from '../utils/navigation';
 import { updateRouteWithSelectedId } from '../utils/route';
-import { SelectablePriority, useDpad } from './useDpad';
+import { SelectablePriority } from './useDpad';
 
 type ElementWithId = Element & {
   selectableId: string;

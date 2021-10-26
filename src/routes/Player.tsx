@@ -1,3 +1,4 @@
+import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { Chapter } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
 import { h, VNode } from 'preact';
@@ -5,23 +6,21 @@ import { route } from 'preact-router';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import ProgressBar from '../components/ProgressBar';
 import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
+import { useSettings } from '../contexts/SettingsProvider';
+import { useView } from '../contexts/ViewProvider';
+import { ArtworkSize } from '../enums/artworkSize';
+import { useArtwork } from '../hooks/useArtwork';
 import { SelectablePriority } from '../hooks/useDpad';
+import { useListNav } from '../hooks/useListNav';
 import { useNavKeys } from '../hooks/useNavKeys';
+import { Settings } from '../models';
 import { Core } from '../services/core';
+import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent } from '../ui-components/view';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
-import { useSettings } from '../contexts/SettingsProvider';
-import { clamp } from '../utils/clamp';
-import { useArtwork } from '../hooks/useArtwork';
-import { ArtworkSize } from '../enums/artworkSize';
-import { PlaybackStatus } from 'foxcasts-core/lib/enums';
-import { useListNav } from '../hooks/useListNav';
-import { View, ViewContent } from '../ui-components/view';
-import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { Typography } from '../ui-components/Typography';
-import { ListItem } from '../ui-components/list';
-import { Settings } from '../models';
-import { useView } from '../contexts/ViewProvider';
 
 export default function Player(): VNode {
   const [chapters, setChapters] = useState<Chapter[] | null>(null);

@@ -1,14 +1,14 @@
+import { SearchResult } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import styles from './Search.module.css';
-import { SearchResult } from 'foxcasts-core/lib/types';
-import { Core } from '../services/core';
-import { View, ViewContent } from '../ui-components/view';
-import { ListItem } from '../ui-components/list';
 import { useListNav } from '../hooks/useListNav';
-import { Input } from '../ui-components/form';
+import { Core } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
+import { Input } from '../ui-components/form';
+import { ListItem } from '../ui-components/list';
+import { View, ViewContent } from '../ui-components/view';
+import styles from './Search.module.css';
 
 interface SearchProps {
   q?: string;

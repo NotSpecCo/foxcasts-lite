@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useNavKeys } from '../../hooks/useNavKeys';
-import { ComponentBaseProps, SelectableProps, Option } from '../../models';
+import { ComponentBaseProps, Option, SelectableProps } from '../../models';
 import { getIndexWrap } from '../../utils/array';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { SelectableBase } from '../hoc';

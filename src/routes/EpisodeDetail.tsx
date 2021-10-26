@@ -1,22 +1,22 @@
-import { Fragment, h, VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import styles from './EpisodeDetail.module.css';
-import { usePlayer } from '../contexts/playerContext';
+import format from 'date-fns/format';
+import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { formatFileSize, formatTime } from 'foxcasts-core/lib/utils';
-import { Core } from '../services/core';
+import { Fragment, h, VNode } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
-import { View, ViewContent } from '../ui-components/view';
-import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { useBodyScroller } from '../hooks/useBodyScroller';
-import { PlaybackStatus } from 'foxcasts-core/lib/enums';
-import { LabeledRow } from '../ui-components/LabeledRow';
-import { Typography } from '../ui-components/Typography';
-import { useArtwork } from '../hooks/useArtwork';
+import { usePlayer } from '../contexts/playerContext';
 import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
+import { useArtwork } from '../hooks/useArtwork';
+import { useBodyScroller } from '../hooks/useBodyScroller';
 import { usePodcastSettings } from '../hooks/usePodcastSettings';
-import format from 'date-fns/format';
+import { Core } from '../services/core';
+import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { LabeledRow } from '../ui-components/LabeledRow';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent } from '../ui-components/view';
+import styles from './EpisodeDetail.module.css';
 
 interface EpisodeDetailProps {
   episodeId: string;

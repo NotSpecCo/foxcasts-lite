@@ -1,14 +1,14 @@
+import { format } from 'date-fns';
+import { EpisodeExtended, EpisodeFilterId } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import styles from './Lists.module.css';
-import { EpisodeExtended, EpisodeFilterId } from 'foxcasts-core/lib/types';
-import { Core } from '../services/core';
 import { useListNav } from '../hooks/useListNav';
-import { View, ViewContent, ViewTabs } from '../ui-components/view';
+import { Core } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { ListItem } from '../ui-components/list';
-import { format } from 'date-fns';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewTabs } from '../ui-components/view';
 
 interface Props {
   listId: EpisodeFilterId;
@@ -42,11 +42,9 @@ export default function Lists({ listId, selectedItemId }: Props): VNode {
         onChange={(tabId): boolean => route(`/lists/${tabId}`, true)}
       />
       <ViewContent>
-        {loading && (
-          <div className={`kui-sec ${styles.message}`}>Loading...</div>
-        )}
+        {loading && <Typography>Loading...</Typography>}
         {!loading && episodes.length === 0 && (
-          <div className={`kui-sec ${styles.message}`}>No episodes.</div>
+          <Typography>No episodes.</Typography>
         )}
         {episodes.map((episode, i) => (
           <ListItem

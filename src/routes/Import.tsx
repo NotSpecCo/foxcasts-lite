@@ -1,16 +1,16 @@
 import { h, VNode } from 'preact';
+import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import styles from './Import.module.css';
+import { SelectablePriority } from '../hooks/useDpad';
+import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
 import { OPML } from '../services/opml';
-import { route } from 'preact-router';
-import { useListNav } from '../hooks/useListNav';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 import { AppBar } from '../ui-components/appbar';
-import { Typography } from '../ui-components/Typography';
-import { SelectableBase } from '../ui-components/hoc';
 import { Button } from '../ui-components/buttons';
-import { SelectablePriority } from '../hooks/useDpad';
+import { SelectableBase } from '../ui-components/hoc';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import styles from './Import.module.css';
 
 type Feed = {
   id: number;

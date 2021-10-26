@@ -5,8 +5,6 @@ interface Options {
   stopPropagation?: boolean;
 }
 
-type TestHook<T> = any;
-
 export function useShortcutKeys<T>(
   items: T[],
   options: Options = {},
