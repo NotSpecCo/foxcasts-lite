@@ -1,13 +1,16 @@
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { SelectablePriority, useDpad } from '../hooks/useDpad';
-import { View } from '../ui-components';
 import styles from './Import.module.css';
-import { Button } from '../ui-components/Button';
 import { Core } from '../services/core';
 import { OPML } from '../services/opml';
-import { Typography } from '../ui-components/Typography';
 import { route } from 'preact-router';
+import { useListNav } from '../hooks/useListNav';
+import { View, ViewContent, ViewHeader } from '../ui-components2/view';
+import { AppBar } from '../ui-components2/appbar';
+import { Typography } from '../ui-components2/Typography';
+import { SelectableBase } from '../ui-components2/hoc';
+import { Button } from '../ui-components2/buttons';
+import { SelectablePriority } from '../hooks/useDpad';
 
 type Feed = {
   id: number;
@@ -53,8 +56,8 @@ export default function Import(props: Props): VNode {
     route('/podcasts');
   }
 
-  useDpad({
-    onEnter: (itemId) => {
+  const { selectedId } = useListNav({
+    onSelect: (itemId) => {
       if (itemId === 'btnImport') {
         subscribeToPodcasts();
         return;
@@ -74,36 +77,43 @@ export default function Import(props: Props): VNode {
   });
 
   return (
-    <View headerText="Import OPML">
-      <div className={styles.message}>
-        Choose which podcasts you want, then click the{' '}
-        <span className={styles.accent}>Import</span> button below.
-      </div>
-      {feeds === undefined && (
-        <Typography align="center">Loading...</Typography>
-      )}
-      {feeds?.length === 0 && (
-        <Typography align="center">No feeds found.</Typography>
-      )}
-      {feeds?.map((podcast) => (
-        <div
-          key={podcast.id}
-          data-selectable-priority={SelectablePriority.Low}
-          data-selectable-id={podcast.id}
-          className={styles.row}
-        >
-          {podcast.title}
-          <input type="checkbox" checked={podcast.selected} />
+    <View>
+      <ViewHeader>Import OPML</ViewHeader>
+      <ViewContent>
+        <div className={styles.message}>
+          Choose which podcasts you want, then click the{' '}
+          <span className={styles.accent}>Import</span> button below.
         </div>
-      ))}
-      <div className={styles.actions}>
-        <Button
-          text={subscribing ? 'Importing...' : 'Import'}
-          data-selectable-priority={SelectablePriority.Low}
-          data-selectable-id="btnImport"
-          disabled={subscribing || feeds?.every((a) => !a.selected)}
-        />
-      </div>
+        {feeds === undefined && (
+          <Typography align="center">Loading...</Typography>
+        )}
+        {feeds?.length === 0 && (
+          <Typography align="center">No feeds found.</Typography>
+        )}
+        {feeds?.map((podcast) => (
+          <SelectableBase
+            key={podcast.id}
+            id={podcast.id}
+            selected={selectedId === podcast.id.toString()}
+            className={styles.row}
+          >
+            {podcast.title}
+            <input type="checkbox" checked={podcast.selected} />
+          </SelectableBase>
+        ))}
+        <div className={styles.actions}>
+          <Button
+            text={subscribing ? 'Importing...' : 'Import'}
+            selectable={{
+              priority: SelectablePriority.Low,
+              id: 'btnImport',
+              selected: selectedId === 'btnImport',
+            }}
+            disabled={subscribing || feeds?.every((a) => !a.selected)}
+          />
+        </div>
+      </ViewContent>
+      <AppBar />
     </View>
   );
 }
