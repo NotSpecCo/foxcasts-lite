@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { ComponentBaseProps, SelectableProps } from '../models';
-import { SelectableBase, withSelectable } from './hoc';
+import { SelectableBase } from './hoc';
 import { IconName, SvgIcon } from './SvgIcon';
 import styles from './Tile.module.css';
 
@@ -11,7 +11,7 @@ type Props = ComponentBaseProps &
     backText: string;
   };
 
-export const Tile = withSelectable<Props>((props: Props): h.JSX.Element => {
+export function Tile(props: Props): h.JSX.Element {
   return (
     <SelectableBase {...props.selectable} className={styles.root}>
       <div className={styles.content}>
@@ -22,4 +22,4 @@ export const Tile = withSelectable<Props>((props: Props): h.JSX.Element => {
       </div>
     </SelectableBase>
   );
-});
+}
