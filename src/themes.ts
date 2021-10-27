@@ -61,7 +61,7 @@ export const themes: ThemeConfig[] = [
     id: Theme.Dark,
     settings: {
       accentHeader: false,
-      accentHighlight: false,
+      accentHighlight: true,
       accentText: true,
     },
     values: {

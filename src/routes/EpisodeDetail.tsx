@@ -10,7 +10,6 @@ import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
 import { useBodyScroller } from '../hooks/useBodyScroller';
-import { usePodcastSettings } from '../hooks/usePodcastSettings';
 import { Core } from '../services/core';
 import { AppBar, AppBarAction } from '../ui-components/appbar';
 import { LabeledRow } from '../ui-components/LabeledRow';
@@ -34,7 +33,6 @@ export default function EpisodeDetail({
     size: ArtworkSize.Large,
     blur: ArtworkBlur.Some,
   });
-  const { settings: podcastSettings } = usePodcastSettings(episode?.podcastId);
 
   useEffect(() => {
     Core.getEpisodeById(parseInt(episodeId, 10)).then((result) => {
@@ -94,7 +92,7 @@ export default function EpisodeDetail({
   return (
     <View
       backgroundImageUrl={artwork?.image}
-      accentColor={artwork?.palette?.[podcastSettings.accentColor]}
+      accentColor={episode?.accentColor}
       enableCustomColor={true}
     >
       <ViewContent>

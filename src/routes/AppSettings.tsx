@@ -39,7 +39,7 @@ export default function AppSettings({ tabId }: Props): VNode {
       setSettings({
         ...settings,
         theme: value as Theme,
-        accentColor: theme.values.appAccentColor.value.slice(1),
+        accentColor: theme.values.appAccentColor.slice(1),
       });
     } else {
       setSetting(key, value);
