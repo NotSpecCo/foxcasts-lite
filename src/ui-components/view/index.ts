@@ -1,4 +1,5 @@
 export * from './View';
 export * from './ViewContent';
 export * from './ViewHeader';
-export * from './ViewTabs';
+export * from './ViewTab';
+export * from './ViewTabBar';

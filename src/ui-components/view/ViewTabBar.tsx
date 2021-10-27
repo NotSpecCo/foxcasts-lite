@@ -3,7 +3,7 @@ import { useView } from '../../contexts/ViewProvider';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
-import styles from './ViewTabs.module.css';
+import styles from './ViewTabBar.module.css';
 
 export type Tab = {
   id: string;
@@ -16,7 +16,11 @@ type Props = ComponentBaseProps & {
   onChange?: (tabId: string) => void;
 };
 
-export function ViewTabs({ tabs, selectedId, ...props }: Props): VNode<Props> {
+export function ViewTabBar({
+  tabs,
+  selectedId,
+  ...props
+}: Props): VNode<Props> {
   const { appbarOpen } = useView();
   function changeTab(change: number): void {
     const currentIndex = tabs.findIndex((a) => a.id === selectedId);

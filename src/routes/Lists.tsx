@@ -8,7 +8,7 @@ import { Core } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewTabs } from '../ui-components/view';
+import { View, ViewContent, ViewTabBar } from '../ui-components/view';
 
 interface Props {
   listId: EpisodeFilterId;
@@ -33,7 +33,7 @@ export default function Lists({ listId, selectedItemId }: Props): VNode {
 
   return (
     <View>
-      <ViewTabs
+      <ViewTabBar
         tabs={[
           { id: 'recent', label: 'most recent ' },
           { id: 'inProgress', label: 'in progress' },

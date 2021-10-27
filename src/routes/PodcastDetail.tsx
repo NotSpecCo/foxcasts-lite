@@ -14,7 +14,7 @@ import { Core, refreshArtwork } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { List, ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewHeader, ViewTabs } from '../ui-components/view';
+import { View, ViewHeader, ViewTab, ViewTabBar } from '../ui-components/view';
 
 interface PodcastDetailProps {
   podcastId: string;
@@ -63,7 +63,7 @@ export default function PodcastDetail({
       enableCustomColor={true}
     >
       <ViewHeader>{podcast?.title}</ViewHeader>
-      <ViewTabs
+      <ViewTabBar
         tabs={[
           { id: 'episodes', label: 'episodes' },
           { id: 'info', label: 'podcast' },
@@ -71,35 +71,31 @@ export default function PodcastDetail({
         selectedId={tabId}
         onChange={(tabId) => route(`/podcast/${podcastId}/${tabId}`, true)}
       />
-      {tabId === 'episodes' && (
-        <ViewContent>
-          <List>
-            {episodes?.map((episode, i) => (
-              <ListItem
-                key={episode.id}
-                selectable={{
-                  id: episode.id,
-                  shortcut: i + 1 <= 9 ? i + 1 : undefined,
-                  selected: episode.id.toString() === selectedItemId,
-                }}
-                primaryText={episode.title}
-                secondaryText={format(new Date(episode.date), 'cccc, MMMM do')}
-              />
-            ))}
-          </List>
-        </ViewContent>
-      )}
-      {tabId === 'info' && (
-        <ViewContent>
-          <Typography type="title" padding="horizontal">
-            {podcast?.title}
-          </Typography>
-          <Typography padding="horizontal" color="accent">
-            {podcast?.author}
-          </Typography>
-          <Typography>{podcast?.description}</Typography>
-        </ViewContent>
-      )}
+      <ViewTab tabId="episodes" activeTabId={tabId}>
+        <List>
+          {episodes?.map((episode, i) => (
+            <ListItem
+              key={episode.id}
+              selectable={{
+                id: episode.id,
+                shortcut: i + 1 <= 9 ? i + 1 : undefined,
+                selected: episode.id.toString() === selectedItemId,
+              }}
+              primaryText={episode.title}
+              secondaryText={format(new Date(episode.date), 'cccc, MMMM do')}
+            />
+          ))}
+        </List>
+      </ViewTab>
+      <ViewTab tabId="info" activeTabId={tabId}>
+        <Typography type="title" padding="horizontal">
+          {podcast?.title}
+        </Typography>
+        <Typography padding="horizontal" color="accent">
+          {podcast?.author}
+        </Typography>
+        <Typography>{podcast?.description}</Typography>
+      </ViewTab>
       <AppBar
         centerText="Select"
         options={

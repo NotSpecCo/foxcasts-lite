@@ -113,7 +113,7 @@ export default function App(): VNode {
         <Route path="/episode/:episodeId" component={EpisodeDetail} />
         <Route path="/lists/:listId" component={Lists} />
         <Route path="/player" component={Player} />
-        <Route path="/settings" component={AppSettings} />
+        <Route path="/settings/:tabId" component={AppSettings} />
         <Route path="/files" component={OpmlFiles} />
         <Route path="/import/:filePath" component={Import} />
         <Route path="/downloads" component={Downloads} />
