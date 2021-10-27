@@ -6,6 +6,7 @@ import { PlayerProvider } from '../contexts/playerContext';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
 import { ToastProvider } from '../contexts/ToastProvider';
 import { ViewProvider } from '../contexts/ViewProvider';
+import { TextSize } from '../models';
 import AppSettings from '../routes/AppSettings';
 import Downloads from '../routes/Downloads';
 import EpisodeDetail from '../routes/EpisodeDetail';
@@ -102,6 +103,18 @@ export default function App(): VNode {
     // } else {
     //   document.documentElement.removeAttribute('data-compact-layout');
     // }
+
+    const fontSize = {
+      [TextSize.Smallest]: 9,
+      [TextSize.Small]: 10,
+      [TextSize.Medium]: 11,
+      [TextSize.Large]: 12,
+      [TextSize.Largest]: 13,
+    };
+    document.documentElement.style.setProperty(
+      '--base-font-size',
+      `${fontSize[settings.textSize]}px`
+    );
   }, [settings]);
 
   return (
