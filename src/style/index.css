@@ -23,6 +23,8 @@
 
   --input-border-color: #aaa;
 
+  --scrim-color: rgba(0, 0, 0, 0.7);
+
   --base-font-size: 10px;
   font-size: var(--base-font-size);
 }

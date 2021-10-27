@@ -10,30 +10,7 @@
   height: 100vh;
 }
 .scrim {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.root.noHeader,
-body[data-compact-layout] .root.noHeader {
-  padding-top: 0;
-}
-
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10;
-}
-
-.content {
-  overflow-x: hidden;
-  background: rgba(0, 0, 0, 0.75);
-}
-
-.menubar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  background-color: var(--scrim-color);
 }
 
 @media only screen and (min-width: 241px) {

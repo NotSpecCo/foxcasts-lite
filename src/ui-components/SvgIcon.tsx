@@ -1,6 +1,5 @@
 import { Fragment, h } from 'preact';
 import { ComponentBaseProps } from '../models';
-import styles from './SvgIcon.module.css';
 
 export type IconName =
   | 'cancel'
@@ -150,8 +149,7 @@ export function SvgIcon({
 
   return (
     <svg
-      className={styles.root}
-      style={{ fill: color ? color : 'inherit' }}
+      style={{ fill: color ? color : 'var(--primary-text-color)' }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox={`0 0 24 24`}
       height={`${size}px`}

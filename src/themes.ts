@@ -53,10 +53,11 @@ export const themes: ThemeConfig[] = [
         headerTextColor: { variable: 'header-text-color', value: 'rgba(255, 255, 255, 0.88)' },
         menuBgColor: { variable: 'menu-bg-color', value: '#ffffff' },
         menuTextColor: { variable: 'menu-text-color', value: 'rgba(0, 0, 0, 0.88)' },
-        menubarBgColor: { variable: 'menubar-bg-color', value: '#000000' },
-        menubarBarColor: { variable: 'menubar-bar-color', value: '#000000' },
-        menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(255, 255, 255, 0.88)' },
+        menubarBgColor: { variable: 'menubar-bg-color', value: '#eaeaea' },
+        menubarBarColor: { variable: 'menubar-bar-color', value: '#eaeaea' },
+        menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(0, 0, 0, 0.88)' },
         inputBorderColor: { variable: 'input-border-color', value: '#aaaaaa' },
+        scrimColor: { variable: 'scrim-color', value: 'rgba(255, 255, 255, .7' },
     }
 },
 {
@@ -83,6 +84,7 @@ export const themes: ThemeConfig[] = [
         menubarBarColor: { variable: 'menubar-bar-color', value: '#242424' },
         menubarTextColor: { variable: 'menubar-text-color', value: 'rgba(255, 255, 255, 0.88)' },
         inputBorderColor: { variable: 'input-border-color', value: '#aaaaaa' },
+        scrimColor: { variable: 'scrim-color', value: 'rgba(0, 0, 0, .7' },
     }
 },
 // {
