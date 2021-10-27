@@ -1,3 +1,4 @@
+import kebabcase from 'lodash.kebabcase';
 import { Fragment, h, VNode } from 'preact';
 import { route, Route, Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
@@ -62,8 +63,8 @@ export default function App(): VNode {
     const theme = themes.find((a) => a.id === settings.theme) || themes[0];
     for (const id in theme.values) {
       document.documentElement.style.setProperty(
-        `--${theme.values[id].variable}`,
-        theme.values[id].value
+        `--${kebabcase(id)}`,
+        theme.values[id]
       );
     }
     document.documentElement.style.setProperty(
@@ -72,7 +73,7 @@ export default function App(): VNode {
     );
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', theme.values.headerBgColor.value);
+      ?.setAttribute('content', theme.values.headerBgColor);
 
     if (theme.settings.accentText) {
       document.documentElement.style.setProperty(
@@ -86,7 +87,6 @@ export default function App(): VNode {
         `#${settings.accentColor}`
       );
     }
-    // document.documentElement.style.setProperty('--base-font-size', `10px`);
     if (theme.settings.accentHeader) {
       document.documentElement.style.setProperty(
         '--header-bg-color',
@@ -96,13 +96,6 @@ export default function App(): VNode {
         .querySelector('meta[name="theme-color"]')
         ?.setAttribute('content', `#${settings.accentColor}`);
     }
-
-    // Layout
-    document.documentElement.setAttribute('data-compact-layout', '');
-    // if (settings.displayDensity === DisplayDensity.Compact) {
-    // } else {
-    //   document.documentElement.removeAttribute('data-compact-layout');
-    // }
 
     const fontSize = {
       [TextSize.Smallest]: 9,
