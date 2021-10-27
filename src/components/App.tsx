@@ -13,8 +13,7 @@ import Import from '../routes/Import';
 import Lists from '../routes/Lists';
 import OpmlFiles from '../routes/OpmlFiles';
 import Player from '../routes/Player';
-import PodcastEpisodes from '../routes/PodcastEpisodes';
-import PodcastInfo from '../routes/PodcastInfo';
+import PodcastDetail from '../routes/PodcastDetail';
 import PodcastPreview from '../routes/PodcastPreview';
 import Podcasts from '../routes/Podcasts';
 import Search from '../routes/Search';
@@ -110,11 +109,7 @@ export default function App(): VNode {
       <Router>
         <Route path="/search" component={Search} />
         <Route path="/podcast/preview" component={PodcastPreview} />
-        <Route
-          path="/podcast/:podcastId/episodes"
-          component={PodcastEpisodes}
-        />
-        <Route path="/podcast/:podcastId/info" component={PodcastInfo} />
+        <Route path="/podcast/:podcastId/:tabId" component={PodcastDetail} />
         <Route path="/episode/:episodeId" component={EpisodeDetail} />
         <Route path="/lists/:listId" component={Lists} />
         <Route path="/player" component={Player} />
