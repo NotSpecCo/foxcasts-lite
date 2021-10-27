@@ -4,7 +4,7 @@ import { ComponentBaseProps, Option, SelectableProps } from '../../models';
 import { getIndexWrap } from '../../utils/array';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { SelectableBase } from '../hoc';
-import { SvgIcon } from '../SvgIcon';
+import { IconSize, SvgIcon } from '../SvgIcon';
 import styles from './AppBarListOption.module.css';
 
 export type AppBarOption = {
@@ -59,11 +59,11 @@ export function AppBarListOption(props: Props): h.JSX.Element {
     >
       {props.label}
       <div className={styles.flex} />
-      <SvgIcon icon="chevronLeft" size="small" />
+      <SvgIcon icon="chevronLeft" size={IconSize.Small} />
       <div className={styles.label}>
         {props.options.find((a) => a.id === props.selectedOptionId)?.label}
       </div>
-      <SvgIcon icon="chevronRight" size="small" />
+      <SvgIcon icon="chevronRight" size={IconSize.Small} />
       {/* </div> */}
     </SelectableBase>
   );

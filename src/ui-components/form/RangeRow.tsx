@@ -3,7 +3,7 @@ import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
 import { SelectableBase } from '../hoc';
-import { SvgIcon } from '../SvgIcon';
+import { IconSize, SvgIcon } from '../SvgIcon';
 import styles from './RangeRow.module.css';
 
 type Props = ComponentBaseProps &
@@ -59,11 +59,11 @@ export function RangeRow(props: Props): h.JSX.Element {
     >
       {props.label}
       <div className={styles.flex} />
-      <SvgIcon icon="chevronLeft" size="small" />
+      <SvgIcon icon="chevronLeft" size={IconSize.Small} />
       <div className={styles.value}>{`${props.value}${
         props.valueLabel ? ` ${props.valueLabel}` : ''
       }`}</div>
-      <SvgIcon icon="chevronRight" size="small" />
+      <SvgIcon icon="chevronRight" size={IconSize.Small} />
     </SelectableBase>
   );
 }
