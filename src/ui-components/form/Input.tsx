@@ -65,7 +65,7 @@ export function Input({ type = 'text', ...props }: Props): h.JSX.Element {
         size={props.size}
         maxLength={props.size}
         placeholder={props.placeholder}
-        onChange={(ev): void => props.onChange?.(ev.currentTarget.value)}
+        onInput={(ev): void => props.onChange?.(ev.currentTarget.value)}
       />
     </SelectableBase>
   );
