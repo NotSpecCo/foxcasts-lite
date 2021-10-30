@@ -65,7 +65,7 @@ export default function RecentEpisodes({
 
   useListNav({
     initialSelectedId: episodes.length > 0 ? selectedItemId : undefined,
-    onSelect: (itemId) => itemId && route(`/episode/${itemId}`),
+    onSelect: (itemId) => itemId && route(`/episode/${itemId}/info`),
   });
 
   return (
@@ -83,7 +83,7 @@ export default function RecentEpisodes({
           { id: 'week4', label: `week ${format(dates.week4.from, 'w')}` },
         ]}
         selectedId={tabId}
-        onChange={(tabId): boolean => route(`/episodes/recent/${tabId}`, true)}
+        onChange={(tabId): boolean => route(`/lists/recent/${tabId}`, true)}
       />
       <ViewContent>
         {loading && <Typography>Loading...</Typography>}

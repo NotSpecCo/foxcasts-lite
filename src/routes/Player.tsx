@@ -1,5 +1,4 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
-import { Chapter } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
@@ -10,20 +9,17 @@ import { useSettings } from '../contexts/SettingsProvider';
 import { useView } from '../contexts/ViewProvider';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
-import { SelectablePriority } from '../hooks/useDpad';
-import { useListNav } from '../hooks/useListNav';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { Settings } from '../models';
 import { Core } from '../services/core';
+import { KaiOS } from '../services/kaios';
 import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
 import { View, ViewContent } from '../ui-components/view';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
 
 export default function Player(): VNode {
-  const [chapters, setChapters] = useState<Chapter[] | null>(null);
   const [status, setStatus] = useState<PlaybackProgress>({
     playing: false,
     currentTime: 0,
@@ -42,18 +38,7 @@ export default function Player(): VNode {
     const episode = player.episode;
 
     if (!episode) {
-      setChapters(null);
       return;
-    }
-
-    if (episode?.chapters) {
-      setChapters(episode.chapters);
-    } else {
-      Core.getEpisodeChapters(
-        episode.id,
-        episode.podexId,
-        episode.remoteFileUrl
-      ).then((res) => setChapters(res));
     }
 
     const status = player.getStatus();
@@ -100,31 +85,22 @@ export default function Player(): VNode {
           },
       { id: 'stop', label: 'Stop', actionFn: () => player.stop() },
       {
-        id: 'episode',
-        label: 'View episode',
-        actionFn: () => route(`/episode/${player.episode!.id}`),
+        id: 'chapters',
+        label: 'View chapters',
+        actionFn: () => route(`/episode/${player.episode!.id}/chapters`),
       },
       {
-        id: 'podcast',
-        label: 'View podcast',
-        actionFn: () => route(`/podcast/${player.episode!.podcastId}/info`),
+        id: 'episode',
+        label: 'View episode',
+        actionFn: () => route(`/episode/${player.episode!.id}/info`),
       },
     ];
   }, [player.episode, status.playing]);
 
-  const { selectedId } = useListNav({
-    priority: SelectablePriority.Low,
-    onSelect: (itemId) => {
-      if (itemId.startsWith('chapter') && chapters) {
-        const index = parseInt(itemId.split('_')[1], 10);
-        player.goTo(Math.floor(chapters[index].startTime / 1000));
-        setStatus(player.getStatus());
-      }
-    },
-  });
-
   useNavKeys(
     {
+      ArrowUp: () => KaiOS.system.volumeUp(),
+      ArrowDown: () => KaiOS.system.volumeDown(),
       ArrowLeft: () => setStatus(player.jump(-settings.playbackSkipBack)),
       ArrowRight: () => setStatus(player.jump(settings.playbackSkipForward)),
       Enter: () => {
@@ -134,7 +110,7 @@ export default function Player(): VNode {
         status.playing ? setStatus(player.pause()) : setStatus(player.play());
       },
     },
-    { disabled: selectedId !== undefined || view.appbarOpen }
+    { disabled: view.appbarOpen }
   );
 
   const playbackOptions = useMemo(() => {
@@ -190,34 +166,12 @@ export default function Player(): VNode {
               <span
                 className={styles.speed}
               >{`${settings.playbackSpeed}x`}</span>
-              {chapters && chapters.length > 0 ? (
-                <div className={styles.chevronDown} />
-              ) : null}
             </div>
           </div>
         </div>
-        <div className={styles.chapters}>
-          {chapters?.map((chapter, i) => {
-            let text = formatTime(chapter.startTime / 1000);
-            if (chapter.endTime) {
-              text = `${text} - ${formatTime(chapter.endTime / 1000)}`;
-            }
-            return (
-              <ListItem
-                key={chapter.startTime}
-                primaryText={chapter.title}
-                accentText={text}
-                selectable={{
-                  id: `chapter_${i}`,
-                  selected: selectedId === `chapter_${i}`,
-                }}
-              />
-            );
-          })}
-        </div>
       </ViewContent>
       <AppBar
-        centerText={selectedId ? 'Select' : status.playing ? 'Pause' : 'Play'}
+        centerText={status.playing ? 'Pause' : 'Play'}
         actions={actionList}
         options={[
           {

@@ -39,7 +39,7 @@ export default function PodcastDetail({
     usePodcastSettings(podcastId);
 
   useEffect(() => {
-    Core.getEpisodesByPodcastId(podcastId, { page: 0, numItems: 30 }).then(
+    Core.getEpisodesByPodcastId(podcastId, { offset: 0, limit: 10 }).then(
       (result) => {
         setEpisodes(result);
       }
@@ -53,7 +53,7 @@ export default function PodcastDetail({
     priority: SelectablePriority.Low,
     initialSelectedId: episodes ? selectedItemId : undefined,
     updateRouteOnChange: true,
-    onSelect: (id) => route(`/episode/${id}`),
+    onSelect: (id) => route(`/episode/${id}/info`),
   });
 
   return (
@@ -132,7 +132,7 @@ export default function PodcastDetail({
         ]}
         onOptionChange={async (id, value) => {
           setSetting(id, value);
-          const accentColor = artwork?.palette?.[value as keyof Palette];
+          const accentColor = podcast?.palette?.[value as keyof Palette];
           if (podcast && accentColor) {
             const updated = await Core.updatePodcast(podcast?.id, {
               accentColor,

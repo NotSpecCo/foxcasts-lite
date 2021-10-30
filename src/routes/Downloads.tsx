@@ -60,7 +60,7 @@ export default function Downloads({ selectedItemId }: Props): VNode {
   }
 
   function viewEpisode(episodeId: string | number): void {
-    route(`/episode/${episodeId}`);
+    route(`/episode/${episodeId}/info`);
   }
 
   const { selectedId } = useListNav({

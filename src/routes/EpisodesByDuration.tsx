@@ -66,7 +66,7 @@ export default function EpisodesByDuration({
 
   useListNav({
     initialSelectedId: episodes.length > 0 ? selectedItemId : undefined,
-    onSelect: (itemId) => itemId && route(`/episode/${itemId}`),
+    onSelect: (itemId) => itemId && route(`/episode/${itemId}/info`),
   });
 
   return (
@@ -81,9 +81,7 @@ export default function EpisodesByDuration({
           { id: 'longest', label: '60+ mins' },
         ]}
         selectedId={tabId}
-        onChange={(tabId): boolean =>
-          route(`/episodes/duration/${tabId}`, true)
-        }
+        onChange={(tabId): boolean => route(`/lists/duration/${tabId}`, true)}
       />
       <ViewContent>
         {loading && <Typography>Loading...</Typography>}

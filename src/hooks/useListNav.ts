@@ -31,7 +31,10 @@ export function useListNav({
 
   // Restore scroll position
   useEffect(() => {
-    if (!props.initialSelectedId) return;
+    if (!props.initialSelectedId) {
+      setSelectedId(undefined);
+      return;
+    }
     const scroller: HTMLElement | null = document.querySelector(
       `[data-selectable-scroller='${priority}']`
     );
@@ -104,12 +107,33 @@ export function useListNav({
       return;
 
     const data = getHighestPriorityElements();
-    if (!data || priority !== data?.priority) {
-      // setSelectedId(undefined);
+
+    if (data && priority !== data.priority) {
+      return;
+    } else if (!data || priority !== data?.priority) {
+      const scroller: HTMLElement | null = document.querySelector(
+        `[data-selectable-scroller='${priority}']`
+      );
+      if (!scroller) {
+        return;
+      } else if (ev.key === 'ArrowUp' && scroller.scrollTop > 0) {
+        // Scroll up
+        scroller.scrollBy({
+          top: -scroller.clientHeight / 3,
+          behavior: 'smooth',
+        });
+      } else if (
+        ev.key === 'ArrowDown' &&
+        scroller.offsetHeight + scroller.scrollTop < scroller.scrollHeight
+      ) {
+        // Scroll down
+        scroller.scrollBy({
+          top: scroller.clientHeight / 3,
+          behavior: 'smooth',
+        });
+      }
       return;
     }
-
-    // console.log('elements', data);
 
     // TODO: Handle input elements
     ev.preventDefault();
