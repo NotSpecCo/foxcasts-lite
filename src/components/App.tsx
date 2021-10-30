@@ -11,6 +11,7 @@ import { TextSize } from '../models';
 import AppSettings from '../routes/AppSettings';
 import Downloads from '../routes/Downloads';
 import EpisodeDetail from '../routes/EpisodeDetail';
+import EpisodesByDuration from '../routes/EpisodesByDuration';
 import Import from '../routes/Import';
 import Lists from '../routes/Lists';
 import OpmlFiles from '../routes/OpmlFiles';
@@ -18,6 +19,7 @@ import Player from '../routes/Player';
 import PodcastDetail from '../routes/PodcastDetail';
 import PodcastPreview from '../routes/PodcastPreview';
 import Podcasts from '../routes/Podcasts';
+import RecentEpisodes from '../routes/RecentEpisodes';
 import Search from '../routes/Search';
 import { themes } from '../themes';
 import { Toast } from '../ui-components/Toast';
@@ -117,7 +119,9 @@ export default function App(): VNode {
         <Route path="/podcast/preview" component={PodcastPreview} />
         <Route path="/podcast/:podcastId/:tabId" component={PodcastDetail} />
         <Route path="/episode/:episodeId" component={EpisodeDetail} />
-        <Route path="/lists/:listId" component={Lists} />
+        <Route path="/lists" component={Lists} />
+        <Route path="/lists/recent/:tabId" component={RecentEpisodes} />
+        <Route path="/lists/duration/:tabId" component={EpisodesByDuration} />
         <Route path="/player" component={Player} />
         <Route path="/settings/:tabId" component={AppSettings} />
         <Route path="/files" component={OpmlFiles} />

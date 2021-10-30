@@ -33,7 +33,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
         pageRoute = '/player';
         break;
       case 'lists':
-        pageRoute = '/lists/recent';
+        pageRoute = '/lists';
         break;
       case 'downloads':
         pageRoute = '/downloads';
