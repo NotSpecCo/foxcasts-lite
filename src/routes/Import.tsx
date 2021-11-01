@@ -46,7 +46,7 @@ export default function Import(props: Props): VNode {
     setSubscribing(true);
     for (const podcast of feeds.filter((a) => a.selected)) {
       console.log(`Subscribing to ${podcast.title}`);
-      await Core.subscribeByFeedUrl(podcast.feedUrl)
+      await Core.subscribe({ feedUrl: podcast.feedUrl })
         .then(() => console.log(`Subscribed to ${podcast.title}`))
         .catch((err) =>
           console.log(`Failed to subscribe to ${podcast.title}`, err)

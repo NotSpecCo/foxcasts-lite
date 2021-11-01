@@ -6,7 +6,7 @@ import { SelectablePriority } from '../hooks/useDpad';
 import { useListNav } from '../hooks/useListNav';
 import { usePodcasts } from '../hooks/usePodcasts';
 import { ListLayout, OpmlFeed } from '../models';
-import { subscribeByFeed } from '../services/core';
+import { subscribe } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { OPML } from '../services/opml';
 import { AppBar } from '../ui-components/appbar';
@@ -35,11 +35,13 @@ export default function Podcasts(props: Props): VNode {
   async function seedData(): Promise<void> {
     try {
       // Need to do one at a time so KaiOS can handle it
-      await subscribeByFeed('https://feed.syntax.fm/rss');
-      await subscribeByFeed('https://shoptalkshow.com/feed/podcast');
-      await subscribeByFeed('https://feeds.simplecast.com/JoR28o79'); // React Podcast
-      await subscribeByFeed('https://feeds.feedwrench.com/js-jabber.rss');
-      await subscribeByFeed('https://feeds.megaphone.fm/vergecast');
+      await subscribe({ feedUrl: 'https://feed.syntax.fm/rss' });
+      await subscribe({ feedUrl: 'https://shoptalkshow.com/feed/podcast' });
+      await subscribe({ feedUrl: 'https://feeds.simplecast.com/JoR28o79' }); // React Podcast
+      await subscribe({
+        feedUrl: 'https://feeds.feedwrench.com/js-jabber.rss',
+      });
+      await subscribe({ feedUrl: 'https://feeds.megaphone.fm/vergecast' });
 
       console.log('seed success');
     } catch (err) {

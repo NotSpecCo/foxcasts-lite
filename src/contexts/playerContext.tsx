@@ -75,8 +75,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     episodeId: number,
     resume = false
   ): Promise<PlaybackProgress> {
-    const data = await Core.getEpisodeById(episodeId);
-    const podcast = await Core.getPodcastById(data.podcastId);
+    const data = await Core.getEpisode({ id: episodeId });
 
     if (!data) return defaultStatus;
 
@@ -100,7 +99,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
         new Notification(data.podcastTitle, {
           tag: 'playback',
           body: data.title,
-          // icon: podcast.artwork,
+          icon: data.artwork,
           silent: true,
           renotify: false,
         })

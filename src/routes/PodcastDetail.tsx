@@ -39,12 +39,14 @@ export default function PodcastDetail({
     usePodcastSettings(podcastId);
 
   useEffect(() => {
-    Core.getEpisodesByPodcastId(podcastId, { offset: 0, limit: 10 }).then(
-      (result) => {
-        setEpisodes(result);
-      }
-    );
-    Core.getPodcastById(parseInt(podcastId, 10)).then((result) =>
+    Core.getEpisodes({
+      podcastIds: [Number(podcastId)],
+      offset: 0,
+      limit: 10,
+    }).then((result) => {
+      setEpisodes(result);
+    });
+    Core.getPodcast({ id: Number(podcastId) }).then((result) =>
       setPodcast(result)
     );
   }, [podcastId]);
@@ -122,12 +124,14 @@ export default function PodcastDetail({
             id: 'unsubscribe',
             label: 'Unsubscribe',
             actionFn: (): Promise<boolean> =>
-              Core.unsubscribe(podcastId).then(() => route('/podcasts', true)),
+              Core.unsubscribe({ id: Number(podcastId) }).then(() =>
+                route('/podcasts', true)
+              ),
           },
           {
             id: 'refreshArtwork',
             label: 'Refresh Artwork',
-            actionFn: (): Promise<void> => refreshArtwork(podcastId),
+            actionFn: (): Promise<void> => refreshArtwork(Number(podcastId)),
           },
         ]}
         onOptionChange={async (id, value) => {
@@ -137,7 +141,7 @@ export default function PodcastDetail({
             const updated = await Core.updatePodcast(podcast?.id, {
               accentColor,
             });
-            setPodcast(updated);
+            // setPodcast(updated);
           }
         }}
       />

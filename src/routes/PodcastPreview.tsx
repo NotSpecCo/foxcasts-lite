@@ -2,7 +2,7 @@ import { ApiEpisode, ApiPodcast } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { useBodyScroller } from '../hooks/useBodyScroller';
-import { Core, subscribeByFeed, subscribeByPodexId } from '../services/core';
+import { Core, subscribe } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
@@ -33,45 +33,26 @@ export default function PodcastPreview({
       setLoading(false);
     });
 
-    if (podexId) {
-      Core.getPodcastByPodexId(parseInt(podexId, 10)).then((result) =>
-        setSubscribed(!!result)
-      );
-    } else if (feedUrl) {
-      Core.getPodcastByFeedUrl(feedUrl).then((result) =>
-        setSubscribed(!!result)
-      );
-    }
+    Core.getPodcast({ podexId: Number(podexId), feedUrl }).then((result) =>
+      setSubscribed(!!result)
+    );
   }, [podexId, feedUrl]);
 
   useBodyScroller({});
 
   async function subscribeToPodcast(): Promise<void> {
-    const id = podexId
-      ? await subscribeByPodexId(podexId)
-      : feedUrl
-      ? await subscribeByFeed(feedUrl)
-      : null;
-
+    const id = await subscribe({ podexId: Number(podexId), feedUrl });
     if (id) {
       setSubscribed(true);
     }
   }
 
   async function unsubscribeFromPodcast(): Promise<void> {
-    if (podexId) {
-      await Core.unsubscribeByPodexId(parseInt(podexId, 10))
-        .then(() => setSubscribed(false))
-        .catch((err) =>
-          console.error('Failed to unsubscribe from podcast', err.message)
-        );
-    } else if (feedUrl) {
-      await Core.unsubscribeByFeedUrl(feedUrl)
-        .then(() => setSubscribed(false))
-        .catch((err) =>
-          console.error('Failed to unsubscribe from podcast', err.message)
-        );
-    }
+    await Core.unsubscribe({ podexId: Number(podexId), feedUrl })
+      .then(() => setSubscribed(false))
+      .catch((err) =>
+        console.error('Failed to unsubscribe from podcast', err.message)
+      );
   }
 
   return (

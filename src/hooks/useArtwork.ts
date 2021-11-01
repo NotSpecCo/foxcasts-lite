@@ -35,7 +35,7 @@ export function useArtwork(
     setLoading(true);
     setError(false);
 
-    Core.getArtwork(podcastId, { size, blur, greyscale })
+    Core.getArtwork({ podcastId: Number(podcastId), size, blur, greyscale })
       .then((res) => {
         setArtwork(res);
         setLoading(false);
