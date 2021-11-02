@@ -24,7 +24,8 @@ export type AppBarAction = {
   label: string;
   disabled?: boolean;
   inProgress?: boolean;
-  actionFn: () => Promise<unknown> | void;
+  keepOpen?: boolean;
+  actionFn: () => any;
 };
 
 type Props = ComponentBaseProps & {
@@ -61,6 +62,10 @@ export function AppBar({
 
   const view = useView();
 
+  useEffect(() => {
+    return () => view.setAppbarOpen(false);
+  });
+
   async function openMenu(): Promise<void> {
     if (openState !== MenuState.Closed || actions.length === 0) return;
 
@@ -84,7 +89,8 @@ export function AppBar({
     updateRouteOnChange: false,
     onSelect: async (itemId) => {
       const action = actions.find((a) => a.id === itemId?.split('_')?.[1]);
-      if (!action || actions.some((a) => a.inProgress)) return;
+      if (!action || action.disabled || actions.some((a) => a.inProgress))
+        return;
 
       setActions((prevActions) =>
         prevActions.map((a) =>
@@ -94,6 +100,10 @@ export function AppBar({
 
       await action.actionFn();
       // TODO: Toast when error? Success?
+
+      if (action.keepOpen) {
+        return;
+      }
 
       setActions((prevActions) =>
         prevActions.map((a) =>
@@ -173,6 +183,7 @@ export function AppBar({
                   <AppBarListItem
                     key={action.id}
                     text={`${action.label}${action.inProgress ? '...' : ''}`}
+                    disabled={action.disabled}
                     selectable={{
                       priority: SelectablePriority.Medium,
                       id: `action_${action.id}`,

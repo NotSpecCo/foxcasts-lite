@@ -7,6 +7,9 @@
   background-color: var(--highlight-bg-color);
   color: var(--highlight-text-color);
 }
+.root.disabled {
+  opacity: 0.5;
+}
 
 .shortcut {
   color: var(--accent-text-color);

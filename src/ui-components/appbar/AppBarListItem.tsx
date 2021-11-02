@@ -8,6 +8,7 @@ type Props = ComponentBaseProps &
   SelectableProps & {
     icon?: string;
     text: string;
+    disabled?: boolean;
   };
 
 export function AppBarListItem(props: Props): h.JSX.Element {
@@ -16,7 +17,8 @@ export function AppBarListItem(props: Props): h.JSX.Element {
       {...props.selectable}
       className={joinClasses(
         styles.root,
-        ifClass(props.selectable?.selected, styles.selected)
+        ifClass(props.selectable?.selected, styles.selected),
+        ifClass(props.disabled, styles.disabled)
       )}
     >
       {props.selectable?.shortcut ? (
