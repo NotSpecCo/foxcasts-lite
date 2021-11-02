@@ -1,5 +1,5 @@
 import { FoxcastsCore } from 'foxcasts-core';
-import { PodcastQuery } from 'foxcasts-core/lib/models';
+import { PodcastQuery } from 'foxcasts-core/lib/types';
 import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
 
