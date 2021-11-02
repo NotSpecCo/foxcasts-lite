@@ -119,6 +119,7 @@ export default function Podcasts(props: Props): VNode {
           {
             id: 'import',
             label: 'Import OPML',
+            keepOpen: true,
             actionFn: (): void => {
               route('/files');
             },

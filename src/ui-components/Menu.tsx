@@ -22,8 +22,9 @@ type Props = ComponentBaseProps & {
 export function Menu({ options = [], ...props }: Props): VNode {
   const { selectedId } = useListNav({
     priority: SelectablePriority.Medium,
+    updateRouteOnChange: false,
     onSelect: (itemId) => {
-      if (itemId) props.onSelect?.(itemId);
+      props.onSelect?.(itemId);
     },
   });
 

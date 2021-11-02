@@ -87,11 +87,13 @@ export default function Player(): VNode {
       {
         id: 'chapters',
         label: 'View chapters',
+        keepOpen: true,
         actionFn: () => route(`/episode/${player.episode!.id}/chapters`),
       },
       {
         id: 'episode',
         label: 'View episode',
+        keepOpen: true,
         actionFn: () => route(`/episode/${player.episode!.id}/info`),
       },
     ];

@@ -1,8 +1,11 @@
-import { EpisodeFilterOptions } from 'foxcasts-core/lib/types';
+import { FilterList } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
+import { useEffect } from 'react';
 import { useListNav } from '../hooks/useListNav';
+import { FilterViewOptions } from '../models';
+import { Core } from '../services/core';
 import { AppBar } from '../ui-components/appbar';
 import { ListItem } from '../ui-components/list';
 import { View, ViewContent, ViewHeader } from '../ui-components/view';
@@ -14,24 +17,21 @@ interface Props {
 type List = {
   id: string;
   title: string;
-  editable: boolean;
-  filter?: Partial<EpisodeFilterOptions>;
 };
 
 export default function Lists({ selectedItemId }: Props): VNode {
-  const [lists, setLists] = useState<List[]>([
-    { id: 'recent', title: 'Recent Episodes', editable: false },
-    { id: 'duration', title: 'Episodes by Duration', editable: false },
-    // {
-    //   id: 'downloaded',
-    //   title: 'Downloaded',
-    //   editable: true,
-    //   filter: { isDownloaded: true, limit: 30 },
-    // },
+  const [defaultLists] = useState<List[]>([
+    { id: 'recent', title: 'Recent Episodes' },
+    { id: 'duration', title: 'Episodes by Duration' },
   ]);
+  const [lists, setLists] = useState<FilterList<FilterViewOptions>[]>();
+
+  useEffect(() => {
+    Core.getFilterLists<FilterViewOptions>().then(setLists);
+  }, []);
 
   useListNav({
-    initialSelectedId: lists.length > 0 ? selectedItemId : undefined,
+    initialSelectedId: lists ? selectedItemId : undefined,
     onSelect: (itemId) => {
       switch (itemId) {
         case 'recent':
@@ -51,7 +51,7 @@ export default function Lists({ selectedItemId }: Props): VNode {
     <View>
       <ViewHeader>Lists</ViewHeader>
       <ViewContent>
-        {lists.map((list, i) => (
+        {defaultLists.map((list, i) => (
           <ListItem
             key={list.id}
             primaryText={list.title}
@@ -62,8 +62,65 @@ export default function Lists({ selectedItemId }: Props): VNode {
             }}
           />
         ))}
+        {lists?.map((list, i) => (
+          <ListItem
+            key={list.id}
+            primaryText={list.title}
+            selectable={{
+              id: list.id,
+              shortcut:
+                i + 1 + defaultLists.length <= 9
+                  ? i + 1 + defaultLists.length
+                  : undefined,
+              selected: list.id.toString() === selectedItemId,
+            }}
+          />
+        ))}
       </ViewContent>
-      <AppBar />
+      <AppBar
+        actions={[
+          {
+            id: 'newList',
+            label: 'New List',
+            keepOpen: true,
+            actionFn: () =>
+              Core.addFilterList<FilterViewOptions>({
+                title: 'My Custom List',
+                query: {},
+                isFavorite: 0,
+                viewOptions: {
+                  primaryText: 'title',
+                  secondaryText: 'podcastTitle',
+                  accentText: null,
+                  showCover: true,
+                },
+              }).then((id) => route(`/lists/${id}/edit`)),
+          },
+          {
+            id: 'editList',
+            label: 'Edit List',
+            disabled:
+              !selectedItemId ||
+              selectedItemId === 'recent' ||
+              selectedItemId === 'duration',
+            keepOpen: true,
+            actionFn: () => route(`/lists/${selectedItemId}/edit`),
+          },
+          {
+            id: 'deleteList',
+            label: 'Delete List',
+            disabled:
+              !selectedItemId ||
+              selectedItemId === 'recent' ||
+              selectedItemId === 'duration',
+            actionFn: () =>
+              Core.deleteFilterLists([Number(selectedItemId)]).then(() => {
+                setLists(lists?.filter((a) => a.id !== Number(selectedItemId)));
+                route(`/lists`, true);
+              }),
+          },
+        ]}
+      />
     </View>
   );
 }

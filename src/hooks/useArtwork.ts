@@ -7,7 +7,7 @@ import { Core } from '../services/core';
 type Options = {
   size: ArtworkSize;
   blur?: ArtworkBlur;
-  greyscale?: boolean;
+  greyscale?: 1 | 0;
 };
 
 type Return = {

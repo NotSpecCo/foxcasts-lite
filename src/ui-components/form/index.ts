@@ -1,3 +1,5 @@
+export * from './CheckboxRow';
+export * from './DatePicker';
 export * from './InlineSelect';
 export * from './Input';
 export * from './RangeRow';

@@ -35,17 +35,21 @@ export function useListNav({
       setSelectedId(undefined);
       return;
     }
-    const scroller: HTMLElement | null = document.querySelector(
-      `[data-selectable-scroller='${priority}']`
-    );
-    const element: HTMLElement | null = document.querySelector(
-      `[data-selectable-id='${props.initialSelectedId}']`
-    );
 
-    if (scroller && element) {
-      setSelectedId(props.initialSelectedId);
-      scrollIntoView(scroller, element, 'auto');
-    }
+    // Allow time for components to be rendered
+    setTimeout(() => {
+      const scroller: HTMLElement | null = document.querySelector(
+        `[data-selectable-scroller='${priority}']`
+      );
+      const element: HTMLElement | null = document.querySelector(
+        `[data-selectable-id='${props.initialSelectedId}']`
+      );
+
+      if (scroller && element) {
+        setSelectedId(props.initialSelectedId);
+        scrollIntoView(scroller, element, 'auto');
+      }
+    }, 50);
   }, [props.initialSelectedId]);
 
   function getHighestPriorityElements() {

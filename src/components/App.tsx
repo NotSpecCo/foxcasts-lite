@@ -1,3 +1,4 @@
+import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import kebabcase from 'lodash.kebabcase';
 import { Fragment, h, VNode } from 'preact';
 import { route, Route, Router } from 'preact-router';
@@ -7,11 +8,13 @@ import { PlayerProvider } from '../contexts/playerContext';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
 import { ToastProvider } from '../contexts/ToastProvider';
 import { ViewProvider } from '../contexts/ViewProvider';
-import { TextSize } from '../models';
+import { FilterViewOptions, TextSize } from '../models';
 import AppSettings from '../routes/AppSettings';
 import Downloads from '../routes/Downloads';
 import EpisodeDetail from '../routes/EpisodeDetail';
 import EpisodesByDuration from '../routes/EpisodesByDuration';
+import FilterListEditor from '../routes/FilterListEditor';
+import FilterListViewer from '../routes/FilterListViewer';
 import Import from '../routes/Import';
 import Lists from '../routes/Lists';
 import OpmlFiles from '../routes/OpmlFiles';
@@ -21,6 +24,7 @@ import PodcastPreview from '../routes/PodcastPreview';
 import Podcasts from '../routes/Podcasts';
 import RecentEpisodes from '../routes/RecentEpisodes';
 import Search from '../routes/Search';
+import { Core } from '../services/core';
 import { themes } from '../themes';
 import { Toast } from '../ui-components/Toast';
 
@@ -58,6 +62,44 @@ export default function App(): VNode {
     // )
     //   .then((res) => console.log('res', res))
     //   .catch((err) => console.log('err', err));
+
+    Core.getFilterLists().then((res) => {
+      if (res.length === 0) {
+        Core.addFilterList<FilterViewOptions>({
+          title: 'In Progress',
+          query: { playbackStatuses: [PlaybackStatus.InProgress] },
+          isFavorite: 0,
+          viewOptions: {
+            primaryText: 'title',
+            secondaryText: 'podcastTitle',
+            accentText: null,
+            showCover: false,
+          },
+        });
+        Core.addFilterList<FilterViewOptions>({
+          title: 'Favorite Episodes',
+          query: { isFavorite: 1 },
+          isFavorite: 0,
+          viewOptions: {
+            primaryText: 'title',
+            secondaryText: 'podcastTitle',
+            accentText: null,
+            showCover: false,
+          },
+        });
+        Core.addFilterList<FilterViewOptions>({
+          title: 'Downloaded Episodes',
+          query: { isDownloaded: 1 },
+          isFavorite: 0,
+          viewOptions: {
+            primaryText: 'title',
+            secondaryText: 'podcastTitle',
+            accentText: null,
+            showCover: false,
+          },
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -120,6 +162,8 @@ export default function App(): VNode {
         <Route path="/podcast/:podcastId/:tabId" component={PodcastDetail} />
         <Route path="/episode/:episodeId/:tabId" component={EpisodeDetail} />
         <Route path="/lists" component={Lists} />
+        <Route path="/lists/:listId" component={FilterListViewer} />
+        <Route path="/lists/:listId/edit" component={FilterListEditor} />
         <Route path="/lists/recent/:tabId" component={RecentEpisodes} />
         <Route path="/lists/duration/:tabId" component={EpisodesByDuration} />
         <Route path="/player" component={Player} />

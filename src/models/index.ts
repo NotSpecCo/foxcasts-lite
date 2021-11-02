@@ -1,5 +1,6 @@
 export * from './ComponentBaseProps';
 export * from './Download';
+export * from './FilterViewOptions';
 export * from './OpmlFeed';
 export * from './OpmlFile';
 export * from './Option';

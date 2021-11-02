@@ -314,7 +314,7 @@ export class DownloadManager {
       });
       await Core.updateEpisode(episode.id, {
         localFileUrl: filePath,
-        isDownloaded: false,
+        isDownloaded: 0,
       });
     } else if (
       download.status === DownloadStatus.Complete ||
@@ -387,7 +387,7 @@ export class DownloadManager {
     if (chunk.endBytes === chunk.totalBytes) {
       data.status = DownloadStatus.Complete;
       await Core.updateEpisode(download.episodeId, {
-        isDownloaded: true,
+        isDownloaded: 1,
       });
     }
 
