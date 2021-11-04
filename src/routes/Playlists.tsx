@@ -11,9 +11,10 @@ import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 interface Props {
   selectedItemId?: string;
+  episodeId?: string;
 }
 
-export default function Playlists({ selectedItemId }: Props): VNode {
+export default function Playlists({ selectedItemId, episodeId }: Props): VNode {
   const [lists, setLists] = useState<Playlist[]>();
 
   useEffect(() => {
@@ -22,17 +23,31 @@ export default function Playlists({ selectedItemId }: Props): VNode {
 
   useListNav({
     initialSelectedId: lists ? selectedItemId : undefined,
-    onSelect: (itemId) => route(`/playlists/${itemId}`, true),
+    onSelect: async (itemId) => {
+      const list = lists?.find((a) => a.id === Number(itemId));
+      if (!list) return;
+      if (episodeId && !list.episodeIds.includes(Number(episodeId))) {
+        await Core.updatePlaylist(Number(itemId), {
+          episodeIds: [...list.episodeIds, Number(episodeId)],
+        });
+        history.back();
+      } else if (episodeId) {
+        history.back();
+      } else {
+        route(`/playlists/${itemId}`);
+      }
+    },
   });
 
   return (
     <View>
-      <ViewHeader>Playlists</ViewHeader>
+      <ViewHeader>{episodeId ? 'Choose a Playlist' : 'Playlists'}</ViewHeader>
       <ViewContent>
         {lists?.map((list, i) => (
           <ListItem
             key={list.id}
             primaryText={list.title}
+            secondaryText={`${list.episodeIds.length} episodes`}
             selectable={{
               id: list.id,
               shortcut: i + 1 <= 9 ? i + 1 : undefined,
@@ -46,14 +61,17 @@ export default function Playlists({ selectedItemId }: Props): VNode {
           {
             id: 'newList',
             label: 'New Playlist',
-            keepOpen: true,
-            actionFn: () =>
-              Core.addPlaylist({
-                title: 'My Custom Playlist',
-                episodeIds: [1, 2, 3, 4, 5],
+            keepOpen: !!episodeId,
+            actionFn: async () => {
+              await Core.addPlaylist({
+                title: 'New Playlist',
+                episodeIds: episodeId ? [Number(episodeId)] : [],
                 isFavorite: 0,
                 removeEpisodeAfterListening: false,
-              }).then((id) => route(`/playlists/${id}/edit`)),
+              });
+              await Core.getPlaylists().then(setLists);
+              if (episodeId) history.back();
+            },
           },
           {
             id: 'editList',

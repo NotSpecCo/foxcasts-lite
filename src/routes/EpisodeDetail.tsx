@@ -81,8 +81,14 @@ export default function EpisodeDetail({
         actionFn: () => addToQueue(episode.id),
       },
       {
+        id: 'addToPlaylist',
+        label: 'Add to playlist',
+        keepOpen: true,
+        actionFn: () => route(`/playlists?episodeId=${episodeId}`),
+      },
+      {
         id: 'markPlayed',
-        label: 'Mark as Played',
+        label: 'Mark as played',
         actionFn: () =>
           Core.updateEpisode(Number(episodeId), {
             playbackStatus: PlaybackStatus.Played,
@@ -91,7 +97,7 @@ export default function EpisodeDetail({
       },
       {
         id: 'markUnplayed',
-        label: 'Mark as Unplayed',
+        label: 'Mark as unplayed',
         actionFn: () =>
           Core.updateEpisode(Number(episodeId), {
             playbackStatus: PlaybackStatus.Unplayed,
