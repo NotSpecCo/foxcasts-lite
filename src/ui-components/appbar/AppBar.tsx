@@ -64,7 +64,7 @@ export function AppBar({
 
   useEffect(() => {
     return () => view.setAppbarOpen(false);
-  });
+  }, []);
 
   async function openMenu(): Promise<void> {
     if (openState !== MenuState.Closed || actions.length === 0) return;

@@ -31,10 +31,13 @@ export function ViewTabBar({
     props.onChange?.(tabs[newIndex].id);
   }
 
-  useNavKeys({
-    ArrowLeft: () => !appbarOpen && !homeMenuOpen && changeTab(-1),
-    ArrowRight: () => !appbarOpen && !homeMenuOpen && changeTab(1),
-  });
+  useNavKeys(
+    {
+      ArrowLeft: () => changeTab(-1),
+      ArrowRight: () => changeTab(1),
+    },
+    { disabled: appbarOpen || homeMenuOpen }
+  );
 
   function orderTabs(): Tab[] {
     const newTabs = [...tabs];
