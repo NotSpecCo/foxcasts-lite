@@ -1,4 +1,4 @@
-import { h, createContext, VNode } from 'preact';
+import { createContext, h, VNode } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import { asyncScheduler } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
@@ -44,7 +44,7 @@ export function DownloadManagerProvider(
   }, []);
 
   async function addToQueue(episodeId: number): Promise<void> {
-    const episode = await Core.getEpisodeById(episodeId);
+    const episode = await Core.getEpisode({ id: episodeId });
     if (!episode) return;
 
     await manager.addToQueue(episode);

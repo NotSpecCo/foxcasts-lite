@@ -1,13 +1,15 @@
-import { Fragment, h, VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import { SelectablePriority, useDpad } from '../hooks/useDpad';
-import { ListItem, MenuOption, View } from '../ui-components';
-import { Download, DownloadStatus } from '../models';
-import { Typography } from '../ui-components/Typography';
-import { route } from 'preact-router';
-import ProgressBar from '../components/ProgressBar';
 import { formatFileSize } from 'foxcasts-core/lib/utils';
+import { Fragment, h, VNode } from 'preact';
+import { route } from 'preact-router';
+import { useEffect, useState } from 'preact/hooks';
+import ProgressBar from '../components/ProgressBar';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
+import { useListNav } from '../hooks/useListNav';
+import { Download, DownloadStatus } from '../models';
+import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
 import styles from './Downloads.module.css';
 
 interface Props {
@@ -58,18 +60,18 @@ export default function Downloads({ selectedItemId }: Props): VNode {
   }
 
   function viewEpisode(episodeId: string | number): void {
-    route(`/episode/${episodeId}`);
+    route(`/episode/${episodeId}/info`);
   }
 
-  useDpad({
-    onEnter: (itemId) => viewEpisode(itemId),
-    onChange: (itemId) => {
-      if (itemId) {
-        route(`/downloads/?selectedItemId=${itemId}`, true);
-      } else {
-        route(`/downloads/`, true);
-      }
-    },
+  const { selectedId } = useListNav({
+    onSelect: (itemId) => viewEpisode(itemId),
+    // onChange: (itemId) => {
+    //   if (itemId) {
+    //     route(`/downloads/?selectedItemId=${itemId}`, true);
+    //   } else {
+    //     route(`/downloads/`, true);
+    //   }
+    // },
   });
 
   async function runTest(): Promise<void> {
@@ -95,8 +97,10 @@ export default function Downloads({ selectedItemId }: Props): VNode {
     return 'Complete';
   }
 
-  function getActions(): MenuOption[] {
-    const actions = [{ id: 'test', label: 'Test' }];
+  function getActions(): AppBarAction[] {
+    const actions: AppBarAction[] = [
+      { id: 'test', label: 'Test', actionFn: () => runTest() },
+    ];
 
     const item = getSelectedItem();
     if (!item) return actions;
@@ -105,106 +109,116 @@ export default function Downloads({ selectedItemId }: Props): VNode {
       item.status === DownloadStatus.Queued ||
       item.status === DownloadStatus.Downloading
     ) {
-      actions.push({ id: 'remove', label: 'Cancel download' });
+      actions.push({
+        id: 'remove',
+        label: 'Cancel download',
+        actionFn: () => {
+          item && removeFromQueue(item.episodeId);
+          route(`/downloads/`, true);
+        },
+      });
     } else if (
       item.status === DownloadStatus.Cancelled ||
       item.status === DownloadStatus.Error
     ) {
-      actions.push({ id: 'retry', label: 'Retry download' });
+      actions.push({
+        id: 'retry',
+        label: 'Retry download',
+        actionFn: () => item && addToQueue(item.episodeId),
+      });
     } else {
-      actions.push({ id: 'remove', label: 'Remove from list' });
+      actions.push({
+        id: 'remove',
+        label: 'Remove from list',
+        actionFn: () => {
+          item && removeFromQueue(item.episodeId);
+          route(`/downloads/`, true);
+        },
+      });
     }
 
     return actions;
   }
 
-  function handleAction(id: string): void {
-    const selectedItem = getSelectedItem();
-    switch (id) {
-      case 'test':
-        runTest();
-        break;
-      case 'remove':
-        selectedItem && removeFromQueue(selectedItem.episodeId);
-        route(`/downloads/`, true);
-        break;
-      case 'retry':
-        selectedItem && addToQueue(selectedItem.episodeId);
-        break;
-    }
-  }
-
   return (
-    <View headerText="Downloads" actions={getActions()} onAction={handleAction}>
-      <div
-        data-selectable-priority={SelectablePriority.Low}
-        data-selectable-id=""
-      />
-      {downloads.downloading.map((item) => (
-        <div key={item.episodeId}>
-          <ListItem
-            itemId={item.episodeId}
-            primaryText={item.episodeTitle}
-            secondaryText={item.podcastTitle}
-          />
-          <div className={styles.progressContainer}>
-            <ProgressBar
-              position={(item.currentBytes / item.totalBytes) * 100 || 0}
-              className={styles.progressBar}
+    <View>
+      <ViewHeader>Downloads</ViewHeader>
+      <ViewContent>
+        {downloads.downloading.map((item) => (
+          <div key={item.episodeId}>
+            <ListItem
+              primaryText={item.episodeTitle}
+              secondaryText={item.podcastTitle}
+              selectable={{
+                id: item.episodeId,
+                selected: selectedId === item.episodeId.toString(),
+              }}
             />
-            <div className={styles.progress}>
-              <Typography type="caption">{getStatusMessage(item)}</Typography>
+            <div className={styles.progressContainer}>
+              <ProgressBar
+                position={(item.currentBytes / item.totalBytes) * 100 || 0}
+                className={styles.progressBar}
+              />
+              <div className={styles.progress}>
+                <Typography type="caption">{getStatusMessage(item)}</Typography>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-      <Typography type="caption" color="accent" padding="both">
-        Queue
-      </Typography>
-      {downloads.queued.map((download) => (
-        <ListItem
-          key={download.episodeId}
-          itemId={download.episodeId}
-          primaryText={download.episodeTitle}
-          secondaryText={download.podcastTitle}
-        />
-      ))}
-      {downloads.queued.length === 0 && (
-        <Typography padding="both">Nothing in the queue</Typography>
-      )}
-      {downloads.failed.length > 0 ? (
-        <Fragment>
-          <Typography type="caption" color="accent" padding="both">
-            Failed
-          </Typography>
-          {downloads.failed.map((download) => (
-            <ListItem
-              key={download.episodeId}
-              itemId={download.episodeId}
-              primaryText={download.episodeTitle}
-              secondaryText={download.podcastTitle}
-            />
-          ))}
-        </Fragment>
-      ) : null}
-      <Typography type="caption" color="accent" padding="both">
-        Completed
-      </Typography>
-      {downloads.completed.map((download) => (
-        <ListItem
-          key={download.episodeId}
-          itemId={download.episodeId}
-          primaryText={download.episodeTitle}
-          secondaryText={download.podcastTitle}
-        />
-      ))}
-      {downloads.completed.length === 0 && (
-        <Typography padding="both">No recent downloads</Typography>
-      )}
-      <div
-        data-selectable-priority={SelectablePriority.Low}
-        data-selectable-id=""
-      />
+        ))}
+        <Typography type="caption" color="accent" padding="both">
+          Queue
+        </Typography>
+        {downloads.queued.map((download) => (
+          <ListItem
+            key={download.episodeId}
+            primaryText={download.episodeTitle}
+            secondaryText={download.podcastTitle}
+            selectable={{
+              id: download.episodeId,
+              selected: selectedId === download.episodeId.toString(),
+            }}
+          />
+        ))}
+        {downloads.queued.length === 0 && (
+          <Typography padding="both">Nothing in the queue</Typography>
+        )}
+        {downloads.failed.length > 0 ? (
+          <Fragment>
+            <Typography type="caption" color="accent" padding="both">
+              Failed
+            </Typography>
+            {downloads.failed.map((download) => (
+              <ListItem
+                key={download.episodeId}
+                primaryText={download.episodeTitle}
+                secondaryText={download.podcastTitle}
+                selectable={{
+                  id: download.episodeId,
+                  selected: selectedId === download.episodeId.toString(),
+                }}
+              />
+            ))}
+          </Fragment>
+        ) : null}
+        <Typography type="caption" color="accent" padding="both">
+          Completed
+        </Typography>
+        {downloads.completed.map((download) => (
+          <ListItem
+            key={download.episodeId}
+            primaryText={download.episodeTitle}
+            secondaryText={download.podcastTitle}
+            selectable={{
+              id: download.episodeId,
+              selected: selectedId === download.episodeId.toString(),
+            }}
+          />
+        ))}
+        {downloads.completed.length === 0 && (
+          <Typography padding="both">No recent downloads</Typography>
+        )}
+      </ViewContent>
+      <AppBar actions={getActions()} />
     </View>
   );
 }

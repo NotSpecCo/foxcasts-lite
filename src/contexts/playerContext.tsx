@@ -1,19 +1,18 @@
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { createContext, h, VNode } from 'preact';
-import { useContext, useState } from 'preact/hooks';
-import { Core } from '../services/core';
+import { route } from 'preact-router';
+import { useContext, useEffect, useState } from 'preact/hooks';
 import {
   ComponentBaseProps,
   NotificationAction,
   NotificationType,
 } from '../models';
-import { useToast } from './ToastProvider';
-import { useEffect } from 'react';
-import { useSettings } from './SettingsProvider';
-import { route } from 'preact-router';
+import { Core } from '../services/core';
 import { KaiOS } from '../services/kaios';
+import { useSettings } from './SettingsProvider';
+import { useToast } from './ToastProvider';
 
-export type PlaybackStatus = {
+export type PlaybackProgress = {
   playing: boolean;
   currentTime: number;
   duration: number;
@@ -21,13 +20,13 @@ export type PlaybackStatus = {
 
 type PlayerContextValue = {
   episode?: EpisodeExtended;
-  load: (episodeId: number, resume?: boolean) => Promise<PlaybackStatus>;
-  play: () => PlaybackStatus;
-  pause: () => PlaybackStatus;
+  load: (episodeId: number, resume?: boolean) => Promise<PlaybackProgress>;
+  play: () => PlaybackProgress;
+  pause: () => PlaybackProgress;
   stop: () => void;
-  jump: (seconds: number) => PlaybackStatus;
-  goTo: (seconds: number) => PlaybackStatus;
-  getStatus: () => PlaybackStatus;
+  jump: (seconds: number) => PlaybackProgress;
+  goTo: (seconds: number) => PlaybackProgress;
+  getStatus: () => PlaybackProgress;
   audioRef: HTMLAudioElement;
   playing: boolean;
 };
@@ -64,7 +63,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.playbackSpeed]);
 
-  function getStatus(): PlaybackStatus {
+  function getStatus(): PlaybackProgress {
     return {
       playing: !audioRef.paused,
       currentTime: Math.ceil(audioRef.currentTime),
@@ -75,9 +74,8 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   async function load(
     episodeId: number,
     resume = false
-  ): Promise<PlaybackStatus> {
-    const data = await Core.getEpisodeById(episodeId);
-    const podcast = await Core.getPodcastById(data.podcastId);
+  ): Promise<PlaybackProgress> {
+    const data = await Core.getEpisode({ id: episodeId });
 
     if (!data) return defaultStatus;
 
@@ -88,10 +86,10 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
         .then((url) => (audioRef.src = url))
         .catch(() => {
           showToast('File missing! Streaming instead.');
-          audioRef.src = data.fileUrl;
+          audioRef.src = data.remoteFileUrl;
         });
     } else {
-      audioRef.src = data.fileUrl;
+      audioRef.src = data.remoteFileUrl;
     }
     audioRef.currentTime = resume ? data.progress : 0;
     audioRef.play();
@@ -101,7 +99,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
         new Notification(data.podcastTitle, {
           tag: 'playback',
           body: data.title,
-          icon: podcast.artwork,
+          icon: data.artwork,
           silent: true,
           renotify: false,
         })
@@ -121,13 +119,13 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     };
   }
 
-  function play(): PlaybackStatus {
+  function play(): PlaybackProgress {
     audioRef.play();
     setPlaying(true);
     return getStatus();
   }
 
-  function pause(): PlaybackStatus {
+  function pause(): PlaybackProgress {
     audioRef.pause();
     setPlaying(false);
     return getStatus();
@@ -141,13 +139,13 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     notification?.close();
   }
 
-  function jump(seconds: number): PlaybackStatus {
+  function jump(seconds: number): PlaybackProgress {
     const newTime = audioRef.currentTime + seconds;
     audioRef.currentTime = newTime;
     return getStatus();
   }
 
-  function goTo(seconds: number): PlaybackStatus {
+  function goTo(seconds: number): PlaybackProgress {
     audioRef.currentTime = seconds;
     return getStatus();
   }

@@ -1,0 +1,20 @@
+.root {
+  background-size: 120vh;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.backdrop {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.scrim {
+  background-color: var(--scrim-color);
+}
+
+@media only screen and (min-width: 241px) {
+  .root {
+    background-size: 100vw;
+  }
+}

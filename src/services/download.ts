@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Subject } from 'rxjs';
 import { Dexie } from 'dexie';
 import 'dexie-observable';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
+import { Subject } from 'rxjs';
 import { Download, DownloadStatus } from '../models';
 import { Core } from './core';
 import { KaiOS } from './kaios';
@@ -292,7 +292,10 @@ export class DownloadManager {
   }
 
   public async addToQueue(
-    episode: Pick<EpisodeExtended, 'id' | 'title' | 'fileUrl' | 'podcastTitle'>
+    episode: Pick<
+      EpisodeExtended,
+      'id' | 'title' | 'remoteFileUrl' | 'podcastTitle'
+    >
   ): Promise<void> {
     const download = await this.db.getDownloadByEpisodeId(episode.id);
 
@@ -306,12 +309,12 @@ export class DownloadManager {
         episodeId: episode.id,
         episodeTitle: episode.title,
         podcastTitle: episode.podcastTitle,
-        remoteFileUrl: episode.fileUrl,
+        remoteFileUrl: episode.remoteFileUrl,
         localFileUrl: filePath,
       });
       await Core.updateEpisode(episode.id, {
         localFileUrl: filePath,
-        isDownloaded: false,
+        isDownloaded: 0,
       });
     } else if (
       download.status === DownloadStatus.Complete ||
@@ -384,7 +387,7 @@ export class DownloadManager {
     if (chunk.endBytes === chunk.totalBytes) {
       data.status = DownloadStatus.Complete;
       await Core.updateEpisode(download.episodeId, {
-        isDownloaded: true,
+        isDownloaded: 1,
       });
     }
 

@@ -1,80 +1,52 @@
-import { Fragment, h, VNode } from 'preact';
+import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState, useEffect } from 'preact/hooks';
-import { ListItem, View } from '../ui-components';
-import { setSelected } from '../utils/navigation';
-import { useDpad } from '../hooks/useDpad';
-import { GridItem } from '../ui-components/GridItem';
-import styles from './Podcasts.module.css';
 import { useSettings } from '../contexts/SettingsProvider';
-import { OpmlFeed, PodcastsLayout } from '../models';
-import { Podcast } from 'foxcasts-core/lib/types';
-import { Core } from '../services/core';
-import { OPML } from '../services/opml';
 import { useToast } from '../contexts/ToastProvider';
+import { SelectablePriority } from '../enums';
+import { useListNav } from '../hooks/useListNav';
+import { usePodcasts } from '../hooks/usePodcasts';
+import { ListLayout, OpmlFeed } from '../models';
+import { subscribe } from '../services/core';
 import { KaiOS } from '../services/kaios';
+import { OPML } from '../services/opml';
+import { AppBar } from '../ui-components/appbar';
+import { GridItem } from '../ui-components/GridItem';
+import { List, ListItem } from '../ui-components/list';
+import { Typography } from '../ui-components/Typography';
+import { View, ViewContent, ViewHeader } from '../ui-components/view';
+import styles from './Podcasts.module.css';
 
 interface Props {
   selectedItemId?: string;
 }
 
-export default function Podcasts({ selectedItemId }: Props): VNode {
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-  const [seeding, setSeeding] = useState(false);
+export default function Podcasts(props: Props): VNode {
+  const { podcasts, loading } = usePodcasts();
 
   const { settings } = useSettings();
   const { showToast } = useToast();
 
-  useEffect(() => {
-    Core.getPodcasts().then((result) => {
-      setPodcasts(result);
-    });
-  }, []);
-
-  /// Restore scroll position
-  useEffect(() => {
-    if (!selectedItemId) return;
-    setSelected(selectedItemId, true);
-  }, [selectedItemId, podcasts]);
-
-  function viewPodcast(podcastId: string | number): void {
-    route(`/podcast/${podcastId}`);
-  }
-
-  useDpad({
-    onEnter: (itemId) => viewPodcast(itemId),
-    onChange: (itemId) => {
-      if (itemId) {
-        route(`/podcasts/?selectedItemId=${itemId}`, true);
-      } else {
-        route(`/podcasts/`, true);
-      }
-    },
-    options: { mode: 'updownleftright' },
+  const { selectedId } = useListNav({
+    initialSelectedId: podcasts.length > 0 ? props.selectedItemId : undefined,
+    priority: SelectablePriority.Low,
+    onSelect: (id) => route(`/podcast/${id}/episodes`),
   });
 
   async function seedData(): Promise<void> {
-    setSeeding(true);
     try {
       // Need to do one at a time so KaiOS can handle it
-      await Core.subscribeByFeedUrl('https://feed.syntax.fm/rss');
-      await Core.subscribeByFeedUrl('https://shoptalkshow.com/feed/podcast');
-      await Core.subscribeByFeedUrl('https://feeds.simplecast.com/JoR28o79'); // React Podcast
-      await Core.subscribeByFeedUrl(
-        'https://feeds.feedwrench.com/js-jabber.rss'
-      );
-      await Core.subscribeByFeedUrl('https://feeds.megaphone.fm/vergecast');
+      await subscribe({ feedUrl: 'https://feed.syntax.fm/rss' });
+      await subscribe({ feedUrl: 'https://shoptalkshow.com/feed/podcast' });
+      await subscribe({ feedUrl: 'https://feeds.simplecast.com/JoR28o79' }); // React Podcast
+      await subscribe({
+        feedUrl: 'https://feeds.feedwrench.com/js-jabber.rss',
+      });
+      await subscribe({ feedUrl: 'https://feeds.megaphone.fm/vergecast' });
 
       console.log('seed success');
     } catch (err) {
       console.error('Failed to seed data', err);
     }
-
-    Core.getPodcasts().then((result) => {
-      setPodcasts(result);
-    });
-
-    setSeeding(false);
   }
 
   async function exportFeeds(): Promise<void> {
@@ -99,67 +71,66 @@ export default function Podcasts({ selectedItemId }: Props): VNode {
       .catch(() => showToast(`Failed to export feeds.`));
   }
 
-  async function handleAction(action: string): Promise<void> {
-    switch (action) {
-      case 'seed':
-        await seedData();
-        break;
-      case 'import':
-        route('/files');
-        break;
-      case 'export':
-        exportFeeds();
-        break;
-    }
-  }
-
   return (
-    <View
-      headerText="Podcasts"
-      actions={[
-        // {
-        //   id: 'seed',
-        //   label: seeding ? 'Seeding...' : 'Seed podcasts',
-        //   disabled: seeding,
-        // },
-        {
-          id: 'import',
-          label: 'Import OPML',
-        },
-        {
-          id: 'export',
-          label: 'Export as OPML',
-        },
-      ]}
-      onAction={handleAction}
-    >
-      {settings.podcastsLayout === PodcastsLayout.List ? (
-        <Fragment>
-          {podcasts.map((podcast, i) => (
-            <ListItem
-              key={podcast.id}
-              itemId={podcast.id}
-              imageUrl={podcast.artwork}
-              primaryText={podcast.title}
-              shortcutKey={i <= 8 ? i + 1 : undefined}
-              onClick={(): void => viewPodcast(podcast.id)}
-            />
-          ))}
-        </Fragment>
-      ) : (
-        <div className={styles.grid}>
-          {podcasts.map((podcast, i) => (
-            <GridItem
-              key={podcast.id}
-              itemId={podcast.id}
-              dimIfUnselected={!!selectedItemId}
-              imageUrl={podcast.artwork}
-              shortcutKey={i + 1}
-              onClick={(): void => viewPodcast(podcast.id)}
-            />
-          ))}
-        </div>
-      )}
+    <View>
+      <ViewHeader>Podcasts</ViewHeader>
+      <ViewContent>
+        {loading && <Typography>Loading...</Typography>}
+        {settings.podcastsLayout === ListLayout.List ? (
+          <List>
+            {podcasts?.map((podcast, i) => (
+              <ListItem
+                key={podcast.id}
+                imageUrl={podcast.artwork}
+                primaryText={podcast.title}
+                selectable={{
+                  id: podcast.id,
+                  shortcut: i <= 8 ? i + 1 : undefined,
+                  selected: podcast.id.toString() === selectedId,
+                }}
+              />
+            ))}
+          </List>
+        ) : (
+          <div className={styles.grid}>
+            {podcasts?.map((podcast, i) => (
+              <GridItem
+                key={podcast.id}
+                dimIfUnselected={!!selectedId}
+                imageUrl={podcast.artwork || podcast.artworkUrl}
+                selectable={{
+                  id: podcast.id,
+                  shortcut: i <= 8 ? i + 1 : undefined,
+                  selected: podcast.id.toString() === selectedId,
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </ViewContent>
+      <AppBar
+        centerText="Select"
+        actions={[
+          {
+            id: 'seed',
+            label: 'Seed podcasts',
+            actionFn: seedData,
+          },
+          {
+            id: 'import',
+            label: 'Import OPML',
+            keepOpen: true,
+            actionFn: (): void => {
+              route('/files');
+            },
+          },
+          {
+            id: 'export',
+            label: 'Export as OPML',
+            actionFn: exportFeeds,
+          },
+        ]}
+      />
     </View>
   );
 }

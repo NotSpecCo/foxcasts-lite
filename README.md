@@ -17,7 +17,7 @@ npm install
 2. Build the app
 
 ```
-npm run build:dev
+npm run build
 ```
 
 3. Load the `build` folder as a packaged app using your Web IDE of choice (I like Waterfox Classic)

@@ -4,13 +4,3 @@
   grid-auto-rows: 80px;
   grid-gap: 2px;
 }
-
-.tile:hover,
-.tile:focus {
-  outline: #873eff solid;
-}
-
-.cover {
-  padding-bottom: 100%;
-  background-size: contain;
-}

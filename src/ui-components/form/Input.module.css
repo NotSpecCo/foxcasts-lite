@@ -1,0 +1,18 @@
+.root {
+  padding: 7px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.root.selected {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+input {
+  border: none;
+  outline: none;
+  color: var(--primary-text-color);
+  border-bottom: 1px solid var(--primary-text-color);
+  background: none;
+}

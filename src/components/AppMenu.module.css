@@ -1,0 +1,63 @@
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--app-bg-color);
+  z-index: 20;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  grid-auto-rows: 71px;
+  grid-gap: 7px;
+  padding: 0 7px;
+  flex: 1;
+}
+
+.tile {
+  background-color: var(--app-accent-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.tile > img {
+  height: 40px;
+  opacity: 0.9;
+}
+.tile > .label {
+  font-size: 12px;
+  display: none;
+}
+
+.tile:hover,
+.tile:focus {
+  outline: #873eff solid;
+}
+
+.cover {
+  padding-bottom: 100%;
+  background-size: contain;
+}
+
+.row {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+.row[data-selected] {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+.row > span {
+  color: var(--accent-text-color);
+}
+.row > img {
+  margin: 0 5px;
+}

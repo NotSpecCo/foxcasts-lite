@@ -1,5 +1,5 @@
 .player {
-  height: calc(100vh - 18px);
+  height: 100%;
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
@@ -62,8 +62,6 @@
 .speed {
   padding: 0 5px;
   font-weight: 600;
-}
-.speed[data-selected] {
   color: var(--accent-text-color);
 }
 

@@ -1,0 +1,75 @@
+.root {
+  padding: 7px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.root[data-selected] {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+.label {
+  font-size: 1.4rem;
+}
+
+.value {
+  font-size: 1.4rem;
+  color: var(--secondary-text-color);
+}
+
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9;
+  background-color: var(--menu-bg-color);
+  color: var(--menu-text-color);
+}
+
+.datepicker {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+.datepicker .col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.datepicker .col.selected {
+  flex: 1;
+}
+
+.tile {
+  height: 70px;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  background-color: var(--menubar-bg-color);
+}
+.datepicker .col.selected .tile {
+  background-color: var(--app-accent-color);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 5px;
+  height: 28px;
+  font-weight: bold;
+}

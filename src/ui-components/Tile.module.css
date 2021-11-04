@@ -1,0 +1,101 @@
+.root {
+  display: grid;
+  background-color: transparent;
+  perspective: 1000px;
+  overflow: hidden;
+}
+.root::before {
+  content: '';
+  padding-bottom: 100%;
+  display: block;
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.content {
+  grid-area: 1 / 1 / 2 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(180deg);
+  /* animation: cardUnFlip 200ms forwards ease-in-out; */
+}
+
+.root[data-selected] .content {
+  animation: cardFlip 700ms forwards ease-in-out;
+}
+
+.front {
+  backface-visibility: hidden;
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transform: rotateX(180deg);
+  background-color: var(--app-accent-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--app-accent-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.icon {
+  height: 40px;
+  opacity: 0.9;
+}
+
+@keyframes cardFlip {
+  0% {
+    transform: rotateX(180deg);
+  }
+  30% {
+    transform: rotateX(195deg);
+  }
+  50% {
+    transform: rotateX(90deg);
+  }
+  70% {
+    transform: rotateX(-15deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes cardUnFlip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  30% {
+    transform: rotateX(-15deg);
+  }
+  50% {
+    transform: rotateX(90deg);
+  }
+  70% {
+    transform: rotateX(195deg);
+  }
+  100% {
+    transform: rotateX(180deg);
+  }
+}

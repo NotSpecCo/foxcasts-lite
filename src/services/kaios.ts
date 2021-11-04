@@ -111,6 +111,12 @@ export class KaiOS {
     getActualStorageName: (storageName: StorageName): string =>
       this.navigator.getDeviceStorage(storageName)?.storageName,
   };
+
+  static system = {
+    volumeUp: () => this.navigator.volumeManager.requestUp(),
+    volumeDown: () => this.navigator.volumeManager.requestDown(),
+    volumeShow: () => this.navigator.volumeManager.requestShow(),
+  };
 }
 
 type Manifest = any;
@@ -157,5 +163,10 @@ type MozNavigator = Navigator & {
     appendNamed: (file: File | Blob, filePath: string) => Request<File>;
     delete: (filePath: string) => Request<void>;
     enumerate: any;
+  };
+  volumeManager: {
+    requestUp: () => void;
+    requestDown: () => void;
+    requestShow: () => void;
   };
 };

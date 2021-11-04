@@ -1,0 +1,39 @@
+.root {
+  padding: 7px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.root[data-selected] {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+.root.disabled {
+  opacity: 0.5;
+}
+
+.toggle {
+  position: relative;
+  border: 2px solid var(--primary-text-color);
+  height: 17px;
+  width: 30px;
+  border-radius: 10px;
+  background: var(--app-bg-color);
+}
+.toggle.on {
+  background: var(--app-accent-color);
+}
+.handle {
+  position: absolute;
+  background-color: var(--primary-text-color);
+  height: 9px;
+  width: 9px;
+  top: 2px;
+  left: 2px;
+  border-radius: 5px;
+  transition: transform 100ms;
+}
+
+.toggle.on .handle {
+  transform: translateX(13px);
+}

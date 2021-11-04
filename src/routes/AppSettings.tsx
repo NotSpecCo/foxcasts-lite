@@ -1,102 +1,32 @@
 import { h, VNode } from 'preact';
-import { useRef, useState } from 'preact/hooks';
+import { route } from 'preact-router';
 import { useSettings } from '../contexts/SettingsProvider';
-import { SelectablePriority, useDpad } from '../hooks/useDpad';
+import { SelectablePriority } from '../enums';
+import { useListNav } from '../hooks/useListNav';
 import {
-  DisplayDensity,
+  AppBarSize,
+  ListLayout,
   NotificationAction,
   NotificationType,
   Settings,
+  TextSize,
   Theme,
 } from '../models';
 import { ThemeConfig, themes } from '../themes';
-import { Menu, MenuOption, View } from '../ui-components';
-import { ScrollAnchor } from '../ui-components/ScrollAnchor';
-import { SelectableRow } from '../ui-components/SelectableRow';
-import { Typography } from '../ui-components/Typography';
-import styles from './AppSettings.module.css';
+import { AppBar } from '../ui-components/appbar';
+import { Input, RangeRow, Select, ToggleRow } from '../ui-components/form';
+import { View, ViewHeader, ViewTab, ViewTabBar } from '../ui-components/view';
 
-type SelectMenu = {
-  settingsKey: keyof Settings;
-  title: string;
-  options: MenuOption[];
+type Props = {
+  tabId: 'display' | 'theme' | 'player';
 };
 
-export default function AppSettings(): VNode {
+export default function AppSettings({ tabId }: Props): VNode {
   const { settings, setSettings, setSetting } = useSettings();
-  const [selectMenu, setSelectMenu] = useState<SelectMenu>();
-  const accentColorRef = useRef<HTMLInputElement>(null);
 
-  function handleClick(id: keyof Settings): void {
-    switch (id) {
-      case 'theme':
-        setSelectMenu({
-          settingsKey: 'theme',
-          title: 'Theme',
-          options: [
-            { id: Theme.Light, label: 'Light' },
-            { id: Theme.Dark, label: 'Dark' },
-            { id: Theme.Cobalt, label: 'Cobalt' },
-            { id: Theme.Simple, label: 'Simple' },
-          ],
-        });
-        break;
-      case 'displayDensity':
-        setSelectMenu({
-          settingsKey: 'displayDensity',
-          title: 'Display Density',
-          options: [
-            { id: DisplayDensity.Normal, label: 'Normal' },
-            { id: DisplayDensity.Compact, label: 'Compact' },
-          ],
-        });
-        break;
-      case 'podcastsLayout':
-        setSelectMenu({
-          settingsKey: 'podcastsLayout',
-          title: 'Podcasts Layout',
-          options: [
-            { id: 'list', label: 'List' },
-            { id: 'grid', label: 'Grid' },
-          ],
-        });
-        break;
-      case 'notificationType':
-        setSelectMenu({
-          settingsKey: 'notificationType',
-          title: 'Notification Type',
-          options: [
-            { id: NotificationType.None, label: 'None' },
-            { id: NotificationType.EpisodeInfo, label: 'Episode Info' },
-          ],
-        });
-        break;
-      case 'notificationAction':
-        setSelectMenu({
-          settingsKey: 'notificationAction',
-          title: 'Notification Action',
-          options: [
-            { id: NotificationAction.ViewPlayer, label: 'View Player' },
-            { id: NotificationAction.PlayPause, label: 'Play/Pause' },
-          ],
-        });
-        break;
-      case 'accentColor':
-        setSetting('accentColor', accentColorRef.current?.value || '');
-        break;
-    }
-  }
-
-  useDpad({
+  const { selectedId } = useListNav({
     priority: SelectablePriority.Low,
-    onEnter: (itemId) => handleClick(itemId as keyof Settings),
-    onChange: (itemId) => {
-      if (itemId === 'accentColor') {
-        accentColorRef.current?.focus();
-      } else {
-        accentColorRef.current?.blur();
-      }
-    },
+    updateRouteOnChange: false,
   });
 
   function handleSettingSelect<T extends keyof Settings>(
@@ -109,67 +39,225 @@ export default function AppSettings(): VNode {
       setSettings({
         ...settings,
         theme: value as Theme,
-        accentColor: theme.values.appAccentColor.value.slice(1),
+        accentColor: theme.values.appAccentColor.slice(1),
       });
     } else {
       setSetting(key, value);
     }
-
-    setSelectMenu(undefined);
   }
 
   return (
-    <View headerText="Settings">
-      <div className={styles.container}>
-        <ScrollAnchor />
-        <Typography type="titleSmall">Appearance</Typography>
-        <SelectableRow selectableId="displayDensity">
-          Display Density
-          <span className={styles.selectValue}>{settings.displayDensity}</span>
-        </SelectableRow>
-        <SelectableRow selectableId="podcastsLayout">
-          Podcasts Layout
-          <span className={styles.selectValue}>{settings.podcastsLayout}</span>
-        </SelectableRow>
-        <SelectableRow selectableId="theme">
-          Theme
-          <span className={styles.selectValue}>{settings.theme}</span>
-        </SelectableRow>
-        <SelectableRow selectableId="accentColor">
-          Accent Color
-          <input
-            ref={accentColorRef}
-            type="text"
-            value={settings.accentColor}
-            size={6}
-            maxLength={6}
-          />
-        </SelectableRow>
-        <Typography type="titleSmall">Behavior</Typography>
-        <SelectableRow selectableId="notificationType">
-          Notification Type
-          <span className={styles.selectValue}>
-            {settings.notificationType}
-          </span>
-        </SelectableRow>
-        <SelectableRow selectableId="notificationAction">
-          Notification Action
-          <span className={styles.selectValue}>
-            {settings.notificationAction}
-          </span>
-        </SelectableRow>
-      </div>
-      {selectMenu ? (
-        <Menu
-          title={selectMenu.title}
-          options={selectMenu.options}
-          closeSide="right"
-          onSelect={(id): void =>
-            handleSettingSelect(selectMenu.settingsKey, id)
-          }
-          onClose={(): void => setSelectMenu(undefined)}
+    <View>
+      <ViewHeader>Settings</ViewHeader>
+      <ViewTabBar
+        tabs={[
+          { id: 'display', label: 'display' },
+          { id: 'theme', label: 'theme' },
+          { id: 'player', label: 'player' },
+        ]}
+        selectedId={tabId}
+        onChange={(tabId) => route(`/settings/${tabId}`, true)}
+      />
+      <ViewTab tabId="display" activeTabId={tabId}>
+        <Select
+          label="Podcasts Layout"
+          value={settings.podcastsLayout}
+          options={[
+            { id: ListLayout.List, label: 'List' },
+            { id: ListLayout.Grid, label: 'Grid' },
+          ]}
+          selectable={{
+            id: 'podcastsLayout',
+            selected: selectedId === 'podcastsLayout',
+          }}
+          onChange={(id): void => handleSettingSelect('podcastsLayout', id)}
         />
-      ) : null}
+        <Select
+          label="Home Menu Layout"
+          value={settings.homeMenuLayout}
+          options={[
+            { id: ListLayout.List, label: 'List' },
+            { id: ListLayout.Grid, label: 'Grid' },
+          ]}
+          selectable={{
+            id: 'homeMenuLayout',
+            selected: selectedId === 'homeMenuLayout',
+          }}
+          onChange={(id): void => handleSettingSelect('homeMenuLayout', id)}
+        />
+        <Select
+          label="Text Size"
+          value={settings.textSize}
+          options={[
+            { id: TextSize.Smallest, label: 'Smallest' },
+            { id: TextSize.Small, label: 'Small' },
+            { id: TextSize.Medium, label: 'Medium' },
+            { id: TextSize.Large, label: 'Large' },
+            { id: TextSize.Largest, label: 'Largest' },
+          ]}
+          selectable={{
+            id: 'textSize',
+            selected: selectedId === 'textSize',
+          }}
+          onChange={(id): void => handleSettingSelect('textSize', id)}
+        />
+        <Select
+          label="App Bar Size"
+          value={settings.appBarSize}
+          options={[
+            { id: AppBarSize.Hidden, label: 'Hidden' },
+            { id: AppBarSize.Compact, label: 'Compact' },
+            { id: AppBarSize.Normal, label: 'Normal' },
+          ]}
+          selectable={{
+            id: 'appBarSize',
+            selected: selectedId === 'appBarSize',
+          }}
+          onChange={(id): void => handleSettingSelect('appBarSize', id)}
+        />
+      </ViewTab>
+      <ViewTab tabId="theme" activeTabId={tabId}>
+        <Select
+          label="Base Theme"
+          value={settings.theme}
+          options={[
+            { id: Theme.Light, label: 'Light' },
+            { id: Theme.Dark, label: 'Dark' },
+          ]}
+          selectable={{
+            id: 'theme',
+            selected: selectedId === 'theme',
+          }}
+          onChange={(id): void => handleSettingSelect('theme', id)}
+        />
+        <Input
+          label="Accent Color"
+          value={settings.accentColor}
+          size={6}
+          selectable={{
+            id: 'accentColor',
+            selected: selectedId === 'accentColor',
+          }}
+          onEnter={(value): void => handleSettingSelect('accentColor', value)}
+        />
+        <ToggleRow
+          label="App Bar Accent"
+          value={settings.appBarAccent}
+          selectable={{
+            id: 'appBarAccent',
+            selected: selectedId === 'appBarAccent',
+          }}
+          onChange={(value): void => handleSettingSelect('appBarAccent', value)}
+        />
+        <ToggleRow
+          label="Dynamic Colors"
+          value={settings.dynamicThemeColor}
+          selectable={{
+            id: 'dynamicThemeColor',
+            selected: selectedId === 'dynamicThemeColor',
+          }}
+          onChange={(value): void =>
+            handleSettingSelect('dynamicThemeColor', value)
+          }
+        />
+        <ToggleRow
+          label="Dynamic Background"
+          value={settings.dynamicBackgrounds}
+          selectable={{
+            id: 'dynamicBackgrounds',
+            selected: selectedId === 'dynamicBackgrounds',
+          }}
+          onChange={(value): void =>
+            handleSettingSelect('dynamicBackgrounds', value)
+          }
+        />
+      </ViewTab>
+      <ViewTab tabId="player" activeTabId={tabId}>
+        <Select
+          label="Notification Type"
+          value={settings.notificationType}
+          options={[
+            { id: NotificationType.None, label: 'None' },
+            { id: NotificationType.EpisodeInfo, label: 'Episode Info' },
+          ]}
+          selectable={{
+            id: 'notificationType',
+            selected: selectedId === 'notificationType',
+          }}
+          onChange={(id): void => handleSettingSelect('notificationType', id)}
+        />
+        <Select
+          label="Notification Action"
+          value={settings.notificationAction}
+          options={[
+            { id: NotificationAction.ViewPlayer, label: 'View Player' },
+            { id: NotificationAction.PlayPause, label: 'Play/Pause' },
+          ]}
+          selectable={{
+            id: 'notificationAction',
+            selected: selectedId === 'notificationAction',
+          }}
+          onChange={(id): void => handleSettingSelect('notificationAction', id)}
+        />
+        <RangeRow
+          label="Skip Back"
+          value={settings.playbackSkipBack}
+          valueLabel="seconds"
+          min={1}
+          max={300}
+          increment={1}
+          selectable={{
+            id: 'playbackSkipBack',
+            selected: selectedId === 'playbackSkipBack',
+          }}
+          onChange={(value): void =>
+            handleSettingSelect('playbackSkipBack', value)
+          }
+        />
+        <RangeRow
+          label="Skip Forward"
+          value={settings.playbackSkipForward}
+          valueLabel="seconds"
+          min={1}
+          max={300}
+          increment={1}
+          selectable={{
+            id: 'playbackSkipForward',
+            selected: selectedId === 'playbackSkipForward',
+          }}
+          onChange={(value): void =>
+            handleSettingSelect('playbackSkipForward', value)
+          }
+        />
+        <RangeRow
+          label="Playback Speed"
+          value={settings.playbackSpeed}
+          valueLabel="x"
+          min={0.5}
+          max={4}
+          increment={0.1}
+          selectable={{
+            id: 'playbackSpeed',
+            selected: selectedId === 'playbackSpeed',
+          }}
+          onChange={(value): void =>
+            handleSettingSelect('playbackSpeed', value)
+          }
+        />
+        <ToggleRow
+          label="Auto Delete Download"
+          value={settings.autoDeleteDownload}
+          disabled={true}
+          selectable={{
+            id: 'autoDeleteDownload',
+            selected: selectedId === 'autoDeleteDownload',
+          }}
+          onChange={(value): void =>
+            handleSettingSelect('autoDeleteDownload', value)
+          }
+        />
+      </ViewTab>
+      <AppBar />
     </View>
   );
 }

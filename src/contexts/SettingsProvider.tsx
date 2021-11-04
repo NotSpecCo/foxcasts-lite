@@ -1,12 +1,14 @@
-import { h, createContext, VNode } from 'preact';
+import { createContext, h, VNode } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import {
+  AppBarSize,
   ComponentBaseProps,
-  DisplayDensity,
+  ListLayout,
   NotificationAction,
   NotificationType,
-  PodcastsLayout,
+  PlayerLayout,
   Settings,
+  TextSize,
   Theme,
 } from '../models';
 import {
@@ -16,14 +18,26 @@ import {
 } from '../services/storage';
 
 const defaultSettings: Settings = {
-  displayDensity: DisplayDensity.Compact,
-  podcastsLayout: PodcastsLayout.Grid,
-  fullScreen: false,
-  theme: Theme.Light,
+  theme: Theme.Dark,
   accentColor: 'ec5817',
+  appBarAccent: true,
+  dynamicThemeColor: true,
+  dynamicBackgrounds: true,
+
+  podcastsLayout: ListLayout.Grid,
+  homeMenuLayout: ListLayout.Grid,
+  appBarSize: AppBarSize.Normal,
+  textSize: TextSize.Small,
+
+  playerLayout: PlayerLayout.Fancy,
   notificationType: NotificationType.EpisodeInfo,
   notificationAction: NotificationAction.ViewPlayer,
   playbackSpeed: 1,
+  playbackSkipBack: 10,
+  playbackSkipForward: 30,
+  autoDeleteDownload: false,
+
+  podcastSettings: {},
 };
 
 type SettingsContextValue = {

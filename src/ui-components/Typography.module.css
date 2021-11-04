@@ -7,35 +7,35 @@
 }
 
 .caption {
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 400;
 }
 .body {
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 400;
 }
 .bodyStrong {
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 600;
 }
 .bodyLarge {
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: 400;
 }
 .titleSmall {
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 600;
 }
 .subtitle {
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: 600;
 }
 .title {
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: 600;
 }
 .titleLarge {
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: 600;
 }
 

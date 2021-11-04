@@ -1,0 +1,7 @@
+.root {
+  flex: 1;
+  width: 100vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 28px;
+}

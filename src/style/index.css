@@ -1,19 +1,4 @@
-html,
-body {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  background: var(--app-bg-color);
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  color: var(--primary-text-color);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
+:root {
   --app-bg-color: #fff;
   --app-accent-color: #fff;
 
@@ -33,9 +18,34 @@ body {
   --menu-text-color: var(--primary-text-color);
 
   --menubar-bg-color: #000;
+  --menubar-bar-color: #000;
   --menubar-text-color: rgba(255, 255, 255, 0.88);
 
   --input-border-color: #aaa;
+
+  --scrim-color: rgba(0, 0, 0, 0.7);
+
+  --base-font-size: 10px;
+  font-size: var(--base-font-size);
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: var(--app-bg-color);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  /* font-size: 14px; */
+  color: var(--primary-text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-size: 1.4rem;
 }
 
 * {

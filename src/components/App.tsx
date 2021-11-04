@@ -1,25 +1,32 @@
+import { PlaybackStatus } from 'foxcasts-core/lib/enums';
+import kebabcase from 'lodash.kebabcase';
 import { Fragment, h, VNode } from 'preact';
 import { route, Route, Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
+import { DownloadManagerProvider } from '../contexts/DownloadManagerProvider';
 import { PlayerProvider } from '../contexts/playerContext';
+import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
+import { ToastProvider } from '../contexts/ToastProvider';
+import { ViewProvider } from '../contexts/ViewProvider';
+import { FilterViewOptions, TextSize } from '../models';
+import AppSettings from '../routes/AppSettings';
+import Downloads from '../routes/Downloads';
 import EpisodeDetail from '../routes/EpisodeDetail';
-import Filter from '../routes/Filter';
+import EpisodesByDuration from '../routes/EpisodesByDuration';
+import FilterListEditor from '../routes/FilterListEditor';
+import FilterListViewer from '../routes/FilterListViewer';
+import Import from '../routes/Import';
+import Lists from '../routes/Lists';
+import OpmlFiles from '../routes/OpmlFiles';
 import Player from '../routes/Player';
 import PodcastDetail from '../routes/PodcastDetail';
 import PodcastPreview from '../routes/PodcastPreview';
-import Search from '../routes/Search';
 import Podcasts from '../routes/Podcasts';
-import AppSettings from '../routes/AppSettings';
-import Import from '../routes/Import';
-import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
-import { DisplayDensity } from '../models';
-import { themes } from '../themes';
+import RecentEpisodes from '../routes/RecentEpisodes';
+import Search from '../routes/Search';
 import { Core } from '../services/core';
-import OpmlFiles from '../routes/OpmlFiles';
-import { ToastProvider } from '../contexts/ToastProvider';
+import { themes } from '../themes';
 import { Toast } from '../ui-components/Toast';
-import Downloads from '../routes/Downloads';
-import { DownloadManagerProvider } from '../contexts/DownloadManagerProvider';
 
 export function AppWrapper(): VNode {
   return (
@@ -28,7 +35,9 @@ export function AppWrapper(): VNode {
         <ToastProvider>
           <DownloadManagerProvider>
             <PlayerProvider>
-              <App />
+              <ViewProvider>
+                <App />
+              </ViewProvider>
             </PlayerProvider>
           </DownloadManagerProvider>
         </ToastProvider>
@@ -47,40 +56,83 @@ export default function App(): VNode {
 
     // Core.health().then((res) => console.log(res));
 
-    Core.checkForUpdates();
+    // Core.checkForUpdates();
+    // fetch(
+    //   'http://localhost:8100/https://api.foxcasts.com/podcasts?feedUrl=https://feed.syntax.fm/rss'
+    // )
+    //   .then((res) => console.log('res', res))
+    //   .catch((err) => console.log('err', err));
+
+    Core.getFilterLists().then((res) => {
+      if (res.length === 0) {
+        Core.addFilterList<FilterViewOptions>({
+          title: 'In Progress',
+          query: { playbackStatuses: [PlaybackStatus.InProgress] },
+          isFavorite: 0,
+          viewOptions: {
+            primaryText: 'title',
+            secondaryText: 'podcastTitle',
+            accentText: null,
+            showCover: false,
+          },
+        });
+        Core.addFilterList<FilterViewOptions>({
+          title: 'Favorite Episodes',
+          query: { isFavorite: 1 },
+          isFavorite: 0,
+          viewOptions: {
+            primaryText: 'title',
+            secondaryText: 'podcastTitle',
+            accentText: null,
+            showCover: false,
+          },
+        });
+        Core.addFilterList<FilterViewOptions>({
+          title: 'Downloaded Episodes',
+          query: { isDownloaded: 1 },
+          isFavorite: 0,
+          viewOptions: {
+            primaryText: 'title',
+            secondaryText: 'podcastTitle',
+            accentText: null,
+            showCover: false,
+          },
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {
     // Theme
     const theme = themes.find((a) => a.id === settings.theme) || themes[0];
     for (const id in theme.values) {
-      document.body.style.setProperty(
-        `--${theme.values[id].variable}`,
-        theme.values[id].value
+      document.documentElement.style.setProperty(
+        `--${kebabcase(id)}`,
+        theme.values[id]
       );
     }
-    document.body.style.setProperty(
+    document.documentElement.style.setProperty(
       '--app-accent-color',
       `#${settings.accentColor}`
     );
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', theme.values.headerBgColor.value);
+      ?.setAttribute('content', theme.values.headerBgColor);
 
     if (theme.settings.accentText) {
-      document.body.style.setProperty(
+      document.documentElement.style.setProperty(
         '--accent-text-color',
         `#${settings.accentColor}`
       );
     }
     if (theme.settings.accentHighlight) {
-      document.body.style.setProperty(
+      document.documentElement.style.setProperty(
         '--highlight-bg-color',
         `#${settings.accentColor}`
       );
     }
     if (theme.settings.accentHeader) {
-      document.body.style.setProperty(
+      document.documentElement.style.setProperty(
         '--header-bg-color',
         `#${settings.accentColor}`
       );
@@ -89,12 +141,17 @@ export default function App(): VNode {
         ?.setAttribute('content', `#${settings.accentColor}`);
     }
 
-    // Layout
-    if (settings.displayDensity === DisplayDensity.Compact) {
-      document.body.setAttribute('data-compact-layout', '');
-    } else {
-      document.body.removeAttribute('data-compact-layout');
-    }
+    const fontSize = {
+      [TextSize.Smallest]: 9,
+      [TextSize.Small]: 10,
+      [TextSize.Medium]: 11,
+      [TextSize.Large]: 12,
+      [TextSize.Largest]: 13,
+    };
+    document.documentElement.style.setProperty(
+      '--base-font-size',
+      `${fontSize[settings.textSize]}px`
+    );
   }, [settings]);
 
   return (
@@ -102,11 +159,15 @@ export default function App(): VNode {
       <Router>
         <Route path="/search" component={Search} />
         <Route path="/podcast/preview" component={PodcastPreview} />
-        <Route path="/podcast/:podcastId" component={PodcastDetail} />
-        <Route path="/episode/:episodeId" component={EpisodeDetail} />
-        <Route path="/filter/:filterId" component={Filter} />
+        <Route path="/podcast/:podcastId/:tabId" component={PodcastDetail} />
+        <Route path="/episode/:episodeId/:tabId" component={EpisodeDetail} />
+        <Route path="/lists" component={Lists} />
+        <Route path="/lists/:listId" component={FilterListViewer} />
+        <Route path="/lists/:listId/edit" component={FilterListEditor} />
+        <Route path="/lists/recent/:tabId" component={RecentEpisodes} />
+        <Route path="/lists/duration/:tabId" component={EpisodesByDuration} />
         <Route path="/player" component={Player} />
-        <Route path="/settings" component={AppSettings} />
+        <Route path="/settings/:tabId" component={AppSettings} />
         <Route path="/files" component={OpmlFiles} />
         <Route path="/import/:filePath" component={Import} />
         <Route path="/downloads" component={Downloads} />
