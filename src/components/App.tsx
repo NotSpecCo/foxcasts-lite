@@ -15,10 +15,13 @@ import EpisodeDetail from '../routes/EpisodeDetail';
 import EpisodesByDuration from '../routes/EpisodesByDuration';
 import FilterListEditor from '../routes/FilterListEditor';
 import FilterListViewer from '../routes/FilterListViewer';
+import Filters from '../routes/Filters';
 import Import from '../routes/Import';
-import Lists from '../routes/Lists';
 import OpmlFiles from '../routes/OpmlFiles';
 import Player from '../routes/Player';
+import PlaylistEditor from '../routes/PlaylistEditor';
+import Playlists from '../routes/Playlists';
+import PlaylistViewer from '../routes/PlaylistViewer';
 import PodcastDetail from '../routes/PodcastDetail';
 import PodcastPreview from '../routes/PodcastPreview';
 import Podcasts from '../routes/Podcasts';
@@ -63,6 +66,7 @@ export default function App(): VNode {
     //   .then((res) => console.log('res', res))
     //   .catch((err) => console.log('err', err));
 
+    // Ensure default filters exist
     Core.getFilterLists().then((res) => {
       if (res.length === 0) {
         Core.addFilterList<FilterViewOptions>({
@@ -161,12 +165,15 @@ export default function App(): VNode {
         <Route path="/podcast/preview" component={PodcastPreview} />
         <Route path="/podcast/:podcastId/:tabId" component={PodcastDetail} />
         <Route path="/episode/:episodeId/:tabId" component={EpisodeDetail} />
-        <Route path="/lists" component={Lists} />
-        <Route path="/lists/:listId" component={FilterListViewer} />
-        <Route path="/lists/:listId/edit" component={FilterListEditor} />
-        <Route path="/lists/recent/:tabId" component={RecentEpisodes} />
-        <Route path="/lists/duration/:tabId" component={EpisodesByDuration} />
-        <Route path="/player" component={Player} />
+        <Route path="/playlists" component={Playlists} />
+        <Route path="/playlists/:listId" component={PlaylistViewer} />
+        <Route path="/playlists/:listId/edit" component={PlaylistEditor} />
+        <Route path="/filters" component={Filters} />
+        <Route path="/filters/:listId" component={FilterListViewer} />
+        <Route path="/filters/:listId/edit" component={FilterListEditor} />
+        <Route path="/filters/recent/:tabId" component={RecentEpisodes} />
+        <Route path="/filters/duration/:tabId" component={EpisodesByDuration} />
+        <Route path="/player/:tabId" component={Player} />
         <Route path="/settings/:tabId" component={AppSettings} />
         <Route path="/files" component={OpmlFiles} />
         <Route path="/import/:filePath" component={Import} />

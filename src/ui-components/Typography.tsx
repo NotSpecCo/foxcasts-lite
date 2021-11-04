@@ -19,6 +19,7 @@ type Props = ComponentBaseProps & {
   transform?: 'none' | 'uppercase' | 'lowercase';
   align?: 'left' | 'center' | 'right';
   padding?: 'vertical' | 'horizontal' | 'both' | 'none';
+  wrap?: 'wrap' | 'nowrap';
 };
 
 export function Typography({
@@ -29,6 +30,7 @@ export function Typography({
   transform = 'none',
   align = 'left',
   padding = 'both',
+  wrap = 'wrap',
   ...props
 }: Props): VNode {
   return (
@@ -42,6 +44,7 @@ export function Typography({
         styles[transform],
         styles[align],
         styles[`padding-${padding}`],
+        styles[wrap],
         props.className
       )}
     >

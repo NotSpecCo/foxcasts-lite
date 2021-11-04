@@ -83,7 +83,7 @@ export default function RecentEpisodes({
           { id: 'week4', label: `week ${format(dates.week4.from, 'w')}` },
         ]}
         selectedId={tabId}
-        onChange={(tabId): boolean => route(`/lists/recent/${tabId}`, true)}
+        onChange={(tabId): boolean => route(`/filters/recent/${tabId}`, true)}
       />
       <ViewContent>
         {loading && <Typography>Loading...</Typography>}

@@ -82,3 +82,13 @@
 .padding-none {
   padding: 0;
 }
+
+.wrap {
+  white-space: initial;
+}
+
+.nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

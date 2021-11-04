@@ -63,7 +63,7 @@ export default function FilterListViewer({
 
   return (
     <View>
-      <ViewHeader>{list?.title || 'List'}</ViewHeader>
+      <ViewHeader>{list?.title || 'Filter'}</ViewHeader>
       <ViewContent>
         {list &&
           episodes?.map((episode, i) => (
@@ -90,7 +90,7 @@ export default function FilterListViewer({
             id: 'edit',
             label: 'Edit List',
             keepOpen: true,
-            actionFn: () => route(`/lists/${listId}/edit`),
+            actionFn: () => route(`/filters/${listId}/edit`),
           },
         ]}
       />

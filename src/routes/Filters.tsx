@@ -19,7 +19,7 @@ type List = {
   title: string;
 };
 
-export default function Lists({ selectedItemId }: Props): VNode {
+export default function Filters({ selectedItemId }: Props): VNode {
   const [defaultLists] = useState<List[]>([
     { id: 'recent', title: 'Recent Episodes' },
     { id: 'duration', title: 'Episodes by Duration' },
@@ -35,13 +35,13 @@ export default function Lists({ selectedItemId }: Props): VNode {
     onSelect: (itemId) => {
       switch (itemId) {
         case 'recent':
-          route('/lists/recent/week0');
+          route('/filters/recent/week0');
           break;
         case 'duration':
-          route('/lists/duration/short');
+          route('/filters/duration/short');
           break;
         default:
-          route(`/lists/${itemId}`);
+          route(`/filters/${itemId}`, true);
           break;
       }
     },
@@ -49,7 +49,7 @@ export default function Lists({ selectedItemId }: Props): VNode {
 
   return (
     <View>
-      <ViewHeader>Lists</ViewHeader>
+      <ViewHeader>Filters</ViewHeader>
       <ViewContent>
         {defaultLists.map((list, i) => (
           <ListItem
@@ -85,7 +85,7 @@ export default function Lists({ selectedItemId }: Props): VNode {
             keepOpen: true,
             actionFn: () =>
               Core.addFilterList<FilterViewOptions>({
-                title: 'My Custom List',
+                title: 'My Custom Filter',
                 query: {},
                 isFavorite: 0,
                 viewOptions: {
@@ -94,7 +94,7 @@ export default function Lists({ selectedItemId }: Props): VNode {
                   accentText: null,
                   showCover: true,
                 },
-              }).then((id) => route(`/lists/${id}/edit`)),
+              }).then((id) => route(`/filters/${id}/edit`)),
           },
           {
             id: 'editList',
@@ -104,7 +104,7 @@ export default function Lists({ selectedItemId }: Props): VNode {
               selectedItemId === 'recent' ||
               selectedItemId === 'duration',
             keepOpen: true,
-            actionFn: () => route(`/lists/${selectedItemId}/edit`),
+            actionFn: () => route(`/filters/${selectedItemId}/edit`),
           },
           {
             id: 'deleteList',
@@ -116,7 +116,7 @@ export default function Lists({ selectedItemId }: Props): VNode {
             actionFn: () =>
               Core.deleteFilterLists([Number(selectedItemId)]).then(() => {
                 setLists(lists?.filter((a) => a.id !== Number(selectedItemId)));
-                route(`/lists`, true);
+                route(`/filters`, true);
               }),
           },
         ]}

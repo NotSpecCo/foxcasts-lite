@@ -81,7 +81,7 @@ export default function EpisodesByDuration({
           { id: 'longest', label: '60+ mins' },
         ]}
         selectedId={tabId}
-        onChange={(tabId): boolean => route(`/lists/duration/${tabId}`, true)}
+        onChange={(tabId): boolean => route(`/filters/duration/${tabId}`, true)}
       />
       <ViewContent>
         {loading && <Typography>Loading...</Typography>}

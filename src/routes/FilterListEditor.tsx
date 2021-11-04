@@ -149,7 +149,7 @@ export default function FilterListEditor({
 
   return (
     <View>
-      <ViewHeader>Edit List</ViewHeader>
+      <ViewHeader>Edit Filter</ViewHeader>
       <ViewContent>
         <List>
           <ListSection>
@@ -500,7 +500,7 @@ export default function FilterListEditor({
             keepOpen: true,
             actionFn: () =>
               Core.deleteFilterLists([Number(listId)]).then(() => {
-                route(`/lists`, true);
+                route(`/filters`, true);
               }),
           },
         ]}

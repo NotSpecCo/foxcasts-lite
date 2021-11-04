@@ -21,7 +21,7 @@ export function ViewTabBar({
   selectedId,
   ...props
 }: Props): VNode<Props> {
-  const { appbarOpen } = useView();
+  const { appbarOpen, homeMenuOpen } = useView();
   function changeTab(change: number): void {
     const currentIndex = tabs.findIndex((a) => a.id === selectedId);
     let newIndex = currentIndex + change;
@@ -32,8 +32,8 @@ export function ViewTabBar({
   }
 
   useNavKeys({
-    ArrowLeft: () => !appbarOpen && changeTab(-1),
-    ArrowRight: () => !appbarOpen && changeTab(1),
+    ArrowLeft: () => !appbarOpen && !homeMenuOpen && changeTab(-1),
+    ArrowRight: () => !appbarOpen && !homeMenuOpen && changeTab(1),
   });
 
   function orderTabs(): Tab[] {

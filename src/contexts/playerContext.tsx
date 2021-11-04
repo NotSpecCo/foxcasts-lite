@@ -20,7 +20,12 @@ export type PlaybackProgress = {
 
 type PlayerContextValue = {
   episode?: EpisodeExtended;
-  load: (episodeId: number, resume?: boolean) => Promise<PlaybackProgress>;
+  playlistId?: number;
+  load: (
+    episodeId: number,
+    resume?: boolean,
+    playlistId?: number
+  ) => Promise<PlaybackProgress>;
   play: () => PlaybackProgress;
   pause: () => PlaybackProgress;
   stop: () => void;
@@ -51,12 +56,46 @@ export const PlayerContext = createContext<PlayerContextValue>(defaulValue);
 
 export function PlayerProvider(props: ComponentBaseProps): VNode {
   const [episode, setEpisode] = useState<EpisodeExtended>();
+  const [playlistId, setPlaylistId] = useState<number>();
   const [playing, setPlaying] = useState(false);
   const [audioRef] = useState<HTMLAudioElement>(new Audio());
   const [notification, setNotification] = useState<Notification | null>(null);
 
   const { showToast } = useToast();
   const { settings } = useSettings();
+
+  async function getNextEpisode(episodeId: number, playlistId?: number) {
+    const playlist = playlistId
+      ? await Core.getPlaylist(playlistId)
+      : undefined;
+    const nextEpisodeId =
+      playlist?.episodeIds[
+        (playlist?.episodeIds.findIndex((a) => a === episodeId) || -2) + 1
+      ];
+
+    if (nextEpisodeId) {
+      load(nextEpisodeId, false, playlistId);
+    } else {
+      stop();
+    }
+
+    if (playlist?.removeEpisodeAfterListening) {
+      Core.updatePlaylist(playlist.id, {
+        episodeIds: playlist.episodeIds.filter((a) => a !== episodeId),
+      });
+    }
+  }
+
+  useEffect(() => {
+    function handler() {
+      if (episode) {
+        getNextEpisode(episode.id, playlistId);
+      }
+    }
+    audioRef.addEventListener('ended', handler);
+
+    return () => audioRef.removeEventListener('ended', handler);
+  }, [episode, playlistId]);
 
   useEffect(() => {
     audioRef.playbackRate = settings.playbackSpeed;
@@ -73,8 +112,10 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
 
   async function load(
     episodeId: number,
-    resume = false
+    resume = false,
+    playlistId?: number
   ): Promise<PlaybackProgress> {
+    setPlaylistId(playlistId);
     const data = await Core.getEpisode({ id: episodeId });
 
     if (!data) return defaultStatus;
@@ -132,6 +173,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   }
 
   function stop(): void {
+    setPlaylistId(undefined);
     setEpisode(undefined);
     audioRef.src = '';
     audioRef.currentTime = 0;
@@ -185,6 +227,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
   return (
     <PlayerContext.Provider
       value={{
+        playlistId,
         episode,
         load,
         play,
