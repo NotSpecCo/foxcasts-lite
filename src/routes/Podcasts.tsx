@@ -2,7 +2,7 @@ import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useSettings } from '../contexts/SettingsProvider';
 import { useToast } from '../contexts/ToastProvider';
-import { SelectablePriority } from '../hooks/useDpad';
+import { SelectablePriority } from '../enums';
 import { useListNav } from '../hooks/useListNav';
 import { usePodcasts } from '../hooks/usePodcasts';
 import { ListLayout, OpmlFeed } from '../models';

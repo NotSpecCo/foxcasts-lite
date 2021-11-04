@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useSettings } from '../contexts/SettingsProvider';
-import { SelectablePriority } from '../hooks/useDpad';
+import { SelectablePriority } from '../enums';
 import { useListNav } from '../hooks/useListNav';
 import { ListLayout } from '../models';
 import { AppBar } from '../ui-components/appbar';

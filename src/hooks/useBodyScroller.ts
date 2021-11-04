@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks';
-import { SelectablePriority } from './useDpad';
+import { SelectablePriority } from '../enums';
 
 type Props = {
   capture?: boolean;

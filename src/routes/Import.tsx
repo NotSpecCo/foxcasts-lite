@@ -1,7 +1,7 @@
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
-import { SelectablePriority } from '../hooks/useDpad';
+import { SelectablePriority } from '../enums';
 import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
 import { OPML } from '../services/opml';

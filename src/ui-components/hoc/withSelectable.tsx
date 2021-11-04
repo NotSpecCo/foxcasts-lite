@@ -1,5 +1,5 @@
 import { h, VNode } from 'preact';
-import { SelectablePriority } from '../../hooks/useDpad';
+import { SelectablePriority } from '../../enums';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 
 type Props = ComponentBaseProps & {

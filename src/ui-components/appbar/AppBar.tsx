@@ -3,7 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { AppBarListItem, AppBarListOption, AppBarOption } from '.';
 import { AppMenu } from '../../components/AppMenu';
 import { useView } from '../../contexts/ViewProvider';
-import { SelectablePriority } from '../../hooks/useDpad';
+import { SelectablePriority } from '../../enums';
 import { useListNav } from '../../hooks/useListNav';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps } from '../../models';

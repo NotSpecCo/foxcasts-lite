@@ -1,4 +1,4 @@
-import { SelectablePriority } from '../hooks/useDpad';
+import { SelectablePriority } from '../enums';
 
 export type SelectableProps = {
   selectable?: {
