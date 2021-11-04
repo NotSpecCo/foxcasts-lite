@@ -10,12 +10,17 @@
   z-index: 20;
 }
 
+.scroller {
+  overflow-y: auto;
+  margin-bottom: 30px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   grid-auto-rows: 71px;
   grid-gap: 7px;
-  padding: 0 7px;
+  padding: 0 7px 7px 7px;
   flex: 1;
 }
 
@@ -57,7 +62,13 @@
 }
 .row > span {
   color: var(--accent-text-color);
-}
-.row > img {
   margin: 0 5px;
+}
+
+.player {
+  padding: 5px 0;
+}
+.player.selected {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
 }
