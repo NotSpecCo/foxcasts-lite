@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Dexie } from 'dexie';
-import 'dexie-observable';
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { Subject } from 'rxjs';
 import { Download, DownloadStatus } from '../models';
@@ -16,120 +14,6 @@ type Chunk = {
   totalBytes: number;
   data: ArrayBuffer;
 };
-
-type DatabaseConfig = {
-  name: string;
-  version: number;
-};
-
-type ChangeEvent = {
-  downloadId: number;
-  changeType: 'add' | 'update' | 'delete';
-  updatedItem: Download;
-};
-
-export class Database extends Dexie {
-  private downloads: Dexie.Table<Download, number>;
-
-  constructor(config: DatabaseConfig) {
-    super(config.name);
-
-    this.version(config.version).stores({
-      downloads: '++id, &episodeId, status',
-    });
-
-    this.downloads = this.table('downloads');
-  }
-
-  onChange(callbackFn: (change: ChangeEvent) => void): void {
-    this.on('changes', (changes) => {
-      changes.forEach((change) => {
-        switch (change.type) {
-          case 1: // CREATED
-            callbackFn({
-              downloadId: change.key,
-              changeType: 'add',
-              updatedItem: change.obj,
-            });
-            break;
-          case 2: // UPDATED
-            callbackFn({
-              downloadId: change.key,
-              changeType: 'update',
-              updatedItem: change.obj,
-            });
-            break;
-          case 3: // DELETED
-            callbackFn({
-              downloadId: change.key,
-              changeType: 'delete',
-              updatedItem: change.oldObj,
-            });
-            break;
-        }
-      });
-    });
-  }
-
-  clear(): Promise<void> {
-    return this.downloads.clear();
-  }
-
-  addDownload(
-    data: Pick<
-      Download,
-      | 'episodeId'
-      | 'episodeTitle'
-      | 'podcastTitle'
-      | 'remoteFileUrl'
-      | 'localFileUrl'
-    >
-  ): Promise<number> {
-    return this.downloads.add({
-      episodeId: data.episodeId,
-      episodeTitle: data.episodeTitle,
-      podcastTitle: data.podcastTitle,
-      remoteFileUrl: data.remoteFileUrl,
-      localFileUrl: data.localFileUrl,
-      currentBytes: 0,
-      totalBytes: 0,
-      status: DownloadStatus.Queued,
-    } as Download);
-  }
-
-  async updateDownload(
-    downloadId: number,
-    data: Partial<Download>
-  ): Promise<boolean> {
-    delete data.id;
-    const updated = await this.downloads.update(downloadId, data);
-    return !!updated;
-  }
-
-  getDownload(downloadId: number): Promise<Download | undefined> {
-    return this.downloads.get({ id: downloadId });
-  }
-
-  getDownloadByEpisodeId(episodeId: number): Promise<Download | undefined> {
-    return this.downloads.get({ episodeId });
-  }
-
-  deleteDownload(downloadId: number): Promise<void> {
-    return this.downloads.delete(downloadId);
-  }
-
-  list(): Promise<Download[]> {
-    return this.downloads.toCollection().toArray();
-  }
-
-  async checkForNextAvailable(): Promise<Download | undefined> {
-    const inProgressDownload = await this.downloads.get({
-      status: DownloadStatus.Downloading,
-    });
-    if (inProgressDownload) return undefined;
-    return this.downloads.get({ status: DownloadStatus.Queued });
-  }
-}
 
 type HttpClientOptions = {
   chunkByteLimit: number;
@@ -245,7 +129,7 @@ export class DownloadManager {
   public onQueueChange = new Subject<Download[]>();
 
   private options: DownloadManagerOptions;
-  private db: Database;
+  // private db: Database;
   private httpClient?: HttpClient;
   private downloadQueue: Download[] = [];
   private chunkQueue: Chunk[] = [];
@@ -257,20 +141,17 @@ export class DownloadManager {
       ...options,
     };
 
-    this.db = new Database({ name: 'downloads', version: 1 });
-    this.db.list().then((res) => {
+    Core.downloads.queryAll({}).then((res) => {
       this.downloadQueue = res;
       this.onQueueChange.next(this.downloadQueue);
     });
-    this.db.onChange((change) => {
-      const index = this.downloadQueue.findIndex(
-        (a) => a.id === change.downloadId
-      );
+    Core.downloads.subscribeToChanges((change) => {
+      const index = this.downloadQueue.findIndex((a) => a.id === change.id);
       switch (change.changeType) {
         case 'add':
           this.downloadQueue.push({
             ...change.updatedItem,
-            id: change.downloadId,
+            id: change.id,
           });
           break;
         case 'update':
@@ -288,7 +169,7 @@ export class DownloadManager {
   }
 
   public clearAllDownloads(): Promise<void> {
-    return this.db.clear();
+    return Core.downloads.deleteAll();
   }
 
   public async addToQueue(
@@ -297,7 +178,7 @@ export class DownloadManager {
       'id' | 'title' | 'remoteFileUrl' | 'podcastTitle'
     >
   ): Promise<void> {
-    const download = await this.db.getDownloadByEpisodeId(episode.id);
+    const download = await Core.downloads.query({ episodeId: episode.id });
 
     if (!download) {
       const storageName = KaiOS.storage.getActualStorageName('sdcard');
@@ -305,7 +186,7 @@ export class DownloadManager {
         throw new Error('Failed to get storage name');
       }
       const filePath = `/${storageName}/foxcasts/episode_${episode.id}.mp3`;
-      await this.db.addDownload({
+      await Core.downloads.add({
         episodeId: episode.id,
         episodeTitle: episode.title,
         podcastTitle: episode.podcastTitle,
@@ -321,7 +202,7 @@ export class DownloadManager {
       download.status === DownloadStatus.Error ||
       download.status === DownloadStatus.Cancelled
     ) {
-      await this.db.updateDownload(download.id, {
+      await Core.downloads.update(download.id, {
         currentBytes: 0,
         totalBytes: 0,
         status: DownloadStatus.Queued,
@@ -332,7 +213,7 @@ export class DownloadManager {
   }
 
   public async removeFromQueue(episodeId: number): Promise<void> {
-    const download = await this.db.getDownloadByEpisodeId(episodeId);
+    const download = await Core.downloads.query({ episodeId });
 
     if (!download) {
       return;
@@ -342,7 +223,7 @@ export class DownloadManager {
       this.httpClient?.abort();
     }
 
-    await this.db.deleteDownload(download.id);
+    await Core.downloads.delete([download.id]);
   }
 
   private async processNextChunk(): Promise<void> {
@@ -351,7 +232,7 @@ export class DownloadManager {
 
     const chunk = this.chunkQueue[0];
     const download = chunk
-      ? await this.db.getDownload(chunk.downloadId)
+      ? await Core.downloads.query({ id: chunk.downloadId })
       : undefined;
 
     if (!chunk || !download) {
@@ -391,7 +272,7 @@ export class DownloadManager {
       });
     }
 
-    await this.db.updateDownload(chunk.downloadId, data);
+    await Core.downloads.update(chunk.downloadId, data);
 
     this.chunkQueue.shift();
     this.processingChunk = false;
@@ -406,13 +287,19 @@ export class DownloadManager {
   }
 
   private async processNextFile(): Promise<void> {
-    const nextDownload = await this.db.checkForNextAvailable();
+    const inProgressDownload = await Core.downloads.query({
+      status: DownloadStatus.Downloading,
+    });
+    if (inProgressDownload) return undefined;
+    const nextDownload = await Core.downloads.get({
+      status: DownloadStatus.Queued,
+    });
 
     if (!nextDownload) {
       return;
     }
 
-    await this.db.updateDownload(nextDownload.id, {
+    await Core.downloads.update(nextDownload.id, {
       status: DownloadStatus.Downloading,
     });
 
@@ -426,7 +313,7 @@ export class DownloadManager {
       },
       error: async (err) => {
         console.log('progress error', err);
-        await this.db.updateDownload(nextDownload.id, {
+        await Core.downloads.update(nextDownload.id, {
           status: DownloadStatus.Error,
         });
         this.processNextFile();
