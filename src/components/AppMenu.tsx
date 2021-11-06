@@ -49,7 +49,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
     const timer = setInterval(() => {
       const status = player.getStatus();
       if (!player.episode) return;
-      Core.updateEpisode(player.episode.id, {
+      Core.episodes.update(player.episode.id, {
         progress: status.currentTime,
         duration: status.duration,
         playbackStatus:

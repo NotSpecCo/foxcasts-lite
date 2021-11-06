@@ -54,14 +54,16 @@ export default function EpisodesByDuration({
     setEpisodes([]);
     setLoading(true);
 
-    Core.getEpisodes({
-      longerThan: durations[tabId].longerThan,
-      shorterThan: durations[tabId].shorterThan,
-      limit: 30,
-    }).then((res) => {
-      setEpisodes(res);
-      setLoading(false);
-    });
+    Core.episodes
+      .queryAll({
+        longerThan: durations[tabId].longerThan,
+        shorterThan: durations[tabId].shorterThan,
+        limit: 30,
+      })
+      .then((res) => {
+        setEpisodes(res);
+        setLoading(false);
+      });
   }, [tabId]);
 
   useListNav({

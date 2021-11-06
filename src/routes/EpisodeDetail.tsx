@@ -40,13 +40,13 @@ export default function EpisodeDetail({
   });
 
   useEffect(() => {
-    Core.getEpisode({ id: Number(episodeId) }).then(setEpisode);
+    Core.episodes.query({ id: Number(episodeId) }).then(setEpisode);
   }, [episodeId]);
 
   useEffect(() => {
     if (tabId === 'chapters' && chapters === undefined) {
       setChapters(null);
-      Core.getEpisodeChapters(Number(episodeId)).then(setChapters);
+      Core.episodes.getChapters(Number(episodeId)).then(setChapters);
     }
   }, [tabId, chapters]);
 
@@ -90,7 +90,7 @@ export default function EpisodeDetail({
         id: 'markPlayed',
         label: 'Mark as played',
         actionFn: () =>
-          Core.updateEpisode(Number(episodeId), {
+          Core.episodes.update(Number(episodeId), {
             playbackStatus: PlaybackStatus.Played,
             progress: episode.duration,
           }),
@@ -99,7 +99,7 @@ export default function EpisodeDetail({
         id: 'markUnplayed',
         label: 'Mark as unplayed',
         actionFn: () =>
-          Core.updateEpisode(Number(episodeId), {
+          Core.episodes.update(Number(episodeId), {
             playbackStatus: PlaybackStatus.Unplayed,
             progress: 0,
           }),

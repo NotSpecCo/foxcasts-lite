@@ -18,7 +18,7 @@ export default function Playlists({ selectedItemId, episodeId }: Props): VNode {
   const [lists, setLists] = useState<Playlist[]>();
 
   useEffect(() => {
-    Core.getPlaylists().then(setLists);
+    Core.playlists.queryAll().then(setLists);
   }, []);
 
   useListNav({
@@ -27,7 +27,7 @@ export default function Playlists({ selectedItemId, episodeId }: Props): VNode {
       const list = lists?.find((a) => a.id === Number(itemId));
       if (!list) return;
       if (episodeId && !list.episodeIds.includes(Number(episodeId))) {
-        await Core.updatePlaylist(Number(itemId), {
+        await Core.playlists.update(Number(itemId), {
           episodeIds: [...list.episodeIds, Number(episodeId)],
         });
         history.back();
@@ -63,13 +63,13 @@ export default function Playlists({ selectedItemId, episodeId }: Props): VNode {
             label: 'New Playlist',
             keepOpen: !!episodeId,
             actionFn: async () => {
-              await Core.addPlaylist({
+              await Core.playlists.add({
                 title: 'New Playlist',
                 episodeIds: episodeId ? [Number(episodeId)] : [],
                 isFavorite: 0,
                 removeEpisodeAfterListening: false,
               });
-              await Core.getPlaylists().then(setLists);
+              await Core.playlists.queryAll().then(setLists);
               if (episodeId) history.back();
             },
           },
@@ -85,7 +85,7 @@ export default function Playlists({ selectedItemId, episodeId }: Props): VNode {
             label: 'Delete Playlist',
             disabled: !selectedItemId,
             actionFn: () =>
-              Core.deletePlaylists([Number(selectedItemId)]).then(() => {
+              Core.playlists.delete([Number(selectedItemId)]).then(() => {
                 setLists(lists?.filter((a) => a.id !== Number(selectedItemId)));
                 route(`/playlists`, true);
               }),

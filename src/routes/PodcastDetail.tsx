@@ -39,16 +39,18 @@ export default function PodcastDetail({
     usePodcastSettings(podcastId);
 
   useEffect(() => {
-    Core.getEpisodes({
-      podcastIds: [Number(podcastId)],
-      offset: 0,
-      limit: 10,
-    }).then((result) => {
-      setEpisodes(result);
-    });
-    Core.getPodcast({ id: Number(podcastId) }).then((result) =>
-      setPodcast(result)
-    );
+    Core.episodes
+      .queryAll({
+        podcastIds: [Number(podcastId)],
+        offset: 0,
+        limit: 10,
+      })
+      .then((result) => {
+        setEpisodes(result);
+      });
+    Core.podcasts
+      .query({ id: Number(podcastId) })
+      .then((result) => setPodcast(result));
   }, [podcastId]);
 
   useListNav({
@@ -124,9 +126,9 @@ export default function PodcastDetail({
             id: 'unsubscribe',
             label: 'Unsubscribe',
             actionFn: (): Promise<boolean> =>
-              Core.unsubscribe({ id: Number(podcastId) }).then(() =>
-                route('/podcasts', true)
-              ),
+              Core.podcasts
+                .unsubscribe({ id: Number(podcastId) })
+                .then(() => route('/podcasts', true)),
           },
           {
             id: 'refreshArtwork',
@@ -138,7 +140,7 @@ export default function PodcastDetail({
           setSetting(id, value);
           const accentColor = podcast?.palette?.[value as keyof Palette];
           if (podcast && accentColor) {
-            const updated = await Core.updatePodcast(podcast?.id, {
+            const updated = await Core.podcasts.update(podcast?.id, {
               accentColor,
             });
             // setPodcast(updated);

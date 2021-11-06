@@ -45,9 +45,11 @@ export default function Player({ tabId }: Props): VNode {
 
   useEffect(() => {
     if (tabId === 'playlist' && !playlist.data && player.playlistId) {
-      playlist.getData(() => Core.getPlaylist(player.playlistId!, true));
+      playlist.getData(() =>
+        Core.playlists.query({ id: player.playlistId! }, true)
+      );
     } else if (tabId === 'chapters' && !chapters.data && player.episode) {
-      chapters.getData(() => Core.getEpisodeChapters(player.episode!.id));
+      chapters.getData(() => Core.episodes.getChapters(player.episode!.id));
     }
   }, [tabId]);
 
@@ -72,7 +74,7 @@ export default function Player({ tabId }: Props): VNode {
 
   useEffect(() => {
     if (player.episode) {
-      Core.updateEpisode(player.episode.id, {
+      Core.episodes.update(player.episode.id, {
         progress: status.currentTime,
         duration: status.duration,
         playbackStatus:

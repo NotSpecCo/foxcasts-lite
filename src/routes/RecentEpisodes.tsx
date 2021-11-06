@@ -54,13 +54,15 @@ export default function RecentEpisodes({
     setEpisodes([]);
     setLoading(true);
 
-    Core.getEpisodes({
-      afterDate: dates[tabId].from.toISOString(),
-      beforeDate: dates[tabId].to.toISOString(),
-    }).then((res) => {
-      setEpisodes(res);
-      setLoading(false);
-    });
+    Core.episodes
+      .queryAll({
+        afterDate: dates[tabId].from.toISOString(),
+        beforeDate: dates[tabId].to.toISOString(),
+      })
+      .then((res) => {
+        setEpisodes(res);
+        setLoading(false);
+      });
   }, [tabId]);
 
   useListNav({

@@ -17,7 +17,8 @@ export function usePodcasts(): Return {
     setLoading(true);
     setError(false);
 
-    Core.getPodcasts({})
+    Core.podcasts
+      .queryAll({})
       .then((res) => {
         setData(res);
         setLoading(false);

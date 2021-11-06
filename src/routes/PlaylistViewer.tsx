@@ -24,7 +24,7 @@ export default function PlaylistViewer({
   const player = usePlayer();
 
   useEffect(() => {
-    Core.getPlaylist(Number(listId), true).then(setList);
+    Core.playlists.query({ id: Number(listId) }, true).then(setList);
   }, []);
 
   useListNav({
@@ -50,7 +50,7 @@ export default function PlaylistViewer({
 
     newList.splice(newIndex, 0, episodeId);
     newList.splice(newIndex < index ? index + 1 : index, 1);
-    await Core.updatePlaylist(list.id, { episodeIds: newList });
+    await Core.playlists.update(list.id, { episodeIds: newList });
 
     const newEps = [...list.episodes];
     newEps.splice(newIndex, 0, list.episodes[index]);
@@ -115,7 +115,7 @@ export default function PlaylistViewer({
               const newIds = list.episodeIds.filter(
                 (a) => a !== Number(selectedItemId)
               );
-              await Core.updatePlaylist(list.id, { episodeIds: newIds });
+              await Core.playlists.update(list.id, { episodeIds: newIds });
               setList({
                 ...list,
                 episodeIds: newIds,

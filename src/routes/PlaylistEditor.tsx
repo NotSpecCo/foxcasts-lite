@@ -22,14 +22,15 @@ export default function PlaylistEditor({
   const [list, setList] = useState<Playlist>();
 
   useEffect(() => {
-    Core.getPlaylist(Number(listId)).then(setList);
+    Core.playlists.query({ id: Number(listId) }).then(setList);
   }, []);
 
   function updateList(key: keyof Playlist, value: any) {
-    return Core.updatePlaylist(Number(listId), {
-      [key]: value,
-    })
-      .then(() => Core.getPlaylist(Number(listId)))
+    return Core.playlists
+      .update(Number(listId), {
+        [key]: value,
+      })
+      .then(() => Core.playlists.query({ id: Number(listId) }))
       .then(setList);
   }
 
@@ -73,7 +74,7 @@ export default function PlaylistEditor({
             label: 'Delete List',
             keepOpen: true,
             actionFn: () =>
-              Core.deletePlaylists([Number(listId)]).then(() => {
+              Core.playlists.delete([Number(listId)]).then(() => {
                 route(`/playlists`, true);
               }),
           },

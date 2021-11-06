@@ -27,7 +27,7 @@ export default function Filters({ selectedItemId }: Props): VNode {
   const [lists, setLists] = useState<FilterList<FilterViewOptions>[]>();
 
   useEffect(() => {
-    Core.getFilterLists<FilterViewOptions>().then(setLists);
+    Core.filters.queryAll<FilterViewOptions>().then(setLists);
   }, []);
 
   useListNav({
@@ -84,17 +84,19 @@ export default function Filters({ selectedItemId }: Props): VNode {
             label: 'New List',
             keepOpen: true,
             actionFn: () =>
-              Core.addFilterList<FilterViewOptions>({
-                title: 'My Custom Filter',
-                query: {},
-                isFavorite: 0,
-                viewOptions: {
-                  primaryText: 'title',
-                  secondaryText: 'podcastTitle',
-                  accentText: null,
-                  showCover: true,
-                },
-              }).then((id) => route(`/filters/${id}/edit`)),
+              Core.filters
+                .add<FilterViewOptions>({
+                  title: 'My Custom Filter',
+                  query: {},
+                  isFavorite: 0,
+                  viewOptions: {
+                    primaryText: 'title',
+                    secondaryText: 'podcastTitle',
+                    accentText: null,
+                    showCover: true,
+                  },
+                })
+                .then((id) => route(`/filters/${id}/edit`)),
           },
           {
             id: 'editList',
@@ -114,7 +116,7 @@ export default function Filters({ selectedItemId }: Props): VNode {
               selectedItemId === 'recent' ||
               selectedItemId === 'duration',
             actionFn: () =>
-              Core.deleteFilterLists([Number(selectedItemId)]).then(() => {
+              Core.filters.delete([Number(selectedItemId)]).then(() => {
                 setLists(lists?.filter((a) => a.id !== Number(selectedItemId)));
                 route(`/filters`, true);
               }),

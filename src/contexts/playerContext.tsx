@@ -66,7 +66,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
 
   async function getNextEpisode(episodeId: number, playlistId?: number) {
     const playlist = playlistId
-      ? await Core.getPlaylist(playlistId)
+      ? await Core.playlists.query({ id: playlistId })
       : undefined;
     const nextEpisodeId =
       playlist?.episodeIds[
@@ -80,7 +80,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     }
 
     if (playlist?.removeEpisodeAfterListening) {
-      Core.updatePlaylist(playlist.id, {
+      Core.playlists.update(playlist.id, {
         episodeIds: playlist.episodeIds.filter((a) => a !== episodeId),
       });
     }
@@ -116,7 +116,7 @@ export function PlayerProvider(props: ComponentBaseProps): VNode {
     playlistId?: number
   ): Promise<PlaybackProgress> {
     setPlaylistId(playlistId);
-    const data = await Core.getEpisode({ id: episodeId });
+    const data = await Core.episodes.query({ id: episodeId });
 
     if (!data) return defaultStatus;
 

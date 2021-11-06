@@ -25,17 +25,17 @@ export default function PodcastPreview({
     setLoading(true);
 
     Promise.all([
-      Core.fetchPodcast(podexId ? parseInt(podexId, 10) : null, feedUrl),
-      Core.fetchEpisodes(podexId ? parseInt(podexId, 10) : null, feedUrl, 20),
+      Core.podcasts.fetch(podexId ? parseInt(podexId, 10) : null, feedUrl),
+      Core.episodes.fetch(podexId ? parseInt(podexId, 10) : null, feedUrl, 20),
     ]).then(([apiPodcast, apiEpisodes]) => {
       setPodcast(apiPodcast);
       setEpisodes(apiEpisodes);
       setLoading(false);
     });
 
-    Core.getPodcast({ podexId: Number(podexId), feedUrl }).then((result) =>
-      setSubscribed(!!result)
-    );
+    Core.podcasts
+      .query({ podexId: Number(podexId), feedUrl })
+      .then((result) => setSubscribed(!!result));
   }, [podexId, feedUrl]);
 
   useBodyScroller({});
@@ -48,7 +48,8 @@ export default function PodcastPreview({
   }
 
   async function unsubscribeFromPodcast(): Promise<void> {
-    await Core.unsubscribe({ podexId: Number(podexId), feedUrl })
+    await Core.podcasts
+      .unsubscribe({ podexId: Number(podexId), feedUrl })
       .then(() => setSubscribed(false))
       .catch((err) =>
         console.error('Failed to unsubscribe from podcast', err.message)

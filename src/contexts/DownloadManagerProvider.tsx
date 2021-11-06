@@ -44,7 +44,7 @@ export function DownloadManagerProvider(
   }, []);
 
   async function addToQueue(episodeId: number): Promise<void> {
-    const episode = await Core.getEpisode({ id: episodeId });
+    const episode = await Core.episodes.query({ id: episodeId });
     if (!episode) return;
 
     await manager.addToQueue(episode);

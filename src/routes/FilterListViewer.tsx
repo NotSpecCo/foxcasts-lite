@@ -25,12 +25,13 @@ export default function FilterListViewer({
   const [episodes, setEpisodes] = useState<EpisodeExtended[]>();
 
   useEffect(() => {
-    Core.getFilterList<FilterViewOptions>(Number(listId))
+    Core.filters
+      .query<FilterViewOptions>({ id: Number(listId) })
       .then((res) => {
         if (!res) return;
 
         setList(res);
-        return Core.getEpisodes(res.query);
+        return Core.episodes.queryAll(res.query);
       })
       .then(setEpisodes);
   }, []);

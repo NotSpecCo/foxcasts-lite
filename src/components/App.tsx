@@ -67,9 +67,9 @@ export default function App(): VNode {
     //   .catch((err) => console.log('err', err));
 
     // Ensure default filters exist
-    Core.getFilterLists().then((res) => {
+    Core.filters.queryAll().then((res) => {
       if (res.length === 0) {
-        Core.addFilterList<FilterViewOptions>({
+        Core.filters.add<FilterViewOptions>({
           title: 'In Progress',
           query: { playbackStatuses: [PlaybackStatus.InProgress] },
           isFavorite: 0,
@@ -80,7 +80,7 @@ export default function App(): VNode {
             showCover: false,
           },
         });
-        Core.addFilterList<FilterViewOptions>({
+        Core.filters.add<FilterViewOptions>({
           title: 'Favorite Episodes',
           query: { isFavorite: 1 },
           isFavorite: 0,
@@ -91,7 +91,7 @@ export default function App(): VNode {
             showCover: false,
           },
         });
-        Core.addFilterList<FilterViewOptions>({
+        Core.filters.add<FilterViewOptions>({
           title: 'Downloaded Episodes',
           query: { isDownloaded: 1 },
           isFavorite: 0,

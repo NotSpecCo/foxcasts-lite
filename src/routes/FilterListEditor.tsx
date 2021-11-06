@@ -48,29 +48,32 @@ export default function FilterListEditor({
   });
 
   useEffect(() => {
-    Core.getFilterList<FilterViewOptions>(Number(listId)).then((res) => {
-      setList(res);
-      setSections({
-        days: res?.query.withinDays ? true : false,
-        dates: res?.query.afterDate || res?.query.beforeDate ? true : false,
-        duration:
-          res?.query.longerThan !== undefined ||
-          res?.query.shorterThan !== undefined
-            ? true
-            : false,
-        playbackStatus:
-          res?.query.playbackStatuses !== undefined ? true : false,
-        podcasts: res?.query.podcastIds !== undefined ? true : false,
+    Core.filters
+      .query<FilterViewOptions>({ id: Number(listId) })
+      .then((res) => {
+        setList(res);
+        setSections({
+          days: res?.query.withinDays ? true : false,
+          dates: res?.query.afterDate || res?.query.beforeDate ? true : false,
+          duration:
+            res?.query.longerThan !== undefined ||
+            res?.query.shorterThan !== undefined
+              ? true
+              : false,
+          playbackStatus:
+            res?.query.playbackStatuses !== undefined ? true : false,
+          podcasts: res?.query.podcastIds !== undefined ? true : false,
+        });
       });
-    });
-    Core.getPodcasts({}).then(setPodcasts);
+    Core.podcasts.queryAll({}).then(setPodcasts);
   }, []);
 
   function updateList(key: keyof FilterList, value: any) {
-    return Core.updateFilterList(Number(listId), {
-      [key]: value,
-    })
-      .then(() => Core.getFilterList<FilterViewOptions>(Number(listId)))
+    return Core.filters
+      .update(Number(listId), {
+        [key]: value,
+      })
+      .then(() => Core.filters.query<FilterViewOptions>({ id: Number(listId) }))
       .then(setList);
   }
 
@@ -81,8 +84,9 @@ export default function FilterListEditor({
       ...list?.query,
       [key]: value,
     };
-    return Core.updateFilterList(Number(listId), { query: newQuery })
-      .then(() => Core.getFilterList<FilterViewOptions>(Number(listId)))
+    return Core.filters
+      .update(Number(listId), { query: newQuery })
+      .then(() => Core.filters.query<FilterViewOptions>({ id: Number(listId) }))
       .then(setList);
   }
 
@@ -100,8 +104,9 @@ export default function FilterListEditor({
       newQuery[key] = values[i];
     });
 
-    return Core.updateFilterList(Number(listId), { query: newQuery })
-      .then(() => Core.getFilterList<FilterViewOptions>(Number(listId)))
+    return Core.filters
+      .update(Number(listId), { query: newQuery })
+      .then(() => Core.filters.query<FilterViewOptions>({ id: Number(listId) }))
       .then(setList);
   }
 
@@ -133,13 +138,14 @@ export default function FilterListEditor({
   function updateViewOption(key: keyof FilterViewOptions, value: any) {
     if (!list?.viewOptions) return;
 
-    return Core.updateFilterList<FilterViewOptions>(Number(listId), {
-      viewOptions: {
-        ...list.viewOptions,
-        [key]: value ? value : undefined,
-      },
-    })
-      .then(() => Core.getFilterList<FilterViewOptions>(Number(listId)))
+    return Core.filters
+      .update<FilterViewOptions>(Number(listId), {
+        viewOptions: {
+          ...list.viewOptions,
+          [key]: value ? value : undefined,
+        },
+      })
+      .then(() => Core.filters.query<FilterViewOptions>({ id: Number(listId) }))
       .then(setList);
   }
 
@@ -499,7 +505,7 @@ export default function FilterListEditor({
             label: 'Delete List',
             keepOpen: true,
             actionFn: () =>
-              Core.deleteFilterLists([Number(listId)]).then(() => {
+              Core.filters.delete([Number(listId)]).then(() => {
                 route(`/filters`, true);
               }),
           },

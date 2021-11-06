@@ -28,7 +28,8 @@ export default function Search({
 
     setQuery(queryParam);
 
-    Core.searchPodcasts(queryParam)
+    Core.podcasts
+      .search(queryParam)
       .then((result) => setResults(result))
       .catch((err) => console.error(err));
   }, [queryParam]);

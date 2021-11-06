@@ -19,7 +19,8 @@ export function usePodcast(podcastId: number | string | undefined) {
       typeof podcastId === 'string' ? parseInt(podcastId, 10) : podcastId;
 
     setLoading(true);
-    Core.getPodcast({ id })
+    Core.podcasts
+      .query({ id })
       .then((res) => {
         setPodcast(res || null);
         setError(false);

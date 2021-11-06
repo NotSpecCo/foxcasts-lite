@@ -10,24 +10,24 @@ export const Core = new FoxcastsCore({
 });
 
 export async function refreshArtwork(podcastId: number): Promise<void> {
-  await Core.deleteArtworks({ podcastIds: [podcastId] });
+  await Core.artworks.deleteManyByQuery({ podcastIds: [podcastId] });
 
-  await Core.getArtwork({
+  await Core.artworks.query({
     podcastId,
     size: ArtworkSize.Large,
   });
-  const artwork = await Core.getArtwork({
+  const artwork = await Core.artworks.query({
     podcastId,
     size: ArtworkSize.Medium,
   });
-  Core.updatePodcast(podcastId, {
+  Core.podcasts.update(podcastId, {
     accentColor: artwork?.palette?.vibrant,
     palette: artwork?.palette,
     artwork: artwork?.image,
   });
 
-  await Core.getArtwork({ podcastId, size: ArtworkSize.Small });
-  await Core.getArtwork({
+  await Core.artworks.query({ podcastId, size: ArtworkSize.Small });
+  await Core.artworks.query({
     podcastId,
     size: ArtworkSize.Large,
     blur: ArtworkBlur.Some,
@@ -35,7 +35,7 @@ export async function refreshArtwork(podcastId: number): Promise<void> {
 }
 
 export async function subscribe(query: PodcastQuery): Promise<number> {
-  const id = await Core.subscribe(query);
+  const id = await Core.podcasts.subscribe(query);
   await refreshArtwork(id);
   return id;
 }
