@@ -4,7 +4,7 @@ import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
 
 export const Core = new FoxcastsCore({
-  baseUrl: 'http://api.foxcasts.com/',
+  baseUrl: 'https://api.foxcasts.com/',
   apiKey:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZm94Y2FzdHMtbGl0ZSIsImNyZWF0ZWRBdCI6IjIwMjEtMDktMDRUMjE6NDE6MjUuODQxWiIsImlhdCI6MTYzMDc5MTY4NX0.Z9JKUYmPE59Al9q82ctGUg9SeAks9KKOjz-qDm4s3GM',
 });
