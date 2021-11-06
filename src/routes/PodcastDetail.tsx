@@ -43,7 +43,7 @@ export default function PodcastDetail({
       .queryAll({
         podcastIds: [Number(podcastId)],
         offset: 0,
-        limit: 10,
+        limit: 25,
       })
       .then((result) => {
         setEpisodes(result);
@@ -140,10 +140,10 @@ export default function PodcastDetail({
           setSetting(id, value);
           const accentColor = podcast?.palette?.[value as keyof Palette];
           if (podcast && accentColor) {
-            const updated = await Core.podcasts.update(podcast?.id, {
+            await Core.podcasts.update(podcast?.id, {
               accentColor,
             });
-            // setPodcast(updated);
+            setPodcast({ ...podcast, accentColor });
           }
         }}
       />
