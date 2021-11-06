@@ -1,4 +1,4 @@
-import { EpisodeExtended, Playlist } from 'foxcasts-core/lib/types';
+import { PlaylistExtended } from 'foxcasts-core/lib/types';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
@@ -19,36 +19,13 @@ export default function PlaylistViewer({
   listId,
   selectedItemId,
 }: Props): VNode {
-  const [list, setList] = useState<Playlist>();
-  const [episodes, setEpisodes] = useState<EpisodeExtended[]>();
+  const [list, setList] = useState<PlaylistExtended>();
 
   const player = usePlayer();
 
   useEffect(() => {
-    Core.getPlaylist(Number(listId)).then((res) => {
-      if (!res) return;
-
-      setList(res);
-      Core.getEpisodes({ episodeIds: res.episodeIds }).then((eps) => {
-        setEpisodes(orderEpisodes(res.episodeIds, eps));
-        setList(res);
-      });
-    });
+    Core.getPlaylist(Number(listId), true).then(setList);
   }, []);
-
-  function orderEpisodes(ids: number[], eps: EpisodeExtended[]) {
-    const episodeMap = eps.reduce((acc, episode) => {
-      acc[episode.id] = episode;
-      return acc;
-    }, {} as { [key: number]: EpisodeExtended });
-
-    return ids.map((id) => episodeMap[id]);
-  }
-
-  useEffect(() => {
-    if (!list?.episodeIds || !episodes) return;
-    setEpisodes(orderEpisodes(list.episodeIds, episodes));
-  }, [list?.episodeIds]);
 
   useListNav({
     initialSelectedId: list ? selectedItemId : undefined,
@@ -74,9 +51,15 @@ export default function PlaylistViewer({
     newList.splice(newIndex, 0, episodeId);
     newList.splice(newIndex < index ? index + 1 : index, 1);
     await Core.updatePlaylist(list.id, { episodeIds: newList });
+
+    const newEps = [...list.episodes];
+    newEps.splice(newIndex, 0, list.episodes[index]);
+    newEps.splice(newIndex < index ? index + 1 : index, 1);
+
     setList({
       ...list,
       episodeIds: newList,
+      episodes: newEps,
     });
   }
 
@@ -84,20 +67,19 @@ export default function PlaylistViewer({
     <View>
       <ViewHeader>{list?.title || 'List'}</ViewHeader>
       <ViewContent>
-        {list &&
-          episodes?.map((episode, i) => (
-            <ListItem
-              key={episode.id}
-              primaryText={episode.title}
-              secondaryText={episode.podcastTitle}
-              imageUrl={episode.artwork}
-              selectable={{
-                id: episode.id,
-                shortcut: i + 1 <= 9 ? i + 1 : undefined,
-                selected: episode.id.toString() === selectedItemId,
-              }}
-            />
-          ))}
+        {list?.episodes?.map((episode, i) => (
+          <ListItem
+            key={episode.id}
+            primaryText={episode.title}
+            secondaryText={episode.podcastTitle}
+            imageUrl={episode.artwork}
+            selectable={{
+              id: episode.id,
+              shortcut: i + 1 <= 9 ? i + 1 : undefined,
+              selected: episode.id.toString() === selectedItemId,
+            }}
+          />
+        ))}
       </ViewContent>
       <AppBar
         centerText={selectedItemId ? 'Select' : ''}
