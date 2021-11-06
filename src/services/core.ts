@@ -35,7 +35,7 @@ export async function refreshArtwork(podcastId: number): Promise<void> {
 }
 
 export async function subscribe(query: PodcastQuery): Promise<number> {
-  const id = await Core.podcasts.subscribe(query);
+  const id = await Core.podcasts.subscribe(query, 50);
   await refreshArtwork(id);
   return id;
 }
