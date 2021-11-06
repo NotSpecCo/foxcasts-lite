@@ -1,4 +1,5 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
+import { Chapter, PlaylistExtended } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
@@ -9,17 +10,25 @@ import { useSettings } from '../contexts/SettingsProvider';
 import { useView } from '../contexts/ViewProvider';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
+import { useFetchedState } from '../hooks/useFetchedState';
+import { useListNav } from '../hooks/useListNav';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { Settings } from '../models';
 import { Core } from '../services/core';
-import { KaiOS } from '../services/kaios';
 import { AppBar, AppBarAction } from '../ui-components/appbar';
+import { ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
-import { View, ViewContent } from '../ui-components/view';
+import { View, ViewContent, ViewTab, ViewTabBar } from '../ui-components/view';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
 
-export default function Player(): VNode {
+type Props = {
+  tabId: string;
+};
+
+export default function Player({ tabId }: Props): VNode {
+  const playlist = useFetchedState<PlaylistExtended>();
+  const chapters = useFetchedState<Chapter[]>();
   const [status, setStatus] = useState<PlaybackProgress>({
     playing: false,
     currentTime: 0,
@@ -33,6 +42,14 @@ export default function Player(): VNode {
   const { artwork } = useArtwork(player.episode?.podcastId, {
     size: ArtworkSize.Large,
   });
+
+  useEffect(() => {
+    if (tabId === 'playlist' && !playlist.data && player.playlistId) {
+      playlist.getData(() => Core.getPlaylist(player.playlistId!, true));
+    } else if (tabId === 'chapters' && !chapters.data && player.episode) {
+      chapters.getData(() => Core.getEpisodeChapters(player.episode!.id));
+    }
+  }, [tabId]);
 
   useEffect(() => {
     const episode = player.episode;
@@ -101,19 +118,26 @@ export default function Player(): VNode {
 
   useNavKeys(
     {
-      ArrowUp: () => KaiOS.system.volumeUp(),
-      ArrowDown: () => KaiOS.system.volumeDown(),
-      ArrowLeft: () => setStatus(player.jump(-settings.playbackSkipBack)),
-      ArrowRight: () => setStatus(player.jump(settings.playbackSkipForward)),
       Enter: () => {
         if (!player.episode) {
           return;
+        } else if (tabId === 'player') {
+          status.playing ? setStatus(player.pause()) : setStatus(player.play());
+        } else if (tabId === 'playlist' && selectedId && playlist.data) {
+          player.load(Number(selectedId), false, playlist.data.id);
+        } else if (tabId === 'chapters' && selectedId && chapters.data) {
+          player.goTo(
+            Math.floor(chapters.data[Number(selectedId)].startTime / 1000)
+          );
         }
-        status.playing ? setStatus(player.pause()) : setStatus(player.play());
       },
     },
-    { disabled: view.appbarOpen }
+    { disabled: view.appbarOpen || view.homeMenuOpen }
   );
+
+  const { selectedId } = useListNav({
+    updateRouteOnChange: false,
+  });
 
   const playbackOptions = useMemo(() => {
     let current = 0.5;
@@ -139,10 +163,20 @@ export default function Player(): VNode {
   return (
     <View
       accentColor={player.episode.accentColor}
-      backgroundImageUrl={artwork?.image}
+      backgroundImageUrl={tabId === 'player' ? artwork?.image : undefined}
       enableBackdrop={false}
     >
-      <ViewContent>
+      <ViewTabBar
+        tabs={[
+          { id: 'player', label: 'player' },
+          { id: 'episode', label: 'episode' },
+          { id: 'chapters', label: 'chapters' },
+          { id: 'playlist', label: 'playlist' },
+        ]}
+        selectedId={tabId}
+        onChange={(tabId) => route(`/player/${tabId}`, true)}
+      />
+      <ViewTab tabId="player" activeTabId={tabId}>
         <div
           className={joinClasses(
             styles.player,
@@ -171,9 +205,57 @@ export default function Player(): VNode {
             </div>
           </div>
         </div>
-      </ViewContent>
+      </ViewTab>
+      <ViewTab tabId="episode" activeTabId={tabId}>
+        <Typography>{player.episode?.description}</Typography>
+      </ViewTab>
+      <ViewTab tabId="chapters" activeTabId={tabId}>
+        {chapters.loading && <Typography>Loading...</Typography>}
+        {chapters.data?.length === 0 && <Typography>No chapters</Typography>}
+        {chapters.data?.map((chapter, i) => {
+          let text = formatTime(chapter.startTime / 1000);
+          if (chapter.endTime) {
+            text = `${text} - ${formatTime(chapter.endTime / 1000)}`;
+          }
+          return (
+            <ListItem
+              key={chapter.startTime}
+              primaryText={chapter.title}
+              accentText={text}
+              selectable={{
+                id: `${i}`,
+                selected: selectedId === `${i}`,
+              }}
+            />
+          );
+        })}
+      </ViewTab>
+      <ViewTab tabId="playlist" activeTabId={tabId}>
+        {playlist.loading && <Typography>Loading...</Typography>}
+        {playlist.data?.episodes?.length === 0 && (
+          <Typography>No episodes</Typography>
+        )}
+        {playlist.data?.episodes.map((episode) => (
+          <ListItem
+            primaryText={episode.title}
+            secondaryText={episode.podcastTitle}
+            selectable={{
+              id: episode.id.toString(),
+              selected: selectedId === episode.id.toString(),
+            }}
+          />
+        ))}
+      </ViewTab>
       <AppBar
-        centerText={status.playing ? 'Pause' : 'Play'}
+        centerText={
+          tabId === 'player'
+            ? status.playing
+              ? 'Pause'
+              : 'Play'
+            : selectedId
+            ? 'Select'
+            : ''
+        }
         actions={actionList}
         options={[
           {
