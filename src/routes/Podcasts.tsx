@@ -87,6 +87,7 @@ export default function Podcasts(props: Props): VNode {
                   id: podcast.id,
                   shortcut: i <= 8 ? i + 1 : undefined,
                   selected: podcast.id.toString() === selectedId,
+                  ariaLabel: podcast.title,
                 }}
               />
             ))}
@@ -111,6 +112,7 @@ export default function Podcasts(props: Props): VNode {
                   id: podcast.id,
                   shortcut: i <= 8 ? i + 1 : undefined,
                   selected: podcast.id.toString() === selectedId,
+                  ariaLabel: podcast.title,
                 }}
               />
             ))}

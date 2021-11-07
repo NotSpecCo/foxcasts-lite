@@ -6,5 +6,6 @@ export type SelectableProps = {
     priority?: SelectablePriority;
     shortcut?: string | number;
     selected: boolean;
+    ariaLabel?: string;
   };
 };

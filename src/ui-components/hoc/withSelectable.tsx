@@ -7,6 +7,7 @@ type Props = ComponentBaseProps & {
   priority?: SelectablePriority;
   shortcut?: string | number;
   selected?: boolean;
+  ariaLabel?: string;
 };
 
 export function SelectableBase(props: Props): VNode {
@@ -20,6 +21,9 @@ export function SelectableBase(props: Props): VNode {
       data-selectable-shortcut={props.shortcut}
       data-selected={props.selected}
       data-testid={props['data-testid']}
+      tabIndex={1}
+      role="button"
+      aria-label={props.ariaLabel}
     >
       {props.children}
     </div>

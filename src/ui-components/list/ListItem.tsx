@@ -15,7 +15,15 @@ type Props = ComponentBaseProps &
 
 export function ListItem(props: Props): h.JSX.Element {
   return (
-    <SelectableBase {...props.selectable} className={joinClasses(styles.root)}>
+    <SelectableBase
+      {...props.selectable}
+      ariaLabel={[
+        props.primaryText,
+        props.secondaryText,
+        props.accentText,
+      ].join(' . ')}
+      className={joinClasses(styles.root)}
+    >
       {/* {props.shortcutKey ? (
           <div className={styles.shortcut}>{props.shortcutKey}</div>
         ) : null} */}

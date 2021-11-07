@@ -15,6 +15,7 @@ export function AppBarListItem(props: Props): h.JSX.Element {
   return (
     <SelectableBase
       {...props.selectable}
+      ariaLabel={props.text}
       className={joinClasses(
         styles.root,
         ifClass(props.selectable?.selected, styles.selected),
