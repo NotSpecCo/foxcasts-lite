@@ -6,15 +6,17 @@ import { useEffect, useState } from 'react';
 import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
 import { useSettings } from '../contexts/SettingsProvider';
 import { useView } from '../contexts/ViewProvider';
-import { SelectablePriority } from '../enums';
+import { ArtworkBlur, ArtworkSize, SelectablePriority } from '../enums';
+import { useArtwork } from '../hooks/useArtwork';
 import { useListNav } from '../hooks/useListNav';
 import { ListLayout } from '../models';
 import { Core } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { AppBar } from '../ui-components/appbar';
 import { SelectableBase } from '../ui-components/hoc';
-import { SvgIcon } from '../ui-components/SvgIcon';
-import { Tile } from '../ui-components/Tile';
+import { IconSize, SvgIcon } from '../ui-components/SvgIcon';
+import { TileContent } from '../ui-components/tiles';
+import { Tile } from '../ui-components/tiles/Tile';
 import { Typography } from '../ui-components/Typography';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './AppMenu.module.css';
@@ -32,13 +34,16 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
   });
   const { settings } = useSettings();
   const view = useView();
+  const player = usePlayer();
+  const { artwork } = useArtwork(player.episode?.podcastId, {
+    size: ArtworkSize.Large,
+    blur: ArtworkBlur.None,
+  });
 
   useEffect(() => {
     view.setHomeMenuOpen(true);
     return () => view.setHomeMenuOpen(false);
   }, []);
-
-  const player = usePlayer();
 
   useEffect(() => {
     if (!player.episode) return;
@@ -111,62 +116,170 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
         {settings.homeMenuLayout === ListLayout.Grid ? (
           <div className={styles.grid}>
             <Tile
-              icon="grid"
-              backText="Podcasts"
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="home" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>home</Typography>
+                </TileContent>
+              }
+              selectable={{
+                priority: SelectablePriority.Medium,
+                id: 'home',
+                shortcut: '1',
+                selected: selectedId === 'home',
+              }}
+            />
+            <Tile
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="grid" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>podcasts</Typography>
+                </TileContent>
+              }
               selectable={{
                 priority: SelectablePriority.Medium,
                 id: 'podcasts',
-                shortcut: '1',
+                shortcut: '2',
                 selected: selectedId === 'podcasts',
               }}
             />
             <Tile
-              icon="search"
-              backText="Search"
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="search" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>search</Typography>
+                </TileContent>
+              }
               selectable={{
                 priority: SelectablePriority.Medium,
                 id: 'search',
-                shortcut: '2',
+                shortcut: '3',
                 selected: selectedId === 'search',
               }}
             />
             <Tile
-              icon="list"
-              backText="Playlists"
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="list" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>playlists</Typography>
+                </TileContent>
+              }
               selectable={{
                 priority: SelectablePriority.Medium,
                 id: 'playlists',
-                shortcut: '3',
+                shortcut: '4',
                 selected: selectedId === 'playlists',
               }}
             />
             <Tile
-              icon="filter"
-              backText="Filters"
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="filter" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>filters</Typography>
+                </TileContent>
+              }
               selectable={{
                 priority: SelectablePriority.Medium,
                 id: 'filters',
-                shortcut: '4',
+                shortcut: '5',
                 selected: selectedId === 'filters',
               }}
             />
             <Tile
-              icon="download"
-              backText="Download"
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="download" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>download</Typography>
+                </TileContent>
+              }
               selectable={{
                 priority: SelectablePriority.Medium,
                 id: 'downloads',
-                shortcut: '5',
+                shortcut: '6',
                 selected: selectedId === 'downloads',
               }}
             />
+
             <Tile
-              icon="settings"
-              backText="Settings"
+              width={2}
+              frontContent={
+                player.episode ? (
+                  <TileContent backgroundImage={artwork?.image} contentH="left">
+                    <div>
+                      <Typography
+                        padding="horizontal"
+                        display="inline"
+                        type="title"
+                      >
+                        {formatTime(status.currentTime || 0)}
+                      </Typography>
+                    </div>
+                    <Typography
+                      padding="horizontal"
+                      wrap="nowrap"
+                      type="bodyStrong"
+                      display="inline"
+                    >
+                      {player.episode?.title}
+                    </Typography>
+                  </TileContent>
+                ) : (
+                  <TileContent>
+                    <Typography>Now Playing</Typography>
+                  </TileContent>
+                )
+              }
+              backContent={
+                <TileContent contentV="top" contentH="left">
+                  <Typography>{player.episode?.title}</Typography>
+                </TileContent>
+              }
+              selectable={{
+                priority: SelectablePriority.Medium,
+                id: 'player',
+                shortcut: '7',
+                selected: selectedId === 'player',
+              }}
+            />
+            <Tile
+              frontContent={
+                <TileContent contentH="center" contentV="center">
+                  <SvgIcon icon="settings" size={IconSize.Large} />
+                </TileContent>
+              }
+              backContent={
+                <TileContent>
+                  <Typography>settings</Typography>
+                </TileContent>
+              }
               selectable={{
                 priority: SelectablePriority.Medium,
                 id: 'settings',
-                shortcut: '6',
+                shortcut: '9',
                 selected: selectedId === 'settings',
               }}
             />
@@ -176,67 +289,78 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
             <SelectableBase
               className={styles.row}
               priority={SelectablePriority.Medium}
-              id="podcasts"
+              id="home"
               shortcut="1"
+              selected={selectedId === 'home'}
+            >
+              <SvgIcon icon="home" />
+              <span>1</span>
+              Home
+            </SelectableBase>
+            <SelectableBase
+              className={styles.row}
+              priority={SelectablePriority.Medium}
+              id="podcasts"
+              shortcut="2"
               selected={selectedId === 'podcasts'}
             >
               <SvgIcon icon="grid" />
-              <span>1</span>
+              <span>2</span>
               Podcasts
             </SelectableBase>
             <SelectableBase
               className={styles.row}
               priority={SelectablePriority.Medium}
               id="search"
-              shortcut="2"
+              shortcut="3"
               selected={selectedId === 'search'}
             >
               <SvgIcon icon="search" />
-              <span>2</span>
+              <span>3</span>
               Search
             </SelectableBase>
             <SelectableBase
               className={styles.row}
               priority={SelectablePriority.Medium}
               id="playlists"
-              shortcut="3"
+              shortcut="4"
               selected={selectedId === 'playlists'}
             >
               <SvgIcon icon="list" />
-              <span>3</span>
+              <span>4</span>
               Playlists
             </SelectableBase>
             <SelectableBase
               className={styles.row}
               priority={SelectablePriority.Medium}
               id="filters"
-              shortcut="4"
+              shortcut="5"
               selected={selectedId === 'filters'}
             >
               <SvgIcon icon="filter" />
-              <span>4</span>
+              <span>5</span>
               Filters
             </SelectableBase>
             <SelectableBase
               className={styles.row}
               priority={SelectablePriority.Medium}
               id="downloads"
-              shortcut="5"
+              shortcut="6"
               selected={selectedId === 'downloads'}
             >
               <SvgIcon icon="download" />
-              <span>5</span>
+              <span>6</span>
               Download
             </SelectableBase>
             <SelectableBase
               className={styles.row}
               priority={SelectablePriority.Medium}
               id="settings"
-              shortcut="6"
+              shortcut="7"
               selected={selectedId === 'settings'}
             >
               <SvgIcon icon="settings" />
-              <span>6</span>
+              <span>7</span>
               Settings
             </SelectableBase>
           </div>
@@ -253,7 +377,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
               )}
               id="player"
               priority={SelectablePriority.Medium}
-              shortcut="7"
+              shortcut="8"
             >
               <Typography padding="horizontal" wrap="nowrap">
                 {player.episode?.title}
