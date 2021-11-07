@@ -10,8 +10,8 @@ import { subscribe } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { OPML } from '../services/opml';
 import { AppBar } from '../ui-components/appbar';
-import { GridItem } from '../ui-components/GridItem';
 import { List, ListItem } from '../ui-components/list';
+import { Tile, TileContent } from '../ui-components/tiles';
 import { Typography } from '../ui-components/Typography';
 import { View, ViewContent, ViewHeader } from '../ui-components/view';
 import styles from './Podcasts.module.css';
@@ -94,10 +94,19 @@ export default function Podcasts(props: Props): VNode {
         ) : (
           <div className={styles.grid}>
             {podcasts?.map((podcast, i) => (
-              <GridItem
-                key={podcast.id}
-                dimIfUnselected={!!selectedId}
-                imageUrl={podcast.artwork || podcast.artworkUrl}
+              <Tile
+                accentColor={podcast.accentColor}
+                frontContent={
+                  <TileContent
+                    backgroundImage={podcast.artwork}
+                    scrim={false}
+                  />
+                }
+                backContent={
+                  <TileContent contentH="left" contentV="top">
+                    <Typography>{podcast.title}</Typography>
+                  </TileContent>
+                }
                 selectable={{
                   id: podcast.id,
                   shortcut: i <= 8 ? i + 1 : undefined,

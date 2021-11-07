@@ -5,11 +5,13 @@ import styles from './TileContent.module.css';
 
 type Props = ComponentBaseProps & {
   backgroundImage?: string;
+  scrim?: boolean;
   contentH?: 'left' | 'center' | 'right';
   contentV?: 'top' | 'center' | 'bottom';
 };
 
 export function TileContent({
+  scrim = true,
   contentH = 'right',
   contentV = 'bottom',
   ...props
@@ -26,7 +28,7 @@ export function TileContent({
       <div
         className={joinClasses(
           styles.content,
-          ifClass(!!props.backgroundImage, styles.scrim),
+          ifClass(!!props.backgroundImage && scrim, styles.scrim),
           styles[`${contentH}H`],
           styles[`${contentV}V`]
         )}

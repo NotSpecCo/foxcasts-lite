@@ -9,6 +9,7 @@ import styles from './Tile.module.css';
 type Props = ComponentBaseProps &
   SelectableProps & {
     width?: 1 | 2 | 3;
+    accentColor?: string;
     frontContent?: h.JSX.Element;
     backContent: h.JSX.Element;
   };
@@ -32,8 +33,22 @@ export function Tile({ width = 1, ...props }: Props): h.JSX.Element {
           ifClass(animate, styles.animateUnflip)
         )}
       >
-        <div className={styles.back}>{props.backContent}</div>
-        <div className={styles.front}>{props.frontContent}</div>
+        <div
+          className={styles.back}
+          style={{
+            backgroundColor: props.accentColor || 'var(--app-accent-color)',
+          }}
+        >
+          {props.backContent}
+        </div>
+        <div
+          className={styles.front}
+          style={{
+            backgroundColor: props.accentColor || 'var(--app-accent-color)',
+          }}
+        >
+          {props.frontContent}
+        </div>
       </div>
     </SelectableBase>
   );
