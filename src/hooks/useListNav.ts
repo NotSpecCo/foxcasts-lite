@@ -153,7 +153,7 @@ export function useListNav({
       const result = data.results.find((a) => a.shortcut === ev.key);
       if (result) {
         setSelectedId(result.id);
-        (result.element as HTMLElement).focus();
+        (result.element as HTMLElement).focus({ preventScroll: true });
         if (updateRouteOnChange) {
           route(updateRouteWithSelectedId(result.id), true);
         }
@@ -174,7 +174,9 @@ export function useListNav({
 
     setSelectedId(data.results[newIndex]?.id);
     if (data.results[newIndex]?.element) {
-      (data.results[newIndex].element as HTMLElement).focus();
+      (data.results[newIndex].element as HTMLElement).focus({
+        preventScroll: true,
+      });
     }
 
     const scroller: HTMLElement | null = document.querySelector(
