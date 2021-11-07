@@ -10,6 +10,15 @@
   display: block;
   grid-area: 1 / 1 / 2 / 2;
 }
+.width1.root::before {
+  padding-bottom: 100%;
+}
+.width2.root::before {
+  padding-bottom: 50%;
+}
+.width3.root::before {
+  padding-bottom: 33.3%;
+}
 
 .content {
   grid-area: 1 / 1 / 2 / 2;
@@ -21,7 +30,10 @@
   position: relative;
   transform-style: preserve-3d;
   transform: rotateX(180deg);
-  /* animation: cardUnFlip 200ms forwards ease-in-out; */
+  animation: cardUnFlip 0ms forwards ease-in-out;
+}
+.content.animateUnflip {
+  animation: cardUnFlip 500ms forwards ease-in-out;
 }
 
 .root[data-selected] .content {

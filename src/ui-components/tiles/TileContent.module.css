@@ -1,0 +1,33 @@
+.root {
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.scrim {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.leftH {
+  align-items: flex-start;
+}
+.centerH {
+  align-items: center;
+}
+.rightH {
+  align-items: flex-end;
+}
+
+.topV {
+  justify-content: flex-start;
+}
+.centerV {
+  justify-content: center;
+}
+.bottomV {
+  justify-content: flex-end;
+}
