@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 import { joinClasses } from '../../utils/classes';
-import { SelectableBase } from '../hoc';
+import { SelectableBase } from '../SelectableBase';
 import styles from './ListItem.module.css';
 
 type Props = ComponentBaseProps &

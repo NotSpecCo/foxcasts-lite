@@ -10,11 +10,11 @@ import { subscribe } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { OPML } from '../services/opml';
 import { AppBar } from '../ui-components/appbar';
+import { Grid } from '../ui-components/grid';
 import { List, ListItem } from '../ui-components/list';
 import { Tile, TileContent } from '../ui-components/tiles';
 import { Typography } from '../ui-components/Typography';
 import { View, ViewContent, ViewHeader } from '../ui-components/view';
-import styles from './Podcasts.module.css';
 
 interface Props {
   selectedItemId?: string;
@@ -93,7 +93,7 @@ export default function Podcasts(props: Props): VNode {
             ))}
           </List>
         ) : (
-          <div className={styles.grid}>
+          <Grid>
             {podcasts?.map((podcast, i) => (
               <Tile
                 accentColor={podcast.accentColor}
@@ -116,7 +116,7 @@ export default function Podcasts(props: Props): VNode {
                 }}
               />
             ))}
-          </div>
+          </Grid>
         )}
       </ViewContent>
       <AppBar

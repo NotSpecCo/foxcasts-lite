@@ -7,7 +7,7 @@ import { Core } from '../services/core';
 import { OPML } from '../services/opml';
 import { AppBar } from '../ui-components/appbar';
 import { Button } from '../ui-components/buttons';
-import { SelectableBase } from '../ui-components/hoc';
+import { SelectableBase } from '../ui-components/SelectableBase';
 import { Typography } from '../ui-components/Typography';
 import { View, ViewContent, ViewHeader } from '../ui-components/view';
 import styles from './Import.module.css';

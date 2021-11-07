@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../models';
-import { SelectableBase } from '../ui-components/hoc';
+import { SelectableBase } from '../ui-components/SelectableBase';
 import { IconSize, SvgIcon } from '../ui-components/SvgIcon';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './ControllerOption.module.css';

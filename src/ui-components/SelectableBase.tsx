@@ -1,6 +1,8 @@
 import { h, VNode } from 'preact';
-import { SelectablePriority } from '../../enums';
-import { ComponentBaseProps, SelectableProps } from '../../models';
+import { SelectablePriority } from '../enums';
+import { ComponentBaseProps, SelectableProps } from '../models';
+import { joinClasses } from '../utils/classes';
+import styles from './SelectableBase.module.css';
 
 type Props = ComponentBaseProps & {
   id?: string | number;
@@ -13,7 +15,7 @@ type Props = ComponentBaseProps & {
 export function SelectableBase(props: Props): VNode {
   return (
     <div
-      className={props.className}
+      className={joinClasses(styles.root, props.className)}
       style={props.style}
       title={props.title}
       data-selectable-priority={props.priority || SelectablePriority.Low}

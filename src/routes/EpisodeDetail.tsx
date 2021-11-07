@@ -17,7 +17,6 @@ import { LabeledRow } from '../ui-components/LabeledRow';
 import { ListItem } from '../ui-components/list';
 import { Typography } from '../ui-components/Typography';
 import { View, ViewTab, ViewTabBar } from '../ui-components/view';
-import styles from './EpisodeDetail.module.css';
 
 interface EpisodeDetailProps {
   episodeId: string;
@@ -133,9 +132,9 @@ export default function EpisodeDetail({
       />
       <ViewTab tabId="info" activeTabId={tabId}>
         {episode?.fileType.startsWith('video') && (
-          <div className={styles.accent}>
+          <Typography color="accent">
             Sorry, Foxcasts does not support video podcasts yet.
-          </div>
+          </Typography>
         )}
         <Typography type="subtitle">{episode?.title}</Typography>
         {episode ? (

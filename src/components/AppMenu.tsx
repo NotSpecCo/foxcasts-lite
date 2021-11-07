@@ -13,7 +13,7 @@ import { ListLayout } from '../models';
 import { Core } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { AppBar } from '../ui-components/appbar';
-import { SelectableBase } from '../ui-components/hoc';
+import { SelectableBase } from '../ui-components/SelectableBase';
 import { IconSize, SvgIcon } from '../ui-components/SvgIcon';
 import { TileContent } from '../ui-components/tiles';
 import { Tile } from '../ui-components/tiles/Tile';

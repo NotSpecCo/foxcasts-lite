@@ -8,8 +8,6 @@ import { AppBar } from '../ui-components/appbar';
 import { Input } from '../ui-components/form';
 import { ListItem } from '../ui-components/list';
 import { View, ViewContent } from '../ui-components/view';
-import styles from './Search.module.css';
-
 interface SearchProps {
   q?: string;
   selectedItemId?: string;
@@ -70,7 +68,6 @@ export default function Search({
   return (
     <View>
       <Input
-        className={styles.searchBox}
         value={query}
         placeholder="Search..."
         selectable={{
