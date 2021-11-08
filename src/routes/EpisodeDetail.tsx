@@ -86,6 +86,23 @@ export default function EpisodeDetail({
         actionFn: () => route(`/playlists?episodeId=${episodeId}`),
       },
       {
+        id: 'toggleFavorite',
+        label: episode.isFavorite
+          ? 'Remove from favorites'
+          : 'Add to favorites',
+        actionFn: () =>
+          Core.episodes
+            .update(episode.id, {
+              isFavorite: episode.isFavorite ? 0 : 1,
+            })
+            .then(() =>
+              setEpisode({
+                ...episode,
+                isFavorite: episode.isFavorite ? 0 : 1,
+              })
+            ),
+      },
+      {
         id: 'markPlayed',
         label: 'Mark as played',
         actionFn: () =>

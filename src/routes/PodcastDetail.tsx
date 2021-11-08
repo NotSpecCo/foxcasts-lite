@@ -131,8 +131,25 @@ export default function PodcastDetail({
                 .then(() => route('/podcasts', true)),
           },
           {
+            id: 'toggleFavorite',
+            label: podcast?.isFavorite
+              ? 'Remove from favorites'
+              : 'Add to favorites',
+            actionFn: () =>
+              Core.podcasts
+                .update(Number(podcastId), {
+                  isFavorite: podcast?.isFavorite ? 0 : 1,
+                })
+                .then(() =>
+                  setPodcast({
+                    ...podcast,
+                    isFavorite: podcast?.isFavorite ? 0 : 1,
+                  } as Podcast)
+                ),
+          },
+          {
             id: 'refreshArtwork',
-            label: 'Refresh Artwork',
+            label: 'Refresh artwork',
             actionFn: (): Promise<void> => refreshArtwork(Number(podcastId)),
           },
         ]}
