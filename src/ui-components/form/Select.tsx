@@ -3,8 +3,8 @@ import { useState } from 'preact/hooks';
 import { useView } from '../../contexts/ViewProvider';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../../models';
-import { SelectableBase } from '../hoc';
 import { Menu } from '../Menu';
+import { SelectableBase } from '../SelectableBase';
 import styles from './Select.module.css';
 
 type Option = {

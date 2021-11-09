@@ -3,7 +3,7 @@ import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, Option, SelectableProps } from '../../models';
 import { getIndexWrap } from '../../utils/array';
 import { ifClass, joinClasses } from '../../utils/classes';
-import { SelectableBase } from '../hoc';
+import { SelectableBase } from '../SelectableBase';
 import { IconSize, SvgIcon } from '../SvgIcon';
 import styles from './AppBarListOption.module.css';
 
@@ -64,7 +64,6 @@ export function AppBarListOption(props: Props): h.JSX.Element {
         {props.options.find((a) => a.id === props.selectedOptionId)?.label}
       </div>
       <SvgIcon icon="chevronRight" size={IconSize.Small} />
-      {/* </div> */}
     </SelectableBase>
   );
 }

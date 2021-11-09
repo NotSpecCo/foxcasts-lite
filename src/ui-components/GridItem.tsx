@@ -3,7 +3,7 @@ import { forwardRef } from 'preact/compat';
 import { ComponentBaseProps, SelectableProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './GridItem.module.css';
-import { SelectableBase } from './hoc';
+import { SelectableBase } from './SelectableBase';
 
 type Props = ComponentBaseProps &
   SelectableProps & {

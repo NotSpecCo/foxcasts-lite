@@ -3,7 +3,7 @@ import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, Option, SelectableProps } from '../../models';
 import { getIndexWrap } from '../../utils/array';
 import { ifClass, joinClasses } from '../../utils/classes';
-import { SelectableBase } from '../hoc';
+import { SelectableBase } from '../SelectableBase';
 import { IconSize, SvgIcon } from '../SvgIcon';
 import styles from './InlineSelect.module.css';
 

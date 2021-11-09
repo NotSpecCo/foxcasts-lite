@@ -47,6 +47,7 @@ export function Typography({
         styles[wrap],
         props.className
       )}
+      style={props.style}
     >
       {props.children}
     </div>

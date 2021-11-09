@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
-import { SelectableBase } from '../hoc';
+import { SelectableBase } from '../SelectableBase';
 import { IconSize, SvgIcon } from '../SvgIcon';
 import styles from './RangeRow.module.css';
 

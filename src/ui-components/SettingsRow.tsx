@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { ComponentBaseProps, SelectableProps } from '../models';
-import { SelectableBase } from './hoc';
+import { SelectableBase } from './SelectableBase';
 import styles from './SettingsRow.module.css';
 
 type Props = ComponentBaseProps &

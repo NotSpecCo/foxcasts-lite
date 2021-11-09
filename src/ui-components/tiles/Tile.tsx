@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import { useEffect } from 'react';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
-import { SelectableBase } from '../hoc';
+import { SelectableBase } from '../SelectableBase';
 import styles from './Tile.module.css';
 
 type Props = ComponentBaseProps &

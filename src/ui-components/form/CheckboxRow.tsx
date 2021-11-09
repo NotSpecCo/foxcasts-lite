@@ -3,7 +3,7 @@ import { useView } from '../../contexts/ViewProvider';
 import { useNavKeys } from '../../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../../models';
 import { ifClass, joinClasses } from '../../utils/classes';
-import { SelectableBase } from '../hoc';
+import { SelectableBase } from '../SelectableBase';
 import styles from './CheckboxRow.module.css';
 
 type Props = ComponentBaseProps &

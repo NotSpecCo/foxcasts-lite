@@ -1,6 +1,8 @@
+import { h } from 'preact';
+
 export type ComponentBaseProps = {
   className?: string;
-  style?: { [key: string]: string | number };
+  style?: h.JSX.CSSProperties;
   title?: string;
   children?: any;
   'data-testid'?: string;

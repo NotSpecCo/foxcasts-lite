@@ -74,6 +74,9 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
     let pageRoute = '/';
 
     switch (id) {
+      case 'home':
+        pageRoute = '/home';
+        break;
       case 'podcasts':
         pageRoute = '/podcasts';
         break;

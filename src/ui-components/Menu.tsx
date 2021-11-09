@@ -3,8 +3,8 @@ import { SelectablePriority } from '../enums';
 import { useListNav } from '../hooks/useListNav';
 import { ComponentBaseProps } from '../models';
 import { ifClass, joinClasses } from '../utils/classes';
-import { SelectableBase } from './hoc';
 import styles from './Menu.module.css';
+import { SelectableBase } from './SelectableBase';
 import { SvgIcon } from './SvgIcon';
 import { Typography } from './Typography';
 
