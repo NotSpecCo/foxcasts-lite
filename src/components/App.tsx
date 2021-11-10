@@ -59,13 +59,6 @@ export default function App(): VNode {
 
     // Core.health().then((res) => console.log(res));
 
-    // Core.checkForUpdates();
-    // fetch(
-    //   'http://localhost:8100/https://api.foxcasts.com/podcasts?feedUrl=https://feed.syntax.fm/rss'
-    // )
-    //   .then((res) => console.log('res', res))
-    //   .catch((err) => console.log('err', err));
-
     // Ensure default filters exist
     Core.filters.queryAll().then((res) => {
       if (res.length === 0) {

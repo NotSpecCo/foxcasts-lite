@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 import { EpisodeExtended, Podcast } from 'foxcasts-core/lib/types';
 import { AppBar } from 'mai-ui/dist/components/appbar';
 import { List, ListItem, ListSection } from 'mai-ui/dist/components/list';
@@ -25,14 +25,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
   const favEpisodes = useFetchedState<EpisodeExtended[]>();
   const favPodcasts = useFetchedState<PodcastWithEpisodes[]>();
 
-  // console.log('favPodcasts', favPodcasts);
-  // console.log('newEpisodes', newEpisodes);
-  // console.log('favEpisodes', favEpisodes);
-
   useEffect(() => {
-    newEpisodes.getData(() =>
-      Core.episodes.queryAll({ episodeIds: [352, 353] })
-    );
     favEpisodes.getData(() =>
       Core.episodes.queryAll({ isFavorite: 1, limit: 5 })
     );
@@ -42,7 +35,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
       for (const podcast of podcasts) {
         const episodes = await Core.episodes.queryAll({
           podcastIds: [podcast.id],
-          limit: 2,
+          limit: 1,
         });
         result.push({
           ...podcast,
@@ -51,11 +44,12 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
       }
       return result;
     });
-    // Core.podcasts.checkForUpdates().then((res) => {
-    //   newEpisodes.getData(() =>
-    //     Core.episodes.queryAll({ episodeIds: res.episodeIds })
-    //   );
-    // });
+    newEpisodes.getData(async () => {
+      await Core.podcasts.checkForUpdates();
+      return Core.episodes.queryAll({
+        afterDate: startOfDay(new Date()).toISOString(),
+      });
+    });
   }, []);
 
   useListNav({
@@ -72,6 +66,12 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
       <ViewContent>
         <ViewHeader>Home</ViewHeader>
         <Typography type="subtitle">Just Added</Typography>
+        {newEpisodes.loading && (
+          <Typography>Checking for new episodes...</Typography>
+        )}
+        {!newEpisodes.loading && newEpisodes.data?.length === 0 && (
+          <Typography>Nothing new</Typography>
+        )}
         <List>
           {newEpisodes.data?.map((episode) => (
             <ListItem
