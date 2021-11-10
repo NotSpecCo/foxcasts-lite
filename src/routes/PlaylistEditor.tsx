@@ -1,14 +1,15 @@
 import { Playlist } from 'foxcasts-core/lib/types';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { Input, ToggleRow } from 'mai-ui/dist/components/form';
+import { List, ListSection } from 'mai-ui/dist/components/list';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
 import { useEffect } from 'react';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
-import { Input, ToggleRow } from '../ui-components/form';
-import { List, ListSection } from '../ui-components/list';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 interface Props {
   listId: string;
@@ -67,6 +68,7 @@ export default function PlaylistEditor({
         </List>
       </ViewContent>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         centerText={selectedId ? 'Select' : ''}
         actions={[
           {

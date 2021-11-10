@@ -1,8 +1,19 @@
 import { format } from 'date-fns';
 import { Episode, Palette, Podcast } from 'foxcasts-core/lib/types';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { List, ListItem } from 'mai-ui/dist/components/list';
+// import { List, ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import {
+  View,
+  ViewHeader,
+  ViewTab,
+  ViewTabBar,
+} from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority } from '../enums';
 import { ArtworkBlur } from '../enums/artworkBlur';
@@ -11,10 +22,6 @@ import { useArtwork } from '../hooks/useArtwork';
 import { useListNav } from '../hooks/useListNav';
 import { usePodcastSettings } from '../hooks/usePodcastSettings';
 import { Core, refreshArtwork } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
-import { List, ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewHeader, ViewTab, ViewTabBar } from '../ui-components/view';
 
 interface PodcastDetailProps {
   podcastId: string;
@@ -101,6 +108,7 @@ export default function PodcastDetail({
         <Typography>{podcast?.description}</Typography>
       </ViewTab>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         centerText="Select"
         options={
           settings.dynamicThemeColor

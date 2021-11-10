@@ -1,9 +1,19 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { Chapter, PlaylistExtended } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
+import { AppBar, AppBarAction } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import {
+  View,
+  ViewContent,
+  ViewTab,
+  ViewTabBar,
+} from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import ProgressBar from '../components/ProgressBar';
 import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
 import { useSettings } from '../contexts/SettingsProvider';
@@ -15,10 +25,6 @@ import { useListNav } from '../hooks/useListNav';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { Settings } from '../models';
 import { Core } from '../services/core';
-import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewTab, ViewTabBar } from '../ui-components/view';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
 
@@ -157,7 +163,7 @@ export default function Player({ tabId }: Props): VNode {
         <ViewContent>
           <Typography>Nothing playing</Typography>
         </ViewContent>
-        <AppBar />
+        <AppBar appMenuContent={<FoxcastsAppMenu />} />
       </View>
     );
   }
@@ -249,6 +255,7 @@ export default function Player({ tabId }: Props): VNode {
         ))}
       </ViewTab>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         centerText={
           tabId === 'player'
             ? status.playing

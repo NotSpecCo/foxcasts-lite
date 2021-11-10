@@ -1,13 +1,6 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { EpisodesQuery, FilterList, Podcast } from 'foxcasts-core/lib/types';
-import { h, VNode } from 'preact';
-import { route } from 'preact-router';
-import { useState } from 'preact/hooks';
-import { useEffect } from 'react';
-import { useListNav } from '../hooks/useListNav';
-import { FilterViewOptions } from '../models';
-import { Core } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
+import { AppBar } from 'mai-ui/dist/components/appbar';
 import {
   CheckboxRow,
   DatePicker,
@@ -15,9 +8,17 @@ import {
   RangeRow,
   Select,
   ToggleRow,
-} from '../ui-components/form';
-import { List, ListSection } from '../ui-components/list';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
+} from 'mai-ui/dist/components/form';
+import { List, ListSection } from 'mai-ui/dist/components/list';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { h, VNode } from 'preact';
+import { route } from 'preact-router';
+import { useState } from 'preact/hooks';
+import { useEffect } from 'react';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import { useListNav } from '../hooks/useListNav';
+import { FilterViewOptions } from '../models';
+import { Core } from '../services/core';
 import styles from './FilterListEditor.module.css';
 
 interface Props {
@@ -498,6 +499,7 @@ export default function FilterListEditor({
         </List>
       </ViewContent>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         centerText={selectedId ? 'Select' : ''}
         actions={[
           {

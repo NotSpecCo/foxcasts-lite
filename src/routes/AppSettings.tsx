@@ -1,5 +1,19 @@
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import {
+  Input,
+  RangeRow,
+  Select,
+  ToggleRow,
+} from 'mai-ui/dist/components/form';
+import {
+  View,
+  ViewHeader,
+  ViewTab,
+  ViewTabBar,
+} from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority } from '../enums';
 import { useListNav } from '../hooks/useListNav';
@@ -13,9 +27,6 @@ import {
   Theme,
 } from '../models';
 import { ThemeConfig, themes } from '../themes';
-import { AppBar } from '../ui-components/appbar';
-import { Input, RangeRow, Select, ToggleRow } from '../ui-components/form';
-import { View, ViewHeader, ViewTab, ViewTabBar } from '../ui-components/view';
 
 type Props = {
   tabId: 'display' | 'theme' | 'player';
@@ -257,7 +268,7 @@ export default function AppSettings({ tabId }: Props): VNode {
           }
         />
       </ViewTab>
-      <AppBar />
+      <AppBar appMenuContent={<FoxcastsAppMenu />} />
     </View>
   );
 }

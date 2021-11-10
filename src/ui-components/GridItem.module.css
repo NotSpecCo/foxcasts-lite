@@ -1,9 +1,0 @@
-.root {
-  width: 100%;
-}
-.root.dim {
-  filter: brightness(0.5);
-}
-[data-selected].root {
-  filter: brightness(1);
-}

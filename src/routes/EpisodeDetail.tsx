@@ -2,9 +2,15 @@ import format from 'date-fns/format';
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { Chapter, EpisodeExtended } from 'foxcasts-core/lib/types';
 import { formatFileSize, formatTime } from 'foxcasts-core/lib/utils';
+import { AppBar, AppBarAction } from 'mai-ui/dist/components/appbar';
+import { LabeledRow } from 'mai-ui/dist/components/LabeledRow';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import { View, ViewTab, ViewTabBar } from 'mai-ui/dist/components/view';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 import { usePlayer } from '../contexts/playerContext';
 import { ArtworkBlur } from '../enums/artworkBlur';
@@ -12,11 +18,6 @@ import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
 import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
-import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { LabeledRow } from '../ui-components/LabeledRow';
-import { ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewTab, ViewTabBar } from '../ui-components/view';
 
 interface EpisodeDetailProps {
   episodeId: string;
@@ -206,7 +207,7 @@ export default function EpisodeDetail({
           );
         })}
       </ViewTab>
-      <AppBar actions={getActionList()} />
+      <AppBar appMenuContent={<FoxcastsAppMenu />} actions={getActionList()} />
     </View>
   );
 }

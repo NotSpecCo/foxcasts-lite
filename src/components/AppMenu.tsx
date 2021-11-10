@@ -1,5 +1,10 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import { formatTime } from 'foxcasts-core/lib/utils';
+import { SelectableBase } from 'mai-ui/dist/components/SelectableBase';
+import { IconSize, SvgIcon } from 'mai-ui/dist/components/SvgIcon';
+import { TileContent } from 'mai-ui/dist/components/tiles';
+import { Tile } from 'mai-ui/dist/components/tiles/Tile';
+import { Typography } from 'mai-ui/dist/components/Typography';
 import { Fragment, h } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'react';
@@ -12,12 +17,6 @@ import { useListNav } from '../hooks/useListNav';
 import { ListLayout } from '../models';
 import { Core } from '../services/core';
 import { KaiOS } from '../services/kaios';
-import { AppBar } from '../ui-components/appbar';
-import { SelectableBase } from '../ui-components/SelectableBase';
-import { IconSize, SvgIcon } from '../ui-components/SvgIcon';
-import { TileContent } from '../ui-components/tiles';
-import { Tile } from '../ui-components/tiles/Tile';
-import { Typography } from '../ui-components/Typography';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './AppMenu.module.css';
 import { ControllerOption } from './ControllerOption';
@@ -26,7 +25,7 @@ interface AppMenuProps {
   onClose: () => void;
 }
 
-export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
+export function AppMenu(props: AppMenuProps): h.JSX.Element {
   const [status, setStatus] = useState<PlaybackProgress>({
     playing: false,
     currentTime: 0,
@@ -440,7 +439,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element | null {
           </Fragment>
         ) : null}
       </div>
-      <AppBar leftIcon="cancel" rightIcon={null} />
+      {/* <AppBar leftIcon="cancel" rightIcon={null} /> */}
     </div>
   );
 }

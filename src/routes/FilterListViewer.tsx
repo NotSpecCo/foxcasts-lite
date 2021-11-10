@@ -1,16 +1,17 @@
 import { format } from 'date-fns';
 import { EpisodeExtended, FilterList } from 'foxcasts-core/lib/types';
 import { formatFileSize, formatTime } from 'foxcasts-core/lib/utils';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
 import { useEffect } from 'react';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useListNav } from '../hooks/useListNav';
 import { FilterViewOptions, LineOptions } from '../models';
 import { Core } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 interface Props {
   listId: string;
@@ -85,6 +86,7 @@ export default function FilterListViewer({
           ))}
       </ViewContent>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         centerText={selectedItemId ? 'Select' : ''}
         actions={[
           {

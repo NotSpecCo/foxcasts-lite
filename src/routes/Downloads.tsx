@@ -1,15 +1,16 @@
 import { formatFileSize } from 'foxcasts-core/lib/utils';
+import { AppBar, AppBarAction } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import ProgressBar from '../components/ProgressBar';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 import { useListNav } from '../hooks/useListNav';
 import { Download, DownloadStatus } from '../models';
-import { AppBar, AppBarAction } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 import styles from './Downloads.module.css';
 
 interface Props {
@@ -218,7 +219,7 @@ export default function Downloads({ selectedItemId }: Props): VNode {
           <Typography padding="both">No recent downloads</Typography>
         )}
       </ViewContent>
-      <AppBar actions={getActions()} />
+      <AppBar appMenuContent={<FoxcastsAppMenu />} actions={getActions()} />
     </View>
   );
 }

@@ -1,15 +1,16 @@
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { Button } from 'mai-ui/dist/components/buttons';
+import { SelectableBase } from 'mai-ui/dist/components/SelectableBase';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { SelectablePriority } from '../enums';
 import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
 import { OPML } from '../services/opml';
-import { AppBar } from '../ui-components/appbar';
-import { Button } from '../ui-components/buttons';
-import { SelectableBase } from '../ui-components/SelectableBase';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 import styles from './Import.module.css';
 
 type Feed = {
@@ -114,7 +115,7 @@ export default function Import(props: Props): VNode {
           />
         </div>
       </ViewContent>
-      <AppBar />
+      <AppBar appMenuContent={<FoxcastsAppMenu />} />
     </View>
   );
 }

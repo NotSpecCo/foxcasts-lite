@@ -32,6 +32,7 @@
     "date-fns": "^2.25.0",
     "foxcasts-core": "2.1.0",
     "lodash.kebabcase": "^4.1.1",
+    "mai-ui": "^0.2.0",
     "preact": "^10.3.1",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1",

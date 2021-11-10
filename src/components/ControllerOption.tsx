@@ -1,8 +1,8 @@
+import { SelectableBase } from 'mai-ui/dist/components/SelectableBase';
+import { IconSize, SvgIcon } from 'mai-ui/dist/components/SvgIcon';
 import { h } from 'preact';
 import { useNavKeys } from '../hooks/useNavKeys';
 import { ComponentBaseProps, SelectableProps } from '../models';
-import { SelectableBase } from '../ui-components/SelectableBase';
-import { IconSize, SvgIcon } from '../ui-components/SvgIcon';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './ControllerOption.module.css';
 

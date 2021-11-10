@@ -1,19 +1,20 @@
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { formatTime } from 'foxcasts-core/lib/utils';
-import { h, VNode } from 'preact';
-import { route } from 'preact-router';
-import { useEffect, useState } from 'preact/hooks';
-import { useListNav } from '../hooks/useListNav';
-import { Core } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
 import {
   View,
   ViewContent,
   ViewHeader,
   ViewTabBar,
-} from '../ui-components/view';
+} from 'mai-ui/dist/components/view';
+import { h, VNode } from 'preact';
+import { route } from 'preact-router';
+import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import { useListNav } from '../hooks/useListNav';
+import { Core } from '../services/core';
 
 interface Props {
   tabId: 'short' | 'medium' | 'long' | 'longest';
@@ -104,7 +105,7 @@ export default function EpisodesByDuration({
           />
         ))}
       </ViewContent>
-      <AppBar />
+      <AppBar appMenuContent={<FoxcastsAppMenu />} />
     </View>
   );
 }

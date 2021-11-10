@@ -1,13 +1,14 @@
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useListNav } from '../hooks/useListNav';
 import { StorageFile } from '../models';
 import { OPML } from '../services/opml';
-import { AppBar } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 export default function OpmlFiles(): VNode {
   const [files, setFiles] = useState<StorageFile[] | null>(null);
@@ -42,7 +43,7 @@ export default function OpmlFiles(): VNode {
           />
         ))}
       </ViewContent>
-      <AppBar />
+      <AppBar appMenuContent={<FoxcastsAppMenu />} />
     </View>
   );
 }

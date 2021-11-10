@@ -1,12 +1,13 @@
 import { ApiEpisode, ApiPodcast } from 'foxcasts-core/lib/types';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { Typography } from 'mai-ui/dist/components/Typography';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useBodyScroller } from '../hooks/useBodyScroller';
 import { Core, subscribe } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewContent } from '../ui-components/view';
 
 interface PodcastPreviewProps {
   podexId?: string;
@@ -74,6 +75,7 @@ export default function PodcastPreview({
         ))}
       </ViewContent>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         actions={[
           {
             id: 'toggleSubscribe',

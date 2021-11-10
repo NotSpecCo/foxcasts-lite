@@ -1,5 +1,12 @@
+import { Typography } from 'mai-ui/dist/components';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { Grid } from 'mai-ui/dist/components/grid';
+import { List, ListItem } from 'mai-ui/dist/components/list';
+import { Tile, TileContent } from 'mai-ui/dist/components/tiles';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useSettings } from '../contexts/SettingsProvider';
 import { useToast } from '../contexts/ToastProvider';
 import { SelectablePriority } from '../enums';
@@ -9,12 +16,6 @@ import { ListLayout, OpmlFeed } from '../models';
 import { subscribe } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { OPML } from '../services/opml';
-import { AppBar } from '../ui-components/appbar';
-import { Grid } from '../ui-components/grid';
-import { List, ListItem } from '../ui-components/list';
-import { Tile, TileContent } from '../ui-components/tiles';
-import { Typography } from '../ui-components/Typography';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 interface Props {
   selectedItemId?: string;
@@ -120,6 +121,7 @@ export default function Podcasts(props: Props): VNode {
         )}
       </ViewContent>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         centerText="Select"
         actions={[
           {

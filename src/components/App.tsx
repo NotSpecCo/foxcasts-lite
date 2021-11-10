@@ -1,5 +1,6 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import kebabcase from 'lodash.kebabcase';
+import { Toast } from 'mai-ui/dist/components/Toast';
 import { Fragment, h, VNode } from 'preact';
 import { route, Route, Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
@@ -16,6 +17,7 @@ import EpisodesByDuration from '../routes/EpisodesByDuration';
 import FilterListEditor from '../routes/FilterListEditor';
 import FilterListViewer from '../routes/FilterListViewer';
 import Filters from '../routes/Filters';
+import Home from '../routes/Home';
 import Import from '../routes/Import';
 import OpmlFiles from '../routes/OpmlFiles';
 import Player from '../routes/Player';
@@ -29,7 +31,6 @@ import RecentEpisodes from '../routes/RecentEpisodes';
 import Search from '../routes/Search';
 import { Core } from '../services/core';
 import { themes } from '../themes';
-import { Toast } from '../ui-components/Toast';
 
 export function AppWrapper(): VNode {
   return (
@@ -178,7 +179,8 @@ export default function App(): VNode {
         <Route path="/files" component={OpmlFiles} />
         <Route path="/import/:filePath" component={Import} />
         <Route path="/downloads" component={Downloads} />
-        <Route path="/podcasts" component={Podcasts} default={true} />
+        <Route path="/podcasts" component={Podcasts} />
+        <Route path="/home" component={Home} default={true} />
       </Router>
       <Toast />
     </Fragment>

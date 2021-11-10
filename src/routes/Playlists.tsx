@@ -1,13 +1,14 @@
 import { Playlist } from 'foxcasts-core/lib/types';
+import { AppBar } from 'mai-ui/dist/components/appbar';
+import { ListItem } from 'mai-ui/dist/components/list';
+import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
 import { useEffect } from 'react';
+import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
-import { AppBar } from '../ui-components/appbar';
-import { ListItem } from '../ui-components/list';
-import { View, ViewContent, ViewHeader } from '../ui-components/view';
 
 interface Props {
   selectedItemId?: string;
@@ -57,6 +58,7 @@ export default function Playlists({ selectedItemId, episodeId }: Props): VNode {
         ))}
       </ViewContent>
       <AppBar
+        appMenuContent={<FoxcastsAppMenu />}
         actions={[
           {
             id: 'newList',
