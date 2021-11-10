@@ -2,13 +2,13 @@ import { PlaylistExtended } from 'foxcasts-core/lib/types';
 import { AppBar } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
 import { useEffect } from 'react';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { usePlayer } from '../contexts/playerContext';
-import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
 
 interface Props {

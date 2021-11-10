@@ -7,6 +7,7 @@ import { LabeledRow } from 'mai-ui/dist/components/LabeledRow';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
 import { View, ViewTab, ViewTabBar } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
@@ -16,7 +17,6 @@ import { usePlayer } from '../contexts/playerContext';
 import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
-import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
 
 interface EpisodeDetailProps {

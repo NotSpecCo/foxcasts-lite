@@ -11,12 +11,12 @@ import {
   ViewTab,
   ViewTabBar,
 } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority } from '../enums';
-import { useListNav } from '../hooks/useListNav';
 import {
   AppBarSize,
   ListLayout,

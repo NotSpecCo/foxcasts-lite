@@ -11,12 +11,12 @@ import {
 } from 'mai-ui/dist/components/form';
 import { List, ListSection } from 'mai-ui/dist/components/list';
 import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
 import { useEffect } from 'react';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
-import { useListNav } from '../hooks/useListNav';
 import { FilterViewOptions } from '../models';
 import { Core } from '../services/core';
 import styles from './FilterListEditor.module.css';

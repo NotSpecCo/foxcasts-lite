@@ -4,12 +4,12 @@ import { AppBar } from 'mai-ui/dist/components/appbar';
 import { List, ListItem, ListSection } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
 import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useEffect } from 'react';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useFetchedState } from '../hooks/useFetchedState';
-import { useListNav } from '../hooks/useListNav';
 import { Core } from '../services/core';
 
 interface Props {

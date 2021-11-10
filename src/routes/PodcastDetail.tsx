@@ -10,6 +10,7 @@ import {
   ViewTab,
   ViewTabBar,
 } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
@@ -19,7 +20,6 @@ import { SelectablePriority } from '../enums';
 import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
-import { useListNav } from '../hooks/useListNav';
 import { usePodcastSettings } from '../hooks/usePodcastSettings';
 import { Core, refreshArtwork } from '../services/core';
 

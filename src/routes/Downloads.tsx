@@ -3,13 +3,13 @@ import { AppBar, AppBarAction } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
 import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { useListNav } from 'mai-ui/dist/hooks';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import ProgressBar from '../components/ProgressBar';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
-import { useListNav } from '../hooks/useListNav';
 import { Download, DownloadStatus } from '../models';
 import styles from './Downloads.module.css';
 

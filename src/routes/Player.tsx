@@ -10,6 +10,8 @@ import {
   ViewTab,
   ViewTabBar,
 } from 'mai-ui/dist/components/view';
+import { useView } from 'mai-ui/dist/contexts';
+import { useListNav, useNavKeys } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useMemo, useState } from 'preact/hooks';
@@ -17,12 +19,9 @@ import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import ProgressBar from '../components/ProgressBar';
 import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
 import { useSettings } from '../contexts/SettingsProvider';
-import { useView } from '../contexts/ViewProvider';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
 import { useFetchedState } from '../hooks/useFetchedState';
-import { useListNav } from '../hooks/useListNav';
-import { useNavKeys } from '../hooks/useNavKeys';
 import { Settings } from '../models';
 import { Core } from '../services/core';
 import { ifClass, joinClasses } from '../utils/classes';

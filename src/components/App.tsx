@@ -1,14 +1,13 @@
 import { PlaybackStatus } from 'foxcasts-core/lib/enums';
 import kebabcase from 'lodash.kebabcase';
 import { Toast } from 'mai-ui/dist/components/Toast';
+import { ToastProvider, ViewProvider } from 'mai-ui/dist/contexts';
 import { Fragment, h, VNode } from 'preact';
 import { route, Route, Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 import { DownloadManagerProvider } from '../contexts/DownloadManagerProvider';
 import { PlayerProvider } from '../contexts/playerContext';
 import { SettingsProvider, useSettings } from '../contexts/SettingsProvider';
-import { ToastProvider } from '../contexts/ToastProvider';
-import { ViewProvider } from '../contexts/ViewProvider';
 import { FilterViewOptions, TextSize } from '../models';
 import AppSettings from '../routes/AppSettings';
 import Downloads from '../routes/Downloads';

@@ -1,4 +1,5 @@
 import { EpisodeExtended } from 'foxcasts-core/lib/types';
+import { useToast } from 'mai-ui/dist/contexts';
 import { createContext, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useContext, useEffect, useState } from 'preact/hooks';
@@ -10,7 +11,6 @@ import {
 import { Core } from '../services/core';
 import { KaiOS } from '../services/kaios';
 import { useSettings } from './SettingsProvider';
-import { useToast } from './ToastProvider';
 
 export type PlaybackProgress = {
   playing: boolean;
