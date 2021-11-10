@@ -42,7 +42,7 @@ export default function Filters({ selectedItemId }: Props): VNode {
           route('/filters/duration/short');
           break;
         default:
-          route(`/filters/${itemId}`, true);
+          route(`/filters/${itemId}`);
           break;
       }
     },
