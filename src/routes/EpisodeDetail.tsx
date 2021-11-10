@@ -14,6 +14,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 import { usePlayer } from '../contexts/playerContext';
+import { useSettings } from '../contexts/SettingsProvider';
 import { ArtworkBlur } from '../enums/artworkBlur';
 import { ArtworkSize } from '../enums/artworkSize';
 import { useArtwork } from '../hooks/useArtwork';
@@ -33,6 +34,7 @@ export default function EpisodeDetail({
 
   const player = usePlayer();
   const { addToQueue } = useDownloadManager();
+  const { settings } = useSettings();
 
   const { artwork } = useArtwork(episode?.podcastId, {
     size: ArtworkSize.Large,
@@ -136,8 +138,12 @@ export default function EpisodeDetail({
 
   return (
     <View
-      backgroundImageUrl={artwork?.image}
-      accentColor={episode?.accentColor}
+      backgroundImageUrl={
+        settings.dynamicBackgrounds ? artwork?.image : undefined
+      }
+      accentColor={
+        settings.dynamicThemeColor ? episode?.accentColor : undefined
+      }
       enableCustomColor={true}
     >
       <ViewTabBar

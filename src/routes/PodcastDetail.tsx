@@ -69,8 +69,12 @@ export default function PodcastDetail({
 
   return (
     <View
-      backgroundImageUrl={artwork?.image}
-      accentColor={podcast?.accentColor}
+      backgroundImageUrl={
+        settings.dynamicBackgrounds ? artwork?.image : undefined
+      }
+      accentColor={
+        settings.dynamicThemeColor ? podcast?.accentColor : undefined
+      }
       enableCustomColor={true}
     >
       <ViewHeader>{podcast?.title}</ViewHeader>
