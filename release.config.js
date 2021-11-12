@@ -7,8 +7,7 @@ module.exports = {
     [
       '@semantic-release/exec',
       {
-        generateNotes:
-          'zip -r Foxcasts_Lite_v${nextRelease.version}.zip build/*',
+        publishCmd: 'zip -r Foxcasts_Lite.zip build/*',
       },
     ],
     [
@@ -18,12 +17,12 @@ module.exports = {
         failComment: false,
         assets: [
           {
-            path: './Foxcasts_Lite_v${nextRelease.version}.zip',
-            label: 'packaged file',
+            path: 'Foxcasts_Lite.zip',
+            label: 'Foxcasts Lite',
           },
         ],
       },
     ],
-    '@semantic-release/git',
+    // '@semantic-release/git',
   ],
 };
