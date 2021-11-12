@@ -21,6 +21,10 @@ jobs:
       - attach_workspace:
           at: .
       - run: npm run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./*
   version-and-publish:
     executor: node-lts
     steps:
