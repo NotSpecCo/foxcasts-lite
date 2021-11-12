@@ -7,7 +7,8 @@ module.exports = {
     [
       '@semantic-release/exec',
       {
-        publishCmd: 'zip -r Foxcasts_Lite_v${nextRelease.version}.zip build/*',
+        generateNotes:
+          'zip -r Foxcasts_Lite_v${nextRelease.version}.zip build/*',
       },
     ],
     [
