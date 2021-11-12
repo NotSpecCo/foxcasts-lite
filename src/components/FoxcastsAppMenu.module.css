@@ -64,6 +64,9 @@
   color: var(--accent-text-color);
   margin: 0 5px;
 }
+.row[data-selected] > span {
+  color: var(--highlight-text-color);
+}
 
 .player.selected {
   background-color: var(--highlight-bg-color);
