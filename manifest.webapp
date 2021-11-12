@@ -2,7 +2,7 @@
   "id": "com.garredow.foxcasts-lite",
   "name": "FoxCasts Lite",
   "description": "A fully-featured podcast app for your KaiOS device",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "launch_path": "/index.html",
   "icons": {
     "256": "/assets/icons/icon-256.png",
