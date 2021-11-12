@@ -17,7 +17,7 @@ module.exports = {
         failComment: false,
         assets: [
           {
-            path: 'Foxcasts_Lite_v${nextRelease.version}.zip',
+            path: 'Foxcasts_Lite_v*.zip',
           },
         ],
       },
