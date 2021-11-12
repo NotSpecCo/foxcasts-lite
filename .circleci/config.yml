@@ -30,7 +30,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: npx semantic-release --dry-run
+      - run: npx semantic-release
 
 workflows:
   build-test-deploy:
