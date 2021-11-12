@@ -25,21 +25,6 @@ jobs:
       #   command: |
       #     cd build
       #     zip -r Foxcasts_Lite.zip build/*
-  # test:
-  #   executor: node-lts
-  #   steps:
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         command: npm run test:ci
-  #         environment:
-  #           JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
-  #     - store_test_results:
-  #         path: ./reports/junit/
-  #     - store_artifacts:
-  #         path: ./reports/junit
-  #     - store_artifacts:
-  #         path: coverage
   version-and-publish:
     executor: node-lts
     steps:
@@ -54,15 +39,11 @@ workflows:
       - build:
           requires:
             - install
-      # - test:
-      #     requires:
-      #       - install
       - version-and-publish:
           context:
             - github-versioning
           requires:
             - build
-            # - test
           filters:
             branches:
               only:

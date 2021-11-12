@@ -8,7 +8,8 @@
     "build": "preact build --no-prerender --no-inline-css --no-sw --no-esm && cp ./manifest.webapp ./build/manifest.webapp",
     "build:analyze": "preact build --no-prerender --no-inline-css --no-sw --no-esm --json",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "test": "jest ./tests"
+    "test": "jest ./tests",
+    "commit": "cz"
   },
   "repository": {
     "type": "git",
