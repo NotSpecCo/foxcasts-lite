@@ -1,5 +1,7 @@
 # Foxcasts Lite
 
+[![CircleCI](https://circleci.com/gh/garredow/foxcasts-lite/tree/main.svg?style=svg)](https://circleci.com/gh/garredow/foxcasts-lite/tree/main)
+
 ![Dashboard view](/promo/foxcasts_banner1.png?raw=true)
 
 ## Navigation
