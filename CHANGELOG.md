@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/garredow/foxcasts-lite/compare/v2.1.3...v2.1.4) (2021-11-12)
+
+
+### Bug Fixes
+
+* test ([d567b72](https://github.com/garredow/foxcasts-lite/commit/d567b72170b45bac276e868a12a51f2b92546008))
+
 ## [2.1.3](https://github.com/garredow/foxcasts-lite/compare/v2.1.2...v2.1.3) (2021-11-12)
 
 
