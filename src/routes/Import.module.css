@@ -13,6 +13,11 @@
   padding: 5px;
 }
 
+.row[data-selected] {
+  background-color: var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
 .actions {
   padding: 5px;
 }
