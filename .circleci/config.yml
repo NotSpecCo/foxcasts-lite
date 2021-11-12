@@ -21,10 +21,6 @@ jobs:
       - attach_workspace:
           at: .
       - run: npm run build
-      # - run:
-      #   command: |
-      #     cd build
-      #     zip -r Foxcasts_Lite.zip build/*
   version-and-publish:
     executor: node-lts
     steps:
