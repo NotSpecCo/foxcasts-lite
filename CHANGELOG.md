@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/garredow/foxcasts-lite/compare/v2.1.0...v2.1.1) (2021-11-12)
+
+
+### Bug Fixes
+
+* persist build dir ([03f73fd](https://github.com/garredow/foxcasts-lite/commit/03f73fde1a232b090675bba1b3d48fc388e2ab0a))
+
 # [2.1.0](https://github.com/garredow/foxcasts-lite/compare/v2.0.0...v2.1.0) (2021-11-12)
 
 
