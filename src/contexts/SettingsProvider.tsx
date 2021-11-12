@@ -22,12 +22,12 @@ const defaultSettings: Settings = {
   accentColor: 'ec5817',
   appBarAccent: true,
   dynamicThemeColor: true,
-  dynamicBackgrounds: true,
+  dynamicBackgrounds: false,
 
   podcastsLayout: ListLayout.Grid,
   homeMenuLayout: ListLayout.Grid,
   appBarSize: AppBarSize.Normal,
-  textSize: TextSize.Small,
+  textSize: TextSize.Medium,
 
   playerLayout: PlayerLayout.Fancy,
   notificationType: NotificationType.EpisodeInfo,
