@@ -1,0 +1,46 @@
+version: 2.1
+executors:
+  node-lts:
+    docker:
+      - image: cimg/node:lts
+
+jobs:
+  install:
+    executor: node-lts
+    steps:
+      - checkout
+      - run: npm ci
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./*
+  build:
+    executor: node-lts
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: npm run build
+  version-and-publish:
+    executor: node-lts
+    steps:
+      - attach_workspace:
+          at: .
+      - run: npx semantic-release
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - install
+      - build:
+          requires:
+            - install
+      - version-and-publish:
+          context:
+            - github-versioning
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
