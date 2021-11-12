@@ -142,14 +142,17 @@ export default function AppSettings({ tabId }: Props): VNode {
           onChange={(id): void => handleSettingSelect('theme', id)}
         />
         <Input
-          label="Accent Color"
+          label="Accent Color (hex)"
           value={settings.accentColor}
           size={6}
           selectable={{
             id: 'accentColor',
             selected: selectedId === 'accentColor',
           }}
-          onEnter={(value): void => handleSettingSelect('accentColor', value)}
+          onChange={(value) =>
+            value.match(/[0-9a-fA-F]{6}/) &&
+            handleSettingSelect('accentColor', value)
+          }
         />
         <ToggleRow
           label="App Bar Accent"
