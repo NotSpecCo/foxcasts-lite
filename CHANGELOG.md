@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/garredow/foxcasts-lite/compare/v2.0.0...v2.1.0) (2021-11-12)
+
+
+### Features
+
+* change default settings ([953ffd0](https://github.com/garredow/foxcasts-lite/commit/953ffd07671bbb0a008bd7ff93fefc2ff3e688e6))
+
 ## [2.1.4](https://github.com/garredow/foxcasts-lite/compare/v2.1.3...v2.1.4) (2021-11-12)
 
 
