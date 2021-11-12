@@ -43,4 +43,4 @@ workflows:
           filters:
             branches:
               only:
-                - cicd
+                - main
