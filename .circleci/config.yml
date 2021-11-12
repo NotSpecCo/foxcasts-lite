@@ -1,0 +1,69 @@
+version: 2.1
+executors:
+  node-lts:
+    docker:
+      - image: cimg/node:lts
+
+jobs:
+  install:
+    executor: node-lts
+    steps:
+      - checkout
+      - run: npm ci
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./*
+  build:
+    executor: node-lts
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: npm run build
+      # - run:
+      #   command: |
+      #     cd build
+      #     zip -r Foxcasts_Lite.zip build/*
+  # test:
+  #   executor: node-lts
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         command: npm run test:ci
+  #         environment:
+  #           JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+  #     - store_test_results:
+  #         path: ./reports/junit/
+  #     - store_artifacts:
+  #         path: ./reports/junit
+  #     - store_artifacts:
+  #         path: coverage
+  version-and-publish:
+    executor: node-lts
+    steps:
+      - attach_workspace:
+          at: .
+      - run: npx semantic-release --dry-run
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - install
+      - build:
+          requires:
+            - install
+      # - test:
+      #     requires:
+      #       - install
+      - version-and-publish:
+          context:
+            - github-versioning
+          requires:
+            - build
+            # - test
+          filters:
+            branches:
+              only:
+                - cicd
