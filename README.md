@@ -23,3 +23,25 @@ npm run build
 ```
 
 3. Load the `build` folder as a packaged app using your Web IDE of choice (I like Waterfox Classic)
+
+## How It's Made
+
+Foxcasts Lite uses a few of my other projects.
+
+### Foxcasts API
+
+This API interacts with Podcast Index to retrieve information about podcasts and episodes. It also provides some functionality for getting podcast artwork and color palettes.
+
+[Source](https://github.com/garredow/foxcasts-api)
+
+### Foxcasts Core
+
+This library contains all of the core business logic, database configuration, utility functions, and shared TypeScript models. This library is used across a couple different podcast web apps.
+
+[Source](https://github.com/garredow/foxcasts-core)
+
+### Mai UI
+
+My UI component library made specifically for KaiOS devices. It provides a number of components, contexts, hooks, and helper utilities to make building apps for KaiOS quick and easy.
+
+[Source](https://github.com/garredow/mai-ui)
