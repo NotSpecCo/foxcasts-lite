@@ -6,8 +6,7 @@ import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState } from 'preact/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { Core } from '../services/core';
 
@@ -16,10 +15,7 @@ interface Props {
   selectedItemId?: string;
 }
 
-export default function PlaylistEditor({
-  listId,
-  selectedItemId,
-}: Props): VNode {
+export default function PlaylistEditor({ listId, selectedItemId }: Props): VNode {
   const [list, setList] = useState<Playlist>();
 
   useEffect(() => {
@@ -60,9 +56,7 @@ export default function PlaylistEditor({
                 id: 'removeAfterListening',
                 selected: selectedId === 'removeAfterListening',
               }}
-              onChange={(value) =>
-                updateList('removeEpisodeAfterListening', value)
-              }
+              onChange={(value) => updateList('removeEpisodeAfterListening', value)}
             />
           </ListSection>
         </List>

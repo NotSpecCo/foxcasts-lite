@@ -9,7 +9,7 @@ import { useView } from 'mai-ui/dist/contexts';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { Fragment, h } from 'preact';
 import { route } from 'preact-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'preact/hooks';
 import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
 import { useSettings } from '../contexts/SettingsProvider';
 import { ArtworkBlur, ArtworkSize, SelectablePriority } from '../enums';
@@ -111,10 +111,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element {
   return (
     <div className={styles.root}>
       <Typography type="bodyLarge">Foxcasts Lite</Typography>
-      <div
-        className={styles.scroller}
-        data-selectable-scroller={SelectablePriority.Medium}
-      >
+      <div className={styles.scroller} data-selectable-scroller={SelectablePriority.Medium}>
         {settings.homeMenuLayout === ListLayout.Grid ? (
           <div className={styles.grid}>
             <Tile
@@ -232,11 +229,7 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element {
                 player.episode ? (
                   <TileContent backgroundImage={artwork?.image} contentH="left">
                     <div>
-                      <Typography
-                        padding="horizontal"
-                        display="inline"
-                        type="title"
-                      >
+                      <Typography padding="horizontal" display="inline" type="title">
                         {formatTime(status.currentTime || 0)}
                       </Typography>
                     </div>
@@ -387,19 +380,11 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element {
               <Typography padding="horizontal" color="secondary" wrap="nowrap">
                 {player.episode?.podcastTitle}
               </Typography>
-              <Typography
-                padding="horizontal"
-                display="inline"
-                type="bodyStrong"
-              >
+              <Typography padding="horizontal" display="inline" type="bodyStrong">
                 {formatTime(status.currentTime || 0)}
               </Typography>
               /
-              <Typography
-                padding="horizontal"
-                display="inline"
-                color="secondary"
-              >
+              <Typography padding="horizontal" display="inline" color="secondary">
                 {formatTime(status.duration || 0)}
               </Typography>
             </SelectableBase>
@@ -408,16 +393,10 @@ export function AppMenu(props: AppMenuProps): h.JSX.Element {
             <ControllerOption
               label="Playback"
               disabled={!player.episode}
-              leftAction={() =>
-                setStatus(player.jump(-settings.playbackSkipBack))
-              }
-              rightAction={() =>
-                setStatus(player.jump(settings.playbackSkipForward))
-              }
+              leftAction={() => setStatus(player.jump(-settings.playbackSkipBack))}
+              rightAction={() => setStatus(player.jump(settings.playbackSkipForward))}
               centerAction={() =>
-                status.playing
-                  ? setStatus(player.pause())
-                  : setStatus(player.play())
+                status.playing ? setStatus(player.pause()) : setStatus(player.play())
               }
               selectable={{
                 priority: SelectablePriority.Medium,

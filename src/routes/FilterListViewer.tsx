@@ -7,8 +7,7 @@ import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState } from 'preact/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { FilterViewOptions, LineOptions } from '../models';
 import { Core } from '../services/core';
@@ -18,10 +17,7 @@ interface Props {
   selectedItemId?: string;
 }
 
-export default function FilterListViewer({
-  listId,
-  selectedItemId,
-}: Props): VNode {
+export default function FilterListViewer({ listId, selectedItemId }: Props): VNode {
   const [list, setList] = useState<FilterList<FilterViewOptions>>();
   const [episodes, setEpisodes] = useState<EpisodeExtended[]>();
 
@@ -42,10 +38,7 @@ export default function FilterListViewer({
     onSelect: (itemId) => itemId && route(`/episode/${itemId}/info`),
   });
 
-  function getText(
-    episode: EpisodeExtended,
-    field: LineOptions | null
-  ): string | undefined {
+  function getText(episode: EpisodeExtended, field: LineOptions | null): string | undefined {
     if (field === 'date') {
       return format(new Date(episode.date), 'cccc, MMM do');
     } else if (field === 'description') {
@@ -74,9 +67,7 @@ export default function FilterListViewer({
               primaryText={getText(episode, list.viewOptions.primaryText)}
               secondaryText={getText(episode, list.viewOptions.secondaryText)}
               accentText={getText(episode, list.viewOptions.accentText)}
-              imageUrl={
-                list.viewOptions.showCover ? episode.artwork : undefined
-              }
+              imageUrl={list.viewOptions.showCover ? episode.artwork : undefined}
               selectable={{
                 id: episode.id,
                 shortcut: i + 1 <= 9 ? i + 1 : undefined,

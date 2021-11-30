@@ -5,8 +5,7 @@ import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState } from 'preact/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { usePlayer } from '../contexts/playerContext';
 import { Core } from '../services/core';
@@ -16,10 +15,7 @@ interface Props {
   selectedItemId?: string;
 }
 
-export default function PlaylistViewer({
-  listId,
-  selectedItemId,
-}: Props): VNode {
+export default function PlaylistViewer({ listId, selectedItemId }: Props): VNode {
   const [list, setList] = useState<PlaylistExtended>();
 
   const player = usePlayer();
@@ -114,9 +110,7 @@ export default function PlaylistViewer({
             actionFn: async () => {
               if (!list) return;
 
-              const newIds = list.episodeIds.filter(
-                (a) => a !== Number(selectedItemId)
-              );
+              const newIds = list.episodeIds.filter((a) => a !== Number(selectedItemId));
               await Core.playlists.update(list.id, { episodeIds: newIds });
               setList({
                 ...list,

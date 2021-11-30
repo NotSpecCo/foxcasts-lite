@@ -14,8 +14,7 @@ import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
-import { useState } from 'preact/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { FilterViewOptions } from '../models';
 import { Core } from '../services/core';
@@ -34,10 +33,7 @@ type Sections = {
   podcasts: boolean;
 };
 
-export default function FilterListEditor({
-  listId,
-  selectedItemId,
-}: Props): VNode {
+export default function FilterListEditor({ listId, selectedItemId }: Props): VNode {
   const [list, setList] = useState<FilterList<FilterViewOptions>>();
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [sections, setSections] = useState<Sections>({
@@ -49,23 +45,19 @@ export default function FilterListEditor({
   });
 
   useEffect(() => {
-    Core.filters
-      .query<FilterViewOptions>({ id: Number(listId) })
-      .then((res) => {
-        setList(res);
-        setSections({
-          days: res?.query.withinDays ? true : false,
-          dates: res?.query.afterDate || res?.query.beforeDate ? true : false,
-          duration:
-            res?.query.longerThan !== undefined ||
-            res?.query.shorterThan !== undefined
-              ? true
-              : false,
-          playbackStatus:
-            res?.query.playbackStatuses !== undefined ? true : false,
-          podcasts: res?.query.podcastIds !== undefined ? true : false,
-        });
+    Core.filters.query<FilterViewOptions>({ id: Number(listId) }).then((res) => {
+      setList(res);
+      setSections({
+        days: res?.query.withinDays ? true : false,
+        dates: res?.query.afterDate || res?.query.beforeDate ? true : false,
+        duration:
+          res?.query.longerThan !== undefined || res?.query.shorterThan !== undefined
+            ? true
+            : false,
+        playbackStatus: res?.query.playbackStatuses !== undefined ? true : false,
+        podcasts: res?.query.podcastIds !== undefined ? true : false,
       });
+    });
     Core.podcasts.queryAll({}).then(setPodcasts);
   }, []);
 
@@ -91,10 +83,7 @@ export default function FilterListEditor({
       .then(setList);
   }
 
-  function multipleUpdateQuery(
-    keys: (keyof EpisodesQuery)[],
-    values: any[]
-  ): Promise<void> {
+  function multipleUpdateQuery(keys: (keyof EpisodesQuery)[], values: any[]): Promise<void> {
     console.log(keys, values);
 
     const newQuery: EpisodesQuery = {
@@ -120,10 +109,7 @@ export default function FilterListEditor({
         [undefined, undefined, undefined]
       );
     } else if (key === 'duration') {
-      await multipleUpdateQuery(
-        ['longerThan', 'shorterThan'],
-        [undefined, undefined]
-      );
+      await multipleUpdateQuery(['longerThan', 'shorterThan'], [undefined, undefined]);
     } else if (key === 'podcasts') {
       await updateQuery('podcastIds', value ? [] : undefined);
     } else if (key === 'days') {
@@ -257,9 +243,7 @@ export default function FilterListEditor({
                     id: 'durationLonger',
                     selected: selectedId === 'durationLonger',
                   }}
-                  onEnter={(value) =>
-                    updateQuery('longerThan', Number(value) * 60)
-                  }
+                  onEnter={(value) => updateQuery('longerThan', Number(value) * 60)}
                 />
                 <Input
                   label="Shorter Than"
@@ -274,9 +258,7 @@ export default function FilterListEditor({
                     id: 'durationShorter',
                     selected: selectedId === 'durationShorter',
                   }}
-                  onEnter={(value) =>
-                    updateQuery('shorterThan', Number(value) * 60)
-                  }
+                  onEnter={(value) => updateQuery('shorterThan', Number(value) * 60)}
                 />
               </div>
             ) : null}
@@ -293,11 +275,7 @@ export default function FilterListEditor({
               <div className={styles.section}>
                 <CheckboxRow
                   label="Unplayed"
-                  value={
-                    list?.query.playbackStatuses?.includes(
-                      PlaybackStatus.Unplayed
-                    ) || false
-                  }
+                  value={list?.query.playbackStatuses?.includes(PlaybackStatus.Unplayed) || false}
                   selectable={{
                     id: 'statusUnplayed',
                     selected: selectedId === 'statusUnplayed',
@@ -305,25 +283,16 @@ export default function FilterListEditor({
                   onChange={(value): void => {
                     let newVal = [...(list?.query.playbackStatuses || [])];
                     if (!value) {
-                      newVal = newVal.filter(
-                        (a) => a !== PlaybackStatus.Unplayed
-                      );
+                      newVal = newVal.filter((a) => a !== PlaybackStatus.Unplayed);
                     } else if (!newVal.includes(PlaybackStatus.Unplayed)) {
                       newVal.push(PlaybackStatus.Unplayed);
                     }
-                    updateQuery(
-                      'playbackStatuses',
-                      newVal.length > 0 ? newVal : undefined
-                    );
+                    updateQuery('playbackStatuses', newVal.length > 0 ? newVal : undefined);
                   }}
                 />
                 <CheckboxRow
                   label="In Progress"
-                  value={
-                    list?.query.playbackStatuses?.includes(
-                      PlaybackStatus.InProgress
-                    ) || false
-                  }
+                  value={list?.query.playbackStatuses?.includes(PlaybackStatus.InProgress) || false}
                   selectable={{
                     id: 'statusInProgress',
                     selected: selectedId === 'statusInProgress',
@@ -331,25 +300,16 @@ export default function FilterListEditor({
                   onChange={(value): void => {
                     let newVal = [...(list?.query.playbackStatuses || [])];
                     if (!value) {
-                      newVal = newVal.filter(
-                        (a) => a !== PlaybackStatus.InProgress
-                      );
+                      newVal = newVal.filter((a) => a !== PlaybackStatus.InProgress);
                     } else if (!newVal.includes(PlaybackStatus.InProgress)) {
                       newVal.push(PlaybackStatus.InProgress);
                     }
-                    updateQuery(
-                      'playbackStatuses',
-                      newVal.length > 0 ? newVal : undefined
-                    );
+                    updateQuery('playbackStatuses', newVal.length > 0 ? newVal : undefined);
                   }}
                 />
                 <CheckboxRow
                   label="Played"
-                  value={
-                    list?.query.playbackStatuses?.includes(
-                      PlaybackStatus.Played
-                    ) || false
-                  }
+                  value={list?.query.playbackStatuses?.includes(PlaybackStatus.Played) || false}
                   selectable={{
                     id: 'statusPlayed',
                     selected: selectedId === 'statusPlayed',
@@ -357,16 +317,11 @@ export default function FilterListEditor({
                   onChange={(value): void => {
                     let newVal = [...(list?.query.playbackStatuses || [])];
                     if (!value) {
-                      newVal = newVal.filter(
-                        (a) => a !== PlaybackStatus.Played
-                      );
+                      newVal = newVal.filter((a) => a !== PlaybackStatus.Played);
                     } else if (!newVal.includes(PlaybackStatus.Played)) {
                       newVal.push(PlaybackStatus.Played);
                     }
-                    updateQuery(
-                      'playbackStatuses',
-                      newVal.length > 0 ? newVal : undefined
-                    );
+                    updateQuery('playbackStatuses', newVal.length > 0 ? newVal : undefined);
                   }}
                 />
               </div>
@@ -385,9 +340,7 @@ export default function FilterListEditor({
                 {podcasts?.map((podcast) => (
                   <CheckboxRow
                     label={podcast.title}
-                    value={
-                      list?.query.podcastIds?.includes(podcast.id) || false
-                    }
+                    value={list?.query.podcastIds?.includes(podcast.id) || false}
                     selectable={{
                       id: `podcast${podcast.id}`,
                       selected: selectedId === `podcast${podcast.id}`,
@@ -399,10 +352,7 @@ export default function FilterListEditor({
                       } else if (!newVal.includes(podcast.id)) {
                         newVal.push(podcast.id);
                       }
-                      updateQuery(
-                        'podcastIds',
-                        newVal.length > 0 ? newVal : undefined
-                      );
+                      updateQuery('podcastIds', newVal.length > 0 ? newVal : undefined);
                     }}
                   />
                 ))}

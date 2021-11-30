@@ -7,7 +7,7 @@ import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h } from 'preact';
 import { route } from 'preact-router';
-import { useEffect } from 'react';
+import { useEffect } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import { useFetchedState } from '../hooks/useFetchedState';
 import { Core } from '../services/core';
@@ -26,9 +26,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
   const favPodcasts = useFetchedState<PodcastWithEpisodes[]>();
 
   useEffect(() => {
-    favEpisodes.getData(() =>
-      Core.episodes.queryAll({ isFavorite: 1, limit: 5 })
-    );
+    favEpisodes.getData(() => Core.episodes.queryAll({ isFavorite: 1, limit: 5 }));
     favPodcasts.getData(async () => {
       const result: PodcastWithEpisodes[] = [];
       const podcasts = await Core.podcasts.queryAll({ isFavorite: 1 });
@@ -54,9 +52,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
 
   useListNav({
     initialSelectedId:
-      newEpisodes.data && favEpisodes.data && favPodcasts.data
-        ? selectedItemId
-        : undefined,
+      newEpisodes.data && favEpisodes.data && favPodcasts.data ? selectedItemId : undefined,
     updateRouteOnChange: true,
     onSelect: (id) => route(`/episode/${id.split('_')[1]}/info`),
   });
@@ -66,9 +62,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
       <ViewContent>
         <ViewHeader>Home</ViewHeader>
         <Typography type="subtitle">Just Added</Typography>
-        {newEpisodes.loading && (
-          <Typography>Checking for new episodes...</Typography>
-        )}
+        {newEpisodes.loading && <Typography>Checking for new episodes...</Typography>}
         {!newEpisodes.loading && newEpisodes.data?.length === 0 && (
           <Typography>Nothing new</Typography>
         )}
@@ -85,9 +79,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
             />
           ))}
           <Typography type="subtitle">Favorites</Typography>
-          <Typography padding="both">
-            The latest episodes from your favorite podcasts.
-          </Typography>
+          <Typography padding="both">The latest episodes from your favorite podcasts.</Typography>
           {favPodcasts.data?.map((podcast) => (
             <ListSection>
               <Typography
@@ -101,10 +93,7 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
                 <ListItem
                   imageUrl={episode.artwork}
                   primaryText={episode.title}
-                  secondaryText={format(
-                    new Date(episode.date),
-                    'cccc, MMMM do'
-                  )}
+                  secondaryText={format(new Date(episode.date), 'cccc, MMMM do')}
                   selectable={{
                     id: `recent_${episode.id}`,
                     selected: `recent_${episode.id}` === selectedItemId,
