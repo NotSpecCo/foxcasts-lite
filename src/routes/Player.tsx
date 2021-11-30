@@ -24,6 +24,7 @@ import { useArtwork } from '../hooks/useArtwork';
 import { useFetchedState } from '../hooks/useFetchedState';
 import { Settings } from '../models';
 import { Core } from '../services/core';
+import { KaiOS } from '../services/kaios';
 import { ifClass, joinClasses } from '../utils/classes';
 import styles from './Player.module.css';
 
@@ -140,6 +141,14 @@ export default function Player({ tabId }: Props): VNode {
       },
     },
     { disabled: view.appbarOpen || view.homeMenuOpen }
+  );
+
+  useNavKeys(
+    {
+      ArrowUp: () => KaiOS.system.volumeUp(),
+      ArrowDown: () => KaiOS.system.volumeDown(),
+    },
+    { disabled: tabId !== 'player' || view.appbarOpen || view.homeMenuOpen }
   );
 
   const { selectedId } = useListNav({
