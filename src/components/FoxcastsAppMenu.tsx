@@ -402,9 +402,9 @@ export function FoxcastsAppMenu(props: FoxcastsAppMenuProps): h.JSX.Element {
           />
           <ControllerOption
             label="Volume"
-            leftAction={() => KaiOS.system.volumeDown()}
-            rightAction={() => KaiOS.system.volumeUp()}
-            centerAction={() => KaiOS.system.volumeShow()}
+            leftAction={() => KaiOS.volume.down()}
+            rightAction={() => KaiOS.volume.up()}
+            centerAction={() => KaiOS.volume.show()}
             selectable={{
               priority: SelectablePriority.Medium,
               id: 'volume',

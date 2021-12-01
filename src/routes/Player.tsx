@@ -137,8 +137,8 @@ export default function Player({ tabId }: Props): VNode {
 
   useNavKeys(
     {
-      ArrowUp: () => KaiOS.system.volumeUp(),
-      ArrowDown: () => KaiOS.system.volumeDown(),
+      ArrowUp: () => KaiOS.volume.up(),
+      ArrowDown: () => KaiOS.volume.down(),
     },
     { disabled: tabId !== 'player' || view.appbarOpen || view.homeMenuOpen }
   );

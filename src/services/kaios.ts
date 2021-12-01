@@ -106,10 +106,10 @@ export class KaiOS {
       this.navigator.getDeviceStorage(storageName)?.storageName,
   };
 
-  static system = {
-    volumeUp: () => this.navigator.volumeManager.requestUp(),
-    volumeDown: () => this.navigator.volumeManager.requestDown(),
-    volumeShow: () => this.navigator.volumeManager.requestShow(),
+  static volume = {
+    up: () => this.navigator.volumeManager.requestUp(),
+    down: () => this.navigator.volumeManager.requestDown(),
+    show: () => this.navigator.volumeManager.requestShow(),
   };
 
   static battery = this.navigator.battery || {
