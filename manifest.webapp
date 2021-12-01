@@ -41,6 +41,7 @@
       "description": "Required to read and write podcasts episodes to external storage."
     }
   },
+  "fullscreen": true,
   "default_locale": "en",
   "cursor": false
 }
