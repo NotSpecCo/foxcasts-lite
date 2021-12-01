@@ -29,6 +29,7 @@ import Podcasts from '../routes/Podcasts';
 import RecentEpisodes from '../routes/RecentEpisodes';
 import Search from '../routes/Search';
 import { Core } from '../services/core';
+import { setStorageItem, StorageKey } from '../services/storage';
 import { themes } from '../themes';
 
 export function AppWrapper(): VNode {
@@ -58,6 +59,16 @@ export default function App(): VNode {
     }
 
     // Core.health().then((res) => console.log(res));
+
+    Core.podcastIndex.fetchCategories().then((res) =>
+      setStorageItem(
+        StorageKey.Categories,
+        res.reduce((acc, val) => {
+          acc[val.id] = val.name;
+          return acc;
+        }, {} as { [key: number]: string })
+      )
+    );
 
     // Ensure default filters exist
     Core.filters.queryAll().then((res) => {
@@ -103,24 +114,15 @@ export default function App(): VNode {
     // Theme
     const theme = themes.find((a) => a.id === settings.theme) || themes[0];
     for (const id in theme.values) {
-      document.documentElement.style.setProperty(
-        `--${kebabcase(id)}`,
-        theme.values[id]
-      );
+      document.documentElement.style.setProperty(`--${kebabcase(id)}`, theme.values[id]);
     }
-    document.documentElement.style.setProperty(
-      '--app-accent-color',
-      `#${settings.accentColor}`
-    );
+    document.documentElement.style.setProperty('--app-accent-color', `#${settings.accentColor}`);
     document
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', theme.values.headerBgColor);
 
     if (theme.settings.accentText) {
-      document.documentElement.style.setProperty(
-        '--accent-text-color',
-        `#${settings.accentColor}`
-      );
+      document.documentElement.style.setProperty('--accent-text-color', `#${settings.accentColor}`);
     }
     if (theme.settings.accentHighlight) {
       document.documentElement.style.setProperty(
@@ -129,10 +131,7 @@ export default function App(): VNode {
       );
     }
     if (theme.settings.accentHeader) {
-      document.documentElement.style.setProperty(
-        '--header-bg-color',
-        `#${settings.accentColor}`
-      );
+      document.documentElement.style.setProperty('--header-bg-color', `#${settings.accentColor}`);
       document
         .querySelector('meta[name="theme-color"]')
         ?.setAttribute('content', `#${settings.accentColor}`);

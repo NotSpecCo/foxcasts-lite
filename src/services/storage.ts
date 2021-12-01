@@ -1,5 +1,6 @@
 export enum StorageKey {
   Settings = 'settings',
+  Categories = 'categories',
 }
 
 export function getStorageItem<T>(key: StorageKey): T {
