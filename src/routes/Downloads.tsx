@@ -2,13 +2,14 @@ import { formatFileSize } from 'foxcasts-core/lib/utils';
 import { AppBar, AppBarAction } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import ProgressBar from '../components/ProgressBar';
+import Statusbar from '../components/Statusbar';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 import { Download, DownloadStatus } from '../models';
 import styles from './Downloads.module.css';
@@ -90,26 +91,19 @@ export default function Downloads({ selectedItemId }: Props): VNode {
 
     const bytes = (item.currentBytes / item.totalBytes) * 100 || 0;
     if (bytes < 100) {
-      return `${formatFileSize(item.currentBytes)}/${formatFileSize(
-        item.totalBytes
-      )}`;
+      return `${formatFileSize(item.currentBytes)}/${formatFileSize(item.totalBytes)}`;
     }
 
     return 'Complete';
   }
 
   function getActions(): AppBarAction[] {
-    const actions: AppBarAction[] = [
-      { id: 'test', label: 'Test', actionFn: () => runTest() },
-    ];
+    const actions: AppBarAction[] = [{ id: 'test', label: 'Test', actionFn: () => runTest() }];
 
     const item = getSelectedItem();
     if (!item) return actions;
 
-    if (
-      item.status === DownloadStatus.Queued ||
-      item.status === DownloadStatus.Downloading
-    ) {
+    if (item.status === DownloadStatus.Queued || item.status === DownloadStatus.Downloading) {
       actions.push({
         id: 'remove',
         label: 'Cancel download',
@@ -118,10 +112,7 @@ export default function Downloads({ selectedItemId }: Props): VNode {
           route(`/downloads/`, true);
         },
       });
-    } else if (
-      item.status === DownloadStatus.Cancelled ||
-      item.status === DownloadStatus.Error
-    ) {
+    } else if (item.status === DownloadStatus.Cancelled || item.status === DownloadStatus.Error) {
       actions.push({
         id: 'retry',
         label: 'Retry download',
@@ -143,7 +134,7 @@ export default function Downloads({ selectedItemId }: Props): VNode {
 
   return (
     <View>
-      <ViewHeader>Downloads</ViewHeader>
+      <Statusbar text="Downloads" />
       <ViewContent>
         {downloads.downloading.map((item) => (
           <div key={item.episodeId}>

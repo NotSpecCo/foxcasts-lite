@@ -6,6 +6,7 @@ import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { h, VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { useBodyScroller } from '../hooks/useBodyScroller';
 import { Core, subscribe } from '../services/core';
 
@@ -13,10 +14,7 @@ interface PodcastPreviewProps {
   podexId?: string;
   feedUrl?: string;
 }
-export default function PodcastPreview({
-  podexId,
-  feedUrl,
-}: PodcastPreviewProps): VNode {
+export default function PodcastPreview({ podexId, feedUrl }: PodcastPreviewProps): VNode {
   const [podcast, setPodcast] = useState<ApiPodcast>();
   const [episodes, setEpisodes] = useState<ApiEpisode[]>([]);
   const [subscribed, setSubscribed] = useState(false);
@@ -52,13 +50,12 @@ export default function PodcastPreview({
     await Core.podcasts
       .unsubscribe({ podexId: Number(podexId), feedUrl })
       .then(() => setSubscribed(false))
-      .catch((err) =>
-        console.error('Failed to unsubscribe from podcast', err.message)
-      );
+      .catch((err) => console.error('Failed to unsubscribe from podcast', err.message));
   }
 
   return (
     <View>
+      <Statusbar text="Preview" />
       <ViewContent>
         {loading ? <Typography>Loading feed...</Typography> : null}
         <Typography type="title">{podcast?.title}</Typography>

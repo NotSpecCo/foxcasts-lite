@@ -1,12 +1,13 @@
 import { AppBar } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { StorageFile } from '../models';
 import { OPML } from '../services/opml';
 
@@ -25,12 +26,10 @@ export default function OpmlFiles(): VNode {
 
   return (
     <View>
-      <ViewHeader>Choose a file</ViewHeader>
+      <Statusbar text="Choose a file" />
       <ViewContent>
         {files === null && <Typography align="center">Loading...</Typography>}
-        {files?.length === 0 && (
-          <Typography align="center">No opml files found.</Typography>
-        )}
+        {files?.length === 0 && <Typography align="center">No opml files found.</Typography>}
         {files?.map((file) => (
           <ListItem
             key={file.path}

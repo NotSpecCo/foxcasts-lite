@@ -12,6 +12,7 @@ import { Fragment, h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { useDownloadManager } from '../contexts/DownloadManagerProvider';
 import { usePlayer } from '../contexts/playerContext';
 import { useSettings } from '../contexts/SettingsProvider';
@@ -25,12 +26,11 @@ interface EpisodeDetailProps {
   tabId: string;
 }
 
-export default function EpisodeDetail({
-  episodeId,
-  tabId,
-}: EpisodeDetailProps): VNode {
+export default function EpisodeDetail({ episodeId, tabId }: EpisodeDetailProps): VNode {
   const [episode, setEpisode] = useState<EpisodeExtended>();
   const [chapters, setChapters] = useState<Chapter[] | null>();
+
+  console.log(episode);
 
   const player = usePlayer();
   const { addToQueue } = useDownloadManager();
@@ -54,13 +54,8 @@ export default function EpisodeDetail({
 
   const { selectedId } = useListNav({
     onSelect: (itemId) => {
-      if (
-        itemId.startsWith('chapter') &&
-        chapters &&
-        Number(episodeId) === player.episode?.id
-      ) {
+      if (itemId.startsWith('chapter') && chapters && Number(episodeId) === player.episode?.id) {
         const index = parseInt(itemId.split('_')[1], 10);
-        console.log('chapter selected', index);
         player.goTo(Math.floor(chapters[index].startTime / 1000));
       }
     },
@@ -90,9 +85,7 @@ export default function EpisodeDetail({
       },
       {
         id: 'toggleFavorite',
-        label: episode.isFavorite
-          ? 'Remove from favorites'
-          : 'Add to favorites',
+        label: episode.isFavorite ? 'Remove from favorites' : 'Add to favorites',
         actionFn: () =>
           Core.episodes
             .update(episode.id, {
@@ -138,14 +131,11 @@ export default function EpisodeDetail({
 
   return (
     <View
-      backgroundImageUrl={
-        settings.dynamicBackgrounds ? artwork?.image : undefined
-      }
-      accentColor={
-        settings.dynamicThemeColor ? episode?.accentColor : undefined
-      }
+      backgroundImageUrl={settings.dynamicBackgrounds ? artwork?.image : undefined}
+      accentColor={settings.dynamicThemeColor ? episode?.accentColor : undefined}
       enableCustomColor={true}
     >
+      <Statusbar text={episode?.podcastTitle} />
       <ViewTabBar
         tabs={[
           { id: 'info', label: 'info' },
@@ -165,11 +155,7 @@ export default function EpisodeDetail({
           <Fragment>
             <LabeledRow
               label="Published"
-              text={
-                episode
-                  ? format(new Date(episode.date), 'ccc, MMMM do p')
-                  : null
-              }
+              text={episode ? format(new Date(episode.date), 'ccc, MMMM do p') : null}
             />
             <LabeledRow
               label="Progress"
@@ -179,14 +165,9 @@ export default function EpisodeDetail({
             />
             <LabeledRow
               label="File Size"
-              text={
-                episode.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'
-              }
+              text={episode.fileSize ? formatFileSize(episode?.fileSize) : 'Unknown'}
             />
-            <LabeledRow
-              label="Downloaded"
-              text={episode.localFileUrl || 'No'}
-            />
+            <LabeledRow label="Downloaded" text={episode.localFileUrl || 'No'} />
           </Fragment>
         ) : null}
 

@@ -2,12 +2,13 @@ import { AppBar } from 'mai-ui/dist/components/appbar';
 import { Button } from 'mai-ui/dist/components/buttons';
 import { SelectableBase } from 'mai-ui/dist/components/SelectableBase';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { SelectablePriority } from '../enums';
 import { subscribe } from '../services/core';
 import { OPML } from '../services/opml';
@@ -49,9 +50,7 @@ export default function Import(props: Props): VNode {
       console.log(`Subscribing to ${podcast.title}`);
       await subscribe({ feedUrl: podcast.feedUrl })
         .then(() => console.log(`Subscribed to ${podcast.title}`))
-        .catch((err) =>
-          console.log(`Failed to subscribe to ${podcast.title}`, err)
-        );
+        .catch((err) => console.log(`Failed to subscribe to ${podcast.title}`, err));
     }
     setSubscribing(false);
     route('/podcasts');
@@ -79,18 +78,14 @@ export default function Import(props: Props): VNode {
 
   return (
     <View>
-      <ViewHeader>Import OPML</ViewHeader>
+      <Statusbar text="Import OPML" />
       <ViewContent>
         <div className={styles.message}>
           Choose which podcasts you want, then click the{' '}
           <span className={styles.accent}>Import</span> button below.
         </div>
-        {feeds === undefined && (
-          <Typography align="center">Loading...</Typography>
-        )}
-        {feeds?.length === 0 && (
-          <Typography align="center">No feeds found.</Typography>
-        )}
+        {feeds === undefined && <Typography align="center">Loading...</Typography>}
+        {feeds?.length === 0 && <Typography align="center">No feeds found.</Typography>}
         {feeds?.map((podcast) => (
           <SelectableBase
             key={podcast.id}

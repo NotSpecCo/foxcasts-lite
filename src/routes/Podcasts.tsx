@@ -3,12 +3,13 @@ import { AppBar } from 'mai-ui/dist/components/appbar';
 import { Grid } from 'mai-ui/dist/components/grid';
 import { List, ListItem } from 'mai-ui/dist/components/list';
 import { Tile, TileContent } from 'mai-ui/dist/components/tiles';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useToast } from 'mai-ui/dist/contexts';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority } from '../enums';
 import { usePodcasts } from '../hooks/usePodcasts';
@@ -66,15 +67,13 @@ export default function Podcasts(props: Props): VNode {
       version: null,
     }));
     OPML.create(`/${storageName}/foxcasts_${new Date().valueOf()}.opml`, feeds)
-      .then((res) =>
-        showToast(`Successfully exported feeds to ${res.filePath}`)
-      )
+      .then((res) => showToast(`Successfully exported feeds to ${res.filePath}`))
       .catch(() => showToast(`Failed to export feeds.`));
   }
 
   return (
     <View>
-      <ViewHeader>Podcasts</ViewHeader>
+      <Statusbar text="Podcasts" />
       <ViewContent>
         {loading && <Typography>Loading...</Typography>}
         {settings.podcastsLayout === ListLayout.List ? (
@@ -98,12 +97,7 @@ export default function Podcasts(props: Props): VNode {
             {podcasts?.map((podcast, i) => (
               <Tile
                 accentColor={podcast.accentColor}
-                frontContent={
-                  <TileContent
-                    backgroundImage={podcast.artwork}
-                    scrim={false}
-                  />
-                }
+                frontContent={<TileContent backgroundImage={podcast.artwork} scrim={false} />}
                 backContent={
                   <TileContent contentH="left" contentV="top">
                     <Typography>{podcast.title}</Typography>

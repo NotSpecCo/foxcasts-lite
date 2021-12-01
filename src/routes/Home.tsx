@@ -3,12 +3,13 @@ import { EpisodeExtended, Podcast } from 'foxcasts-core/lib/types';
 import { AppBar } from 'mai-ui/dist/components/appbar';
 import { List, ListItem, ListSection } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h } from 'preact';
 import { route } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { useFetchedState } from '../hooks/useFetchedState';
 import { Core } from '../services/core';
 
@@ -59,8 +60,8 @@ export default function Home({ selectedItemId }: Props): h.JSX.Element {
 
   return (
     <View>
+      <Statusbar text="Home" />
       <ViewContent>
-        <ViewHeader>Home</ViewHeader>
         <Typography type="subtitle">Just Added</Typography>
         {newEpisodes.loading && <Typography>Checking for new episodes...</Typography>}
         {!newEpisodes.loading && newEpisodes.data?.length === 0 && (

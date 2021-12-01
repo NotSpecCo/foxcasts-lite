@@ -1,20 +1,11 @@
 import { AppBar } from 'mai-ui/dist/components/appbar';
-import {
-  Input,
-  RangeRow,
-  Select,
-  ToggleRow,
-} from 'mai-ui/dist/components/form';
-import {
-  View,
-  ViewHeader,
-  ViewTab,
-  ViewTabBar,
-} from 'mai-ui/dist/components/view';
+import { Input, RangeRow, Select, ToggleRow } from 'mai-ui/dist/components/form';
+import { View, ViewTab, ViewTabBar } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority } from '../enums';
 import {
@@ -40,10 +31,7 @@ export default function AppSettings({ tabId }: Props): VNode {
     updateRouteOnChange: false,
   });
 
-  function handleSettingSelect<T extends keyof Settings>(
-    key: T,
-    value: Settings[T]
-  ): void {
+  function handleSettingSelect<T extends keyof Settings>(key: T, value: Settings[T]): void {
     if (key === 'theme') {
       // We want to use the theme's original accent color
       const theme = themes.find((a) => a.id === value) as ThemeConfig;
@@ -59,7 +47,7 @@ export default function AppSettings({ tabId }: Props): VNode {
 
   return (
     <View>
-      <ViewHeader>Settings</ViewHeader>
+      <Statusbar text="Settings" />
       <ViewTabBar
         tabs={[
           { id: 'display', label: 'display' },
@@ -150,8 +138,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             selected: selectedId === 'accentColor',
           }}
           onChange={(value) =>
-            value.match(/[0-9a-fA-F]{6}/) &&
-            handleSettingSelect('accentColor', value)
+            value.match(/[0-9a-fA-F]{6}/) && handleSettingSelect('accentColor', value)
           }
         />
         <ToggleRow
@@ -170,9 +157,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             id: 'dynamicThemeColor',
             selected: selectedId === 'dynamicThemeColor',
           }}
-          onChange={(value): void =>
-            handleSettingSelect('dynamicThemeColor', value)
-          }
+          onChange={(value): void => handleSettingSelect('dynamicThemeColor', value)}
         />
         <ToggleRow
           label="Dynamic Background"
@@ -181,9 +166,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             id: 'dynamicBackgrounds',
             selected: selectedId === 'dynamicBackgrounds',
           }}
-          onChange={(value): void =>
-            handleSettingSelect('dynamicBackgrounds', value)
-          }
+          onChange={(value): void => handleSettingSelect('dynamicBackgrounds', value)}
         />
       </ViewTab>
       <ViewTab tabId="player" activeTabId={tabId}>
@@ -224,9 +207,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             id: 'playbackSkipBack',
             selected: selectedId === 'playbackSkipBack',
           }}
-          onChange={(value): void =>
-            handleSettingSelect('playbackSkipBack', value)
-          }
+          onChange={(value): void => handleSettingSelect('playbackSkipBack', value)}
         />
         <RangeRow
           label="Skip Forward"
@@ -239,9 +220,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             id: 'playbackSkipForward',
             selected: selectedId === 'playbackSkipForward',
           }}
-          onChange={(value): void =>
-            handleSettingSelect('playbackSkipForward', value)
-          }
+          onChange={(value): void => handleSettingSelect('playbackSkipForward', value)}
         />
         <RangeRow
           label="Playback Speed"
@@ -254,9 +233,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             id: 'playbackSpeed',
             selected: selectedId === 'playbackSpeed',
           }}
-          onChange={(value): void =>
-            handleSettingSelect('playbackSpeed', value)
-          }
+          onChange={(value): void => handleSettingSelect('playbackSpeed', value)}
         />
         <ToggleRow
           label="Auto Delete Download"
@@ -266,9 +243,7 @@ export default function AppSettings({ tabId }: Props): VNode {
             id: 'autoDeleteDownload',
             selected: selectedId === 'autoDeleteDownload',
           }}
-          onChange={(value): void =>
-            handleSettingSelect('autoDeleteDownload', value)
-          }
+          onChange={(value): void => handleSettingSelect('autoDeleteDownload', value)}
         />
       </ViewTab>
       <AppBar appMenuContent={<FoxcastsAppMenu />} />

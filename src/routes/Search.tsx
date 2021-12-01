@@ -8,16 +8,14 @@ import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { Core } from '../services/core';
 interface SearchProps {
   q?: string;
   selectedItemId?: string;
 }
 
-export default function Search({
-  q: queryParam,
-  selectedItemId,
-}: SearchProps): VNode {
+export default function Search({ q: queryParam, selectedItemId }: SearchProps): VNode {
   const [query, setQuery] = useState<string | undefined>(undefined);
   const [results, setResults] = useState<SearchResult[]>([]);
 
@@ -68,6 +66,7 @@ export default function Search({
 
   return (
     <View>
+      <Statusbar text="Search" />
       <Input
         value={query}
         placeholder="Search..."

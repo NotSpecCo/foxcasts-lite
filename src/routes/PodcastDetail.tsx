@@ -4,17 +4,13 @@ import { AppBar } from 'mai-ui/dist/components/appbar';
 import { List, ListItem } from 'mai-ui/dist/components/list';
 // import { List, ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import {
-  View,
-  ViewHeader,
-  ViewTab,
-  ViewTabBar,
-} from 'mai-ui/dist/components/view';
+import { View, ViewTab, ViewTabBar } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { useSettings } from '../contexts/SettingsProvider';
 import { SelectablePriority } from '../enums';
 import { ArtworkBlur } from '../enums/artworkBlur';
@@ -42,8 +38,7 @@ export default function PodcastDetail({
     blur: ArtworkBlur.Some,
   });
   const { settings } = useSettings();
-  const { settings: podcastSettings, setSetting } =
-    usePodcastSettings(podcastId);
+  const { settings: podcastSettings, setSetting } = usePodcastSettings(podcastId);
 
   useEffect(() => {
     Core.episodes
@@ -55,9 +50,7 @@ export default function PodcastDetail({
       .then((result) => {
         setEpisodes(result);
       });
-    Core.podcasts
-      .query({ id: Number(podcastId) })
-      .then((result) => setPodcast(result));
+    Core.podcasts.query({ id: Number(podcastId) }).then((result) => setPodcast(result));
   }, [podcastId]);
 
   useListNav({
@@ -69,15 +62,11 @@ export default function PodcastDetail({
 
   return (
     <View
-      backgroundImageUrl={
-        settings.dynamicBackgrounds ? artwork?.image : undefined
-      }
-      accentColor={
-        settings.dynamicThemeColor ? podcast?.accentColor : undefined
-      }
+      backgroundImageUrl={settings.dynamicBackgrounds ? artwork?.image : undefined}
+      accentColor={settings.dynamicThemeColor ? podcast?.accentColor : undefined}
       enableCustomColor={true}
     >
-      <ViewHeader>{podcast?.title}</ViewHeader>
+      <Statusbar text={podcast?.title} />
       <ViewTabBar
         tabs={[
           { id: 'episodes', label: 'episodes' },
@@ -144,9 +133,7 @@ export default function PodcastDetail({
           },
           {
             id: 'toggleFavorite',
-            label: podcast?.isFavorite
-              ? 'Remove from favorites'
-              : 'Add to favorites',
+            label: podcast?.isFavorite ? 'Remove from favorites' : 'Add to favorites',
             actionFn: () =>
               Core.podcasts
                 .update(Number(podcastId), {

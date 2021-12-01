@@ -1,12 +1,13 @@
 import { FilterList } from 'foxcasts-core/lib/types';
 import { AppBar } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { FilterViewOptions } from '../models';
 import { Core } from '../services/core';
 
@@ -49,7 +50,7 @@ export default function Filters({ selectedItemId }: Props): VNode {
 
   return (
     <View>
-      <ViewHeader>Filters</ViewHeader>
+      <Statusbar text="Filters" />
       <ViewContent>
         {defaultLists.map((list, i) => (
           <ListItem

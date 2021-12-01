@@ -4,12 +4,7 @@ import { formatTime } from 'foxcasts-core/lib/utils';
 import { AppBar, AppBarAction } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import {
-  View,
-  ViewContent,
-  ViewTab,
-  ViewTabBar,
-} from 'mai-ui/dist/components/view';
+import { View, ViewContent, ViewTab, ViewTabBar } from 'mai-ui/dist/components/view';
 import { useView } from 'mai-ui/dist/contexts';
 import { useListNav, useNavKeys } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
@@ -17,6 +12,7 @@ import { route } from 'preact-router';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
 import ProgressBar from '../components/ProgressBar';
+import Statusbar from '../components/Statusbar';
 import { PlaybackProgress, usePlayer } from '../contexts/playerContext';
 import { useSettings } from '../contexts/SettingsProvider';
 import { ArtworkSize } from '../enums/artworkSize';
@@ -51,9 +47,7 @@ export default function Player({ tabId }: Props): VNode {
 
   useEffect(() => {
     if (tabId === 'playlist' && !playlist.data && player.playlistId) {
-      playlist.getData(() =>
-        Core.playlists.query({ id: player.playlistId! }, true)
-      );
+      playlist.getData(() => Core.playlists.query({ id: player.playlistId! }, true));
     } else if (tabId === 'chapters' && !chapters.data && player.episode) {
       chapters.getData(() => Core.episodes.getChapters(player.episode!.id));
     }
@@ -134,9 +128,7 @@ export default function Player({ tabId }: Props): VNode {
         } else if (tabId === 'playlist' && selectedId && playlist.data) {
           player.load(Number(selectedId), false, playlist.data.id);
         } else if (tabId === 'chapters' && selectedId && chapters.data) {
-          player.goTo(
-            Math.floor(chapters.data[Number(selectedId)].startTime / 1000)
-          );
+          player.goTo(Math.floor(chapters.data[Number(selectedId)].startTime / 1000));
         }
       },
     },
@@ -168,6 +160,7 @@ export default function Player({ tabId }: Props): VNode {
   if (!player.episode) {
     return (
       <View>
+        <Statusbar />
         <ViewContent>
           <Typography>Nothing playing</Typography>
         </ViewContent>
@@ -182,6 +175,7 @@ export default function Player({ tabId }: Props): VNode {
       backgroundImageUrl={tabId === 'player' ? artwork?.image : undefined}
       enableBackdrop={false}
     >
+      <Statusbar />
       <ViewTabBar
         tabs={[
           { id: 'player', label: 'player' },
@@ -204,20 +198,14 @@ export default function Player({ tabId }: Props): VNode {
             <div className={styles.author}>{player.episode?.podcastTitle}</div>
             <div className={styles.title}>{player.episode?.title}</div>
             <div className={styles.times}>
-              <span className={styles.currentTime}>
-                {formatTime(status.currentTime)}
-              </span>
+              <span className={styles.currentTime}>{formatTime(status.currentTime)}</span>
               <ProgressBar
                 className={styles.progressbar}
                 position={(status.currentTime / status.duration) * 100 || 0}
               />
-              <span className={styles.duration}>
-                {`${formatTime(status.duration)}`}
-              </span>
+              <span className={styles.duration}>{`${formatTime(status.duration)}`}</span>
               <div className={styles.spacer} />
-              <span
-                className={styles.speed}
-              >{`${settings.playbackSpeed}x`}</span>
+              <span className={styles.speed}>{`${settings.playbackSpeed}x`}</span>
             </div>
           </div>
         </div>
@@ -248,9 +236,7 @@ export default function Player({ tabId }: Props): VNode {
       </ViewTab>
       <ViewTab tabId="playlist" activeTabId={tabId}>
         {playlist.loading && <Typography>Loading...</Typography>}
-        {playlist.data?.episodes?.length === 0 && (
-          <Typography>No episodes</Typography>
-        )}
+        {playlist.data?.episodes?.length === 0 && <Typography>No episodes</Typography>}
         {playlist.data?.episodes.map((episode) => (
           <ListItem
             primaryText={episode.title}
@@ -265,13 +251,7 @@ export default function Player({ tabId }: Props): VNode {
       <AppBar
         appMenuContent={<FoxcastsAppMenu />}
         centerText={
-          tabId === 'player'
-            ? status.playing
-              ? 'Pause'
-              : 'Play'
-            : selectedId
-            ? 'Select'
-            : ''
+          tabId === 'player' ? (status.playing ? 'Pause' : 'Play') : selectedId ? 'Select' : ''
         }
         actions={actionList}
         options={[

@@ -10,12 +10,13 @@ import {
   ToggleRow,
 } from 'mai-ui/dist/components/form';
 import { List, ListSection } from 'mai-ui/dist/components/list';
-import { View, ViewContent, ViewHeader } from 'mai-ui/dist/components/view';
+import { View, ViewContent } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { FilterViewOptions } from '../models';
 import { Core } from '../services/core';
 import styles from './FilterListEditor.module.css';
@@ -142,7 +143,7 @@ export default function FilterListEditor({ listId, selectedItemId }: Props): VNo
 
   return (
     <View>
-      <ViewHeader>Edit Filter</ViewHeader>
+      <Statusbar text="Edit Filter" />
       <ViewContent>
         <List>
           <ListSection>

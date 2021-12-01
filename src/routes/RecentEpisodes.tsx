@@ -3,17 +3,13 @@ import { EpisodeExtended } from 'foxcasts-core/lib/types';
 import { AppBar } from 'mai-ui/dist/components/appbar';
 import { ListItem } from 'mai-ui/dist/components/list';
 import { Typography } from 'mai-ui/dist/components/Typography';
-import {
-  View,
-  ViewContent,
-  ViewHeader,
-  ViewTabBar,
-} from 'mai-ui/dist/components/view';
+import { View, ViewContent, ViewTabBar } from 'mai-ui/dist/components/view';
 import { useListNav } from 'mai-ui/dist/hooks';
 import { h, VNode } from 'preact';
 import { route } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { FoxcastsAppMenu } from '../components/FoxcastsAppMenu';
+import Statusbar from '../components/Statusbar';
 import { Core } from '../services/core';
 
 interface Props {
@@ -44,10 +40,7 @@ const dates = {
   },
 };
 
-export default function RecentEpisodes({
-  tabId,
-  selectedItemId,
-}: Props): VNode {
+export default function RecentEpisodes({ tabId, selectedItemId }: Props): VNode {
   const [episodes, setEpisodes] = useState<EpisodeExtended[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -73,7 +66,7 @@ export default function RecentEpisodes({
 
   return (
     <View>
-      <ViewHeader>Recent Episodes</ViewHeader>
+      <Statusbar text="Recent Episodes" />
       <ViewTabBar
         tabs={[
           { id: 'week0', label: 'this week' },
@@ -90,9 +83,7 @@ export default function RecentEpisodes({
       />
       <ViewContent>
         {loading && <Typography>Loading...</Typography>}
-        {!loading && episodes.length === 0 && (
-          <Typography>No episodes.</Typography>
-        )}
+        {!loading && episodes.length === 0 && <Typography>No episodes.</Typography>}
         {episodes.map((episode, i) => (
           <ListItem
             key={episode.id}

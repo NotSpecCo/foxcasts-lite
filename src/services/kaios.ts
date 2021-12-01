@@ -30,10 +30,7 @@ export class KaiOS {
         request.onerror = () => reject(request.error);
       });
     },
-    getAsFileUrl: (
-      storageName: StorageName,
-      filePathAndName: string
-    ): Promise<string> => {
+    getAsFileUrl: (storageName: StorageName, filePathAndName: string): Promise<string> => {
       return new Promise((resolve, reject) => {
         const storage = this.navigator.getDeviceStorage(storageName);
         const request = storage.get(filePathAndName);
@@ -65,10 +62,7 @@ export class KaiOS {
         request.onerror = () => reject(request.error);
       });
     },
-    delete: (
-      storageName: StorageName,
-      filePathAndName: string
-    ): Promise<void> => {
+    delete: (storageName: StorageName, filePathAndName: string): Promise<void> => {
       return new Promise((resolve, reject) => {
         const storage = this.navigator.getDeviceStorage(storageName);
         const request = storage.delete(filePathAndName);
@@ -117,6 +111,24 @@ export class KaiOS {
     volumeDown: () => this.navigator.volumeManager.requestDown(),
     volumeShow: () => this.navigator.volumeManager.requestShow(),
   };
+
+  static battery = this.navigator.battery || {
+    charging: true,
+    level: 0.85,
+    temperature: 30,
+    onlevelchange: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  };
+
+  static connection = this.navigator.connection.type
+    ? this.navigator.connection
+    : ({
+        type: 'wifi',
+        ontypechange: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      } as Connection);
 }
 
 type Manifest = any;
@@ -150,12 +162,30 @@ type Request<T> = {
   onerror: () => void;
 };
 
+type Battery = {
+  charging: boolean;
+  level: number;
+  temperature: number;
+  onlevelchange: () => void;
+  addEventListener: (event: string, cb: () => void) => void;
+  removeEventListener: (event: string, cb: () => void) => void;
+};
+
+type Connection = {
+  type: 'none' | 'cellular' | 'wifi';
+  ontypechange: () => void;
+  addEventListener: (event: string, cb: () => void) => void;
+  removeEventListener: (event: string, cb: () => void) => void;
+};
+
 type StorageName = 'music' | 'pictures' | 'sdcard' | 'videos' | 'apps';
 
 type MozNavigator = Navigator & {
   mozApps: {
     getSelf: () => Request<DomApplication>;
   };
+  battery: Battery;
+  connection: Connection;
   getDeviceStorage: (name: StorageName) => {
     storageName: string;
     get: (filePath: string) => Request<File>;
