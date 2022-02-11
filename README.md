@@ -11,13 +11,15 @@
 All interaction is done using the keyboard.
 
 - Arrows keys to navigate lists and tabs
+- 1-9 are used as shortcuts in grids and lists
 - Backspace to navigate back a screen
 - Enter to perform the displayed action
 - Shift+LeftArrow and Shift+RightArrow to trigger left and right nav bar actions
 
 ### On Device
 
-Use the d-pad to scroll through menus and lists
+- Use the d-pad to navigate lists and tabs
+- 1-9 are used as shortcuts in grids and lists
 
 ## Running Locally
 
