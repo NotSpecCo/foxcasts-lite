@@ -6,7 +6,27 @@
 
 ## Navigation
 
-- Use the d-pad to scroll through menus and lists
+### Browser
+
+All interaction is done using the keyboard.
+
+- Arrows keys to navigate lists and tabs
+- Backspace to navigate back a screen
+- Enter to perform the displayed action
+- Shift+LeftArrow and Shift+RightArrow to trigger left and right nav bar actions
+
+### On Device
+
+Use the d-pad to scroll through menus and lists
+
+## Running Locally
+
+1. Clone and `npm start` the CORS proxy https://github.com/garredow/cors-testing
+2. Clone and `npm start` Foxcasts Lite
+3. Open Chrome to https://0.0.0.0:8080 to see app running
+4. Optional: Create a custom emulated KaiOS device in Chrome Dev Tools. Settings: 
+
+![Chrome Emulated Device](/promo/chrome_emulated_device.png?raw=true)
 
 ## How to Install
 
